@@ -1,0 +1,393 @@
+<section
+    id="header-validator"
+    class="validator-page"
+>
+
+    <header class="validator-header">
+
+        <div>
+
+            <span class="eyebrow">
+                VALIDADORES / ESTRUTURA
+            </span>
+
+            <h1>
+                Validador de Cabeçalho
+            </h1>
+
+            <p>
+                Identifique automaticamente as colunas
+                da sua planilha e compare com o modelo esperado.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="button button-secondary"
+            id="headerBackButton"
+        >
+            ← Voltar
+        </button>
+
+    </header>
+
+
+    <!-- ==================================================
+         UPLOAD
+    =================================================== -->
+
+    <section class="validator-card">
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    01
+                </span>
+
+                <div>
+
+                    <h2>
+                        Selecionar arquivo
+                    </h2>
+
+                    <p>
+                        Selecione o arquivo Excel que deseja validar.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="validator-upload">
+
+            <input
+                type="file"
+                id="headerExcelFile"
+                accept=".xlsx"
+            >
+
+
+            <label
+                for="headerExcelFile"
+                class="validator-upload-label"
+            >
+
+                <span class="validator-upload-icon">
+                    XLSX
+                </span>
+
+
+                <span>
+
+                    <strong>
+                        Selecionar planilha
+                    </strong>
+
+                    <small>
+                        Apenas arquivos .xlsx
+                    </small>
+
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <div
+            id="headerFileStatus"
+            class="validator-status"
+        >
+
+            Nenhum arquivo selecionado.
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         ARQUIVO
+    =================================================== -->
+
+    <section
+        id="headerFileSection"
+        class="validator-card"
+        hidden
+    >
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    02
+                </span>
+
+                <div>
+
+                    <h2>
+                        Informações do arquivo
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="validator-info-grid">
+
+
+            <div>
+
+                <span>
+                    Arquivo
+                </span>
+
+                <strong id="headerFileName">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Tamanho
+                </span>
+
+                <strong id="headerFileSize">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Abas
+                </span>
+
+                <strong id="headerSheetCount">
+                    -
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         ABA
+    =================================================== -->
+
+    <section
+        id="headerSheetSection"
+        class="validator-card"
+        hidden
+    >
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    03
+                </span>
+
+                <div>
+
+                    <h2>
+                        Selecionar aba
+                    </h2>
+
+                    <p>
+                        Escolha a aba que será analisada.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <label
+            for="headerSheetSelect"
+            class="field-label"
+        >
+
+            Aba da planilha
+
+        </label>
+
+
+        <select
+            id="headerSheetSelect"
+            class="select"
+        >
+
+            <option value="">
+                Selecione uma aba
+            </option>
+
+        </select>
+
+
+        <div
+            id="headerSheetInfo"
+            class="sheet-info"
+        ></div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         CABEÇALHO ENCONTRADO
+    =================================================== -->
+
+    <section
+        id="headerDetectedSection"
+        class="validator-card"
+        hidden
+    >
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    04
+                </span>
+
+                <div>
+
+                    <h2>
+                        Cabeçalhos encontrados
+                    </h2>
+
+                    <p>
+                        Colunas identificadas na primeira linha.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="headerDetected"
+            class="detected-headers"
+        ></div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         RESULTADO
+    =================================================== -->
+
+    <section
+        id="headerResultSection"
+        class="validator-card"
+        hidden
+    >
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    05
+                </span>
+
+                <div>
+
+                    <h2>
+                        Resultado da validação
+                    </h2>
+
+                    <p>
+                        Comparação entre o arquivo e o modelo.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="headerResultSummary"
+            class="validation-summary"
+        ></div>
+
+
+        <div
+            id="headerResultFields"
+            class="validation-fields"
+        ></div>
+
+
+        <div
+            id="headerExtraColumns"
+            class="extra-columns"
+        ></div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         LOG
+    =================================================== -->
+
+    <section class="validator-card">
+
+        <div class="validator-card-header">
+
+            <div>
+
+                <span class="validator-number">
+                    LOG
+                </span>
+
+                <div>
+
+                    <h2>
+                        Console
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <pre id="headerLog"></pre>
+
+    </section>
+
+</section>

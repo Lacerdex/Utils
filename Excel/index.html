@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Utils Excel - Ferramentas para leitura, análise e validação de arquivos Excel."
+    >
+
+    <title>Utils Excel</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/main.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/validators.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         APLICAÇÃO
+    =================================================== -->
+
+    <main class="app">
+
+
+        <!-- ==================================================
+             SIDEBAR
+        =================================================== -->
+
+        <aside class="sidebar">
+
+
+            <!-- LOGO -->
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    U
+                </div>
+
+                <div class="brand-info">
+
+                    <span class="brand-name">
+                        Utils
+                    </span>
+
+                    <span class="brand-module">
+                        Excel
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- NAVEGAÇÃO -->
+
+            <nav
+                class="sidebar-nav"
+                aria-label="Navegação principal"
+            >
+
+
+                <span class="nav-title">
+                    FERRAMENTAS
+                </span>
+
+
+                <button
+                    type="button"
+                    class="nav-item active"
+                    data-page="validators"
+                >
+
+                    <span class="nav-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Validações
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-page="models"
+                >
+
+                    <span class="nav-icon">
+                        □
+                    </span>
+
+                    <span>
+                        Modelos
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-page="reader"
+                >
+
+                    <span class="nav-icon">
+                        ◫
+                    </span>
+
+                    <span>
+                        Leitor
+                    </span>
+
+                </button>
+
+
+                <span class="nav-title nav-title-spaced">
+                    SISTEMA
+                </span>
+
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-page="about"
+                >
+
+                    <span class="nav-icon">
+                        i
+                    </span>
+
+                    <span>
+                        Sobre
+                    </span>
+
+                </button>
+
+
+            </nav>
+
+
+            <!-- SIDEBAR FOOTER -->
+
+            <div class="sidebar-footer">
+
+                <span>
+                    Utils Excel
+                </span>
+
+                <small>
+                    v1.0.0
+                </small>
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- ==================================================
+             CONTEÚDO PRINCIPAL
+        =================================================== -->
+
+        <div class="main-content">
+
+
+            <!-- ==================================================
+                 HEADER
+            =================================================== -->
+
+            <header class="topbar">
+
+
+                <div class="breadcrumb">
+
+                    <span>
+                        UTILS
+                    </span>
+
+                    <span class="breadcrumb-separator">
+                        /
+                    </span>
+
+                    <strong>
+                        EXCEL
+                    </strong>
+
+                </div>
+
+
+                <div class="topbar-info">
+
+                    <span class="status-dot"></span>
+
+                    Local
+
+                </div>
+
+
+            </header>
+
+
+
+            <!-- ==================================================
+                 CONTEÚDO
+            =================================================== -->
+
+            <div class="page-content">
+
+
+                <!-- ==================================================
+                     PÁGINA: VALIDADORES
+                =================================================== -->
+
+                <section
+                    id="page-validators"
+                    class="page active"
+                >
+
+
+                    <header class="page-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                UTILS / EXCEL
+                            </span>
+
+                            <h1>
+                                Validações
+                            </h1>
+
+                            <p>
+                                Ferramentas para análise,
+                                validação e tratamento
+                                de planilhas Excel.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+
+                    <!-- ==================================================
+                         CARDS DOS VALIDADORES
+                    =================================================== -->
+
+                    <div class="tools-grid">
+
+
+                        <!-- CABEÇALHO -->
+
+                        <article class="tool-card">
+
+                            <div class="tool-card-icon">
+                                #
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    ESTRUTURA
+                                </span>
+
+                                <h2>
+                                    Validação de cabeçalho
+                                </h2>
+
+                                <p>
+                                    Reconhece automaticamente
+                                    as colunas da planilha e
+                                    verifica os campos esperados.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        Colunas
+                                    </span>
+
+                                    <span>
+                                        Reconhecimento
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="header"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+
+                        <!-- DADOS -->
+
+                        <article class="tool-card">
+
+                            <div class="tool-card-icon">
+                                %
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    QUALIDADE
+                                </span>
+
+                                <h2>
+                                    Análise de qualidade
+                                </h2>
+
+                                <p>
+                                    Mede o preenchimento de todas
+                                    as colunas, com ênfase nos
+                                    campos do modelo.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        Preenchimento
+                                    </span>
+
+                                    <span>
+                                        Qualidade
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="data"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+
+                        <!-- FORMATO -->
+
+                        <article class="tool-card">
+
+                            <div class="tool-card-icon">
+                                Aa
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    FORMATO
+                                </span>
+
+                                <h2>
+                                    Validação de formato
+                                </h2>
+
+                                <p>
+                                    Verifica se valores estão
+                                    no formato esperado,
+                                    como CPF, e-mail e celular.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        CPF
+                                    </span>
+
+                                    <span>
+                                        E-mail
+                                    </span>
+
+                                    <span>
+                                        Celular
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="format"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+
+                        <!-- DUPLICADOS -->
+
+                        <article class="tool-card">
+
+                            <div class="tool-card-icon">
+                                ⧉
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    CONSISTÊNCIA
+                                </span>
+
+                                <h2>
+                                    Detecção de duplicados
+                                </h2>
+
+                                <p>
+                                    Identifica registros
+                                    duplicados utilizando
+                                    os campos selecionados.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        Duplicidade
+                                    </span>
+
+                                    <span>
+                                        Registros
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="duplicate"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+
+                        <!-- CRUZAMENTO -->
+
+                        <article class="tool-card tool-card-wide">
+
+                            <div class="tool-card-icon">
+                                ⇄
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    COMPARAÇÃO
+                                </span>
+
+                                <h2>
+                                    Cruzamento de planilhas
+                                </h2>
+
+                                <p>
+                                    Cruze duas planilhas por uma
+                                    ou mais chaves e extraia só
+                                    as colunas que você escolher.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        Excel × Excel
+                                    </span>
+
+                                    <span>
+                                        Comparação
+                                    </span>
+
+                                    <span>
+                                        Divergências
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="cross"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     VALIDADOR: CABEÇALHO
+                =================================================== -->
+
+                <section
+                    id="page-validator-header"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                VALIDADORES / ESTRUTURA
+                            </span>
+
+                            <h1>
+                                Validador de Cabeçalho
+                            </h1>
+
+                            <p>
+                                Identifique as colunas da planilha
+                                e compare com o modelo esperado.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    01
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Selecionar arquivo
+                                    </h2>
+
+                                    <p>
+                                        Envie um arquivo .xlsx para análise.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-stack">
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="header-schema-select"
+                                >
+                                    Modelo
+                                </label>
+
+                                <select
+                                    id="header-schema-select"
+                                    class="select"
+                                    data-role="schema-select"
+                                ></select>
+
+                            </div>
+
+                            <div class="validator-upload">
+
+                                <input
+                                    type="file"
+                                    id="header-excel-file"
+                                    accept=".xlsx"
+                                    data-role="excel-file"
+                                >
+
+                                <label
+                                    for="header-excel-file"
+                                    class="validator-upload-label"
+                                >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Informações do arquivo
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="sheet-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    03
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Selecionar aba
+                                    </h2>
+
+                                    <p>
+                                        Escolha a aba que será analisada.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <label class="field-label">
+                            Aba da planilha
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="sheet-select"
+                        >
+                            <option value="">
+                                Selecione uma aba
+                            </option>
+                        </select>
+
+                        <div
+                            class="sheet-info"
+                            data-role="sheet-info"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="detected-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    04
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Cabeçalhos encontrados
+                                    </h2>
+
+                                    <p>
+                                        Colunas identificadas na primeira linha.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="detected-headers"
+                            data-role="detected-headers"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="result-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    05
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Resultado da validação
+                                    </h2>
+
+                                    <p>
+                                        Comparação entre o arquivo e o modelo.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validation-summary"
+                            data-role="result-summary"
+                        ></div>
+
+                        <div
+                            class="validation-fields"
+                            data-role="result-fields"
+                        ></div>
+
+                        <div
+                            class="extra-columns"
+                            data-role="extra-columns"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    LOG
+                                </span>
+
+                                <div>
+                                    <h2>Console</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     VALIDADOR: DADOS
+                =================================================== -->
+
+                <section
+                    id="page-validator-data"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                VALIDADORES / QUALIDADE
+                            </span>
+
+                            <h1>
+                                Validador de Dados
+                            </h1>
+
+                            <p>
+                                Analise preenchimento, vazios e
+                                inconsistências nos campos reconhecidos.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    01
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Selecionar arquivo
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-stack">
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="data-schema-select"
+                                >
+                                    Modelo
+                                </label>
+
+                                <select
+                                    id="data-schema-select"
+                                    class="select"
+                                    data-role="schema-select"
+                                ></select>
+
+                            </div>
+
+                            <div class="validator-upload">
+
+                                <input
+                                    type="file"
+                                    id="data-excel-file"
+                                    accept=".xlsx"
+                                    data-role="excel-file"
+                                >
+
+                                <label
+                                    for="data-excel-file"
+                                    class="validator-upload-label"
+                                >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="sheet-section"
+                        hidden
+                    >
+
+                        <label class="field-label">
+                            Aba da planilha
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="sheet-select"
+                        >
+                            <option value="">
+                                Selecione uma aba
+                            </option>
+                        </select>
+
+                        <div
+                            class="sheet-info"
+                            data-role="sheet-info"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="result-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Qualidade dos dados
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validation-summary"
+                            data-role="result-summary"
+                        ></div>
+
+                        <div
+                            class="validation-fields"
+                            data-role="result-fields"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     VALIDADOR: FORMATO
+                =================================================== -->
+
+                <section
+                    id="page-validator-format"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                VALIDADORES / FORMATO
+                            </span>
+
+                            <h1>
+                                Validador de Formato
+                            </h1>
+
+                            <p>
+                                Verifica CPF, e-mail e celular
+                                nos campos reconhecidos pelo modelo.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <section class="validator-card">
+
+                        <div class="form-stack">
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="format-schema-select"
+                                >
+                                    Modelo
+                                </label>
+
+                                <select
+                                    id="format-schema-select"
+                                    class="select"
+                                    data-role="schema-select"
+                                ></select>
+
+                            </div>
+
+                            <div class="validator-upload">
+
+                                <input
+                                    type="file"
+                                    id="format-excel-file"
+                                    accept=".xlsx"
+                                    data-role="excel-file"
+                                >
+
+                                <label
+                                    for="format-excel-file"
+                                    class="validator-upload-label"
+                                >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="sheet-section"
+                        hidden
+                    >
+
+                        <label class="field-label">
+                            Aba da planilha
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="sheet-select"
+                        >
+                            <option value="">
+                                Selecione uma aba
+                            </option>
+                        </select>
+
+                        <div
+                            class="sheet-info"
+                            data-role="sheet-info"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="result-section"
+                        hidden
+                    >
+
+                        <div
+                            class="validation-summary"
+                            data-role="result-summary"
+                        ></div>
+
+                        <div
+                            class="validation-fields"
+                            data-role="result-fields"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     VALIDADOR: DUPLICADOS
+                =================================================== -->
+
+                <section
+                    id="page-validator-duplicate"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                VALIDADORES / CONSISTÊNCIA
+                            </span>
+
+                            <h1>
+                                Validador de Duplicados
+                            </h1>
+
+                            <p>
+                                Identifique valores repetidos
+                                em uma coluna chave.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-upload">
+
+                            <input
+                                type="file"
+                                id="duplicate-excel-file"
+                                accept=".xlsx"
+                                data-role="excel-file"
+                            >
+
+                            <label
+                                for="duplicate-excel-file"
+                                class="validator-upload-label"
+                            >
+
+                                <span class="validator-upload-icon">
+                                    XLSX
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        Selecionar planilha
+                                    </strong>
+
+                                    <small>
+                                        Apenas arquivos .xlsx
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="sheet-section"
+                        hidden
+                    >
+
+                        <label class="field-label">
+                            Aba da planilha
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="sheet-select"
+                        >
+                            <option value="">
+                                Selecione uma aba
+                            </option>
+                        </select>
+
+                        <div
+                            class="sheet-info"
+                            data-role="sheet-info"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="column-section"
+                        hidden
+                    >
+
+                        <label class="field-label">
+                            Coluna chave
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="column-select"
+                        >
+                            <option value="">
+                                Selecione a coluna chave
+                            </option>
+                        </select>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="result-section"
+                        hidden
+                    >
+
+                        <div
+                            class="validation-summary"
+                            data-role="result-summary"
+                        ></div>
+
+                        <div
+                            class="validation-fields"
+                            data-role="result-fields"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     VALIDADOR: CRUZAMENTO
+                =================================================== -->
+
+                <section
+                    id="page-validator-cross"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                VALIDADORES / COMPARAÇÃO
+                            </span>
+
+                            <h1>
+                                Validador de Cruzamento
+                            </h1>
+
+                            <p>
+                                Compare duas planilhas e encontre
+                                registros divergentes.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            ⇄
+                        </div>
+
+                        <h2>
+                            Em desenvolvimento
+                        </h2>
+
+                        <p>
+                            Esta verificação entra na próxima etapa:
+                            dois arquivos, colunas equivalentes e
+                            relatório de divergências.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     PÁGINA: MODELOS
+                =================================================== -->
+
+                <section
+                    id="page-models"
+                    class="page"
+                    hidden
+                >
+
+                    <header class="page-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                UTILS / EXCEL
+                            </span>
+
+                            <h1>
+                                Modelos
+                            </h1>
+
+                            <p>
+                                Planilhas prontas para
+                                utilização.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+                    <div class="models-grid">
+
+
+                        <article class="model-card">
+
+                            <div class="model-icon">
+                                XLSX
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    CADASTRO
+                                </span>
+
+                                <h2>
+                                    Cadastro
+                                </h2>
+
+                                <p>
+                                    Modelo padrão para
+                                    cadastro de pessoas.
+                                </p>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                            >
+
+                                Baixar modelo
+
+                            </button>
+
+                        </article>
+
+
+
+                        <article class="model-card">
+
+                            <div class="model-icon">
+                                XLSX
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    INDICADORES
+                                </span>
+
+                                <h2>
+                                    Indicadores
+                                </h2>
+
+                                <p>
+                                    Modelo para registro
+                                    de indicadores.
+                                </p>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                            >
+
+                                Baixar modelo
+
+                            </button>
+
+                        </article>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     PÁGINA: LEITOR
+                =================================================== -->
+
+                <section
+                    id="page-reader"
+                    class="page"
+                    hidden
+                >
+
+                    <header class="page-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                UTILS / EXCEL
+                            </span>
+
+                            <h1>
+                                Leitor
+                            </h1>
+
+                            <p>
+                                Leitura e exploração
+                                de arquivos Excel.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            ◫
+                        </div>
+
+                        <h2>
+                            Leitor Excel
+                        </h2>
+
+                        <p>
+                            Ferramenta em desenvolvimento.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     PÁGINA: SOBRE
+                =================================================== -->
+
+                <section
+                    id="page-about"
+                    class="page"
+                    hidden
+                >
+
+                    <header class="page-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                UTILS / EXCEL
+                            </span>
+
+                            <h1>
+                                Sobre
+                            </h1>
+
+                            <p>
+                                Informações sobre
+                                o módulo Excel.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+                    <div class="about-card">
+
+                        <h2>
+                            Utils Excel
+                        </h2>
+
+                        <p>
+                            Conjunto de ferramentas
+                            para leitura, validação,
+                            tratamento e processamento
+                            de arquivos Excel.
+                        </p>
+
+
+                        <div class="about-info">
+
+                            <div>
+
+                                <span>
+                                    Execução
+                                </span>
+
+                                <strong>
+                                    Local
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Versão
+                                </span>
+
+                                <strong>
+                                    1.0.0
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Formato
+                                </span>
+
+                                <strong>
+                                    .xlsx
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- ==================================================
+         SCRIPTS
+    =================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js">
+    </script>
+
+
+    <script
+        src="./js/core/excel-reader.js">
+    </script>
+
+    <script
+        src="./js/core/excel-writer.js">
+    </script>
+
+    <script
+        src="./js/core/excel-utils.js">
+    </script>
+
+
+    <script src="./js/schemas/schema-registry.js"></script>
+    <script src="./js/schemas/cadastro-schema.js"></script>
+
+    <script src="./js/validators/header-validator.js"></script>
+    <script src="./js/validators/data-validator.js"></script>
+
+    <script src="./js/ui/dom.js"></script>
+    <script src="./js/ui/validator-registry.js"></script>
+    <script src="./js/ui/sheet-workspace.js"></script>
+    <script src="./js/ui/header-validator-ui.js"></script>
+    <script src="./js/ui/data-validator-ui.js"></script>
+    <script src="./js/ui/format-validator-ui.js"></script>
+    <script src="./js/ui/duplicate-validator-ui.js"></script>
+    <script src="./js/ui/cross-validator-ui.js"></script>
+
+    <script src="./js/app.js"></script>
+
+
+</body>
+
+</html>

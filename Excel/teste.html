@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Excel Utils — Teste</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        input[type="file"] {
+            margin: 15px 0;
+        }
+
+        select {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            background: #f3f4f6;
+            margin-top: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            display: block;
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .headers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header {
+            padding: 8px 12px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .summary-item {
+            padding: 16px;
+            border-radius: 8px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        .summary-item strong {
+            display: block;
+            font-size: 24px;
+            margin-top: 5px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .field-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .field-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .valid {
+            color: #15803d;
+        }
+
+        .warning {
+            color: #b45309;
+        }
+
+        .invalid {
+            color: #dc2626;
+        }
+
+        .missing {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .progress {
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2563eb;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<main class="container">
+
+    <h1>Excel Utils</h1>
+
+    <p class="subtitle">
+        Laboratório de leitura e validação de planilhas.
+    </p>
+
+
+    <!-- ================================================
+         UPLOAD
+    ================================================= -->
+
+    <section class="card">
+
+        <h2>1. Selecionar Excel</h2>
+
+        <input
+            type="file"
+            id="excelFile"
+            accept=".xlsx"
+        >
+
+        <div
+            id="fileStatus"
+            class="status"
+        >
+            Nenhum arquivo selecionado.
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         INFORMAÇÕES
+    ================================================= -->
+
+    <section
+        id="fileInfoSection"
+        class="card"
+        hidden
+    >
+
+        <h2>2. Arquivo</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Nome
+                </span>
+
+                <strong id="fileName">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Tamanho
+                </span>
+
+                <strong id="fileSize">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Quantidade de abas
+                </span>
+
+                <strong id="sheetCount">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         ABAS
+    ================================================= -->
+
+    <section
+        id="sheetSection"
+        class="card"
+        hidden
+    >
+
+        <h2>3. Aba</h2>
+
+        <select id="sheetSelect">
+
+            <option value="">
+                Selecione uma aba
+            </option>
+
+        </select>
+
+        <div
+            id="sheetInfo"
+            class="status"
+        ></div>
+
+    </section>
+
+
+    <!-- ================================================
+         CABEÇALHO
+    ================================================= -->
+
+    <section
+        id="headerSection"
+        class="card"
+        hidden
+    >
+
+        <h2>4. Cabeçalhos encontrados</h2>
+
+        <div
+            id="headers"
+            class="headers"
+        ></div>
+
+    </section>
+
+
+    <!-- ================================================
+         VALIDAÇÃO DO CABEÇALHO
+    ================================================= -->
+
+    <section
+        id="headerValidationSection"
+        class="card"
+        hidden
+    >
+
+        <h2>5. Validação do cabeçalho</h2>
+
+        <div
+            id="headerSummary"
+            class="summary"
+        ></div>
+
+        <div
+            id="headerFields"
+        ></div>
+
+        <div
+            id="extraColumns"
+        ></div>
+
+    </section>
+
+
+    <!-- ================================================
+         VALIDAÇÃO DOS DADOS
+    ================================================= -->
+
+    <section
+        id="dataValidationSection"
+        class="card"
+        hidden
+    >
+
+        <h2>6. Qualidade dos dados</h2>
+
+        <div
+            id="dataSummary"
+            class="summary"
+        ></div>
+
+        <br>
+
+        <div
+            id="dataFields"
+        ></div>
+
+    </section>
+
+
+    <!-- ================================================
+         PRÉVIA
+    ================================================= -->
+
+    <section
+        id="dataSection"
+        class="card"
+        hidden
+    >
+
+        <h2>7. Prévia dos dados</h2>
+
+        <div
+            id="dataPreview"
+            class="table-wrapper"
+        ></div>
+
+    </section>
+
+
+    <!-- ================================================
+         EXPORTAÇÃO
+    ================================================= -->
+
+    <section
+        id="exportSection"
+        class="card"
+        hidden
+    >
+
+        <h2>8. Exportação</h2>
+
+        <button id="exportButton">
+            Exportar aba
+        </button>
+
+    </section>
+
+
+    <!-- ================================================
+         LOG
+    ================================================= -->
+
+    <section class="card">
+
+        <h2>Console</h2>
+
+        <pre id="log"></pre>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     SHEETJS
+===================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js">
+</script>
+
+
+<!-- =====================================================
+     CORE
+===================================================== -->
+
+<script src="./js/core/excel-reader.js"></script>
+
+<script src="./js/core/excel-writer.js"></script>
+
+<script src="./js/core/excel-utils.js"></script>
+
+
+<!-- =====================================================
+     SCHEMA
+===================================================== -->
+
+<script src="./js/schemas/cadastro-schema.js"></script>
+
+
+<!-- =====================================================
+     VALIDADORES
+===================================================== -->
+
+<script src="./js/validators/header-validator.js"></script>
+
+<script src="./js/validators/data-validator.js"></script>
+
+
+<!-- =====================================================
+     APLICAÇÃO
+===================================================== -->
+
+<script>
+
+let currentExcel = null;
+let currentSheet = null;
+let currentHeaderResult = null;
+let currentDataResult = null;
+
+
+/* ========================================================
+   ELEMENTOS
+======================================================== */
+
+const fileInput =
+    document.getElementById('excelFile');
+
+const fileStatus =
+    document.getElementById('fileStatus');
+
+const fileInfoSection =
+    document.getElementById('fileInfoSection');
+
+const fileName =
+    document.getElementById('fileName');
+
+const fileSize =
+    document.getElementById('fileSize');
+
+const sheetCount =
+    document.getElementById('sheetCount');
+
+const sheetSection =
+    document.getElementById('sheetSection');
+
+const sheetSelect =
+    document.getElementById('sheetSelect');
+
+const sheetInfo =
+    document.getElementById('sheetInfo');
+
+const headerSection =
+    document.getElementById('headerSection');
+
+const headers =
+    document.getElementById('headers');
+
+const headerValidationSection =
+    document.getElementById(
+        'headerValidationSection'
+    );
+
+const headerSummary =
+    document.getElementById(
+        'headerSummary'
+    );
+
+const headerFields =
+    document.getElementById(
+        'headerFields'
+    );
+
+const extraColumns =
+    document.getElementById(
+        'extraColumns'
+    );
+
+const dataValidationSection =
+    document.getElementById(
+        'dataValidationSection'
+    );
+
+const dataSummary =
+    document.getElementById(
+        'dataSummary'
+    );
+
+const dataFields =
+    document.getElementById(
+        'dataFields'
+    );
+
+const dataSection =
+    document.getElementById(
+        'dataSection'
+    );
+
+const dataPreview =
+    document.getElementById(
+        'dataPreview'
+    );
+
+const exportSection =
+    document.getElementById(
+        'exportSection'
+    );
+
+const exportButton =
+    document.getElementById(
+        'exportButton'
+    );
+
+const logElement =
+    document.getElementById(
+        'log'
+    );
+
+
+/* ========================================================
+   LOG
+======================================================== */
+
+function log(message) {
+
+    const time =
+        new Date()
+            .toLocaleTimeString();
+
+    logElement.textContent +=
+        `[${time}] ${message}\n`;
+
+}
+
+
+/* ========================================================
+   FORMATAÇÃO
+======================================================== */
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) {
+
+        return `${bytes} B`;
+
+    }
+
+    if (bytes < 1024 * 1024) {
+
+        return `${(
+            bytes / 1024
+        ).toFixed(2)} KB`;
+
+    }
+
+    return `${(
+        bytes / 1024 / 1024
+    ).toFixed(2)} MB`;
+
+}
+
+
+/* ========================================================
+   ESCAPE HTML
+======================================================== */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return '';
+
+    }
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+/* ========================================================
+   LIMPAR
+======================================================== */
+
+function clearResults() {
+
+    fileInfoSection.hidden = true;
+    sheetSection.hidden = true;
+    headerSection.hidden = true;
+    headerValidationSection.hidden = true;
+    dataValidationSection.hidden = true;
+    dataSection.hidden = true;
+    exportSection.hidden = true;
+
+    sheetSelect.innerHTML = `
+        <option value="">
+            Selecione uma aba
+        </option>
+    `;
+
+    sheetInfo.innerHTML = '';
+
+    headers.innerHTML = '';
+
+    headerSummary.innerHTML = '';
+
+    headerFields.innerHTML = '';
+
+    extraColumns.innerHTML = '';
+
+    dataSummary.innerHTML = '';
+
+    dataFields.innerHTML = '';
+
+    dataPreview.innerHTML = '';
+
+    logElement.textContent = '';
+
+    currentExcel = null;
+    currentSheet = null;
+    currentHeaderResult = null;
+    currentDataResult = null;
+
+}
+
+
+/* ========================================================
+   UPLOAD
+======================================================== */
+
+fileInput.addEventListener(
+    'change',
+    async event => {
+
+        clearResults();
+
+        const file =
+            event.target.files[0];
+
+
+        if (!file) {
+
+            fileStatus.textContent =
+                'Nenhum arquivo selecionado.';
+
+            return;
+
+        }
+
+
+        fileStatus.textContent =
+            `Lendo ${file.name}...`;
+
+
+        try {
+
+            log(
+                `Lendo arquivo: ${file.name}`
+            );
+
+
+            currentExcel =
+                await ExcelReader.read(file);
+
+
+            fileName.textContent =
+                file.name;
+
+            fileSize.textContent =
+                formatFileSize(
+                    file.size
+                );
+
+            sheetCount.textContent =
+                currentExcel.sheetCount;
+
+
+            fileInfoSection.hidden = false;
+
+
+            currentExcel.sheetNames.forEach(
+                name => {
+
+                    const option =
+                        document.createElement(
+                            'option'
+                        );
+
+                    option.value = name;
+
+                    option.textContent = name;
+
+                    sheetSelect.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            sheetSection.hidden = false;
+
+
+            fileStatus.textContent =
+                'Arquivo carregado com sucesso.';
+
+
+            log(
+                `${currentExcel.sheetCount} aba(s) encontrada(s).`
+            );
+
+
+        } catch (error) {
+
+            fileStatus.textContent =
+                `Erro: ${error.message}`;
+
+            log(
+                `ERRO: ${error.message}`
+            );
+
+            console.error(error);
+
+        }
+
+    }
+);
+
+
+/* ========================================================
+   SELEÇÃO DA ABA
+======================================================== */
+
+sheetSelect.addEventListener(
+    'change',
+    () => {
+
+        const sheetName =
+            sheetSelect.value;
+
+
+        if (!sheetName) {
+
+            return;
+
+        }
+
+
+        try {
+
+            currentSheet =
+                ExcelReader.getSheet(
+                    currentExcel,
+                    sheetName
+                );
+
+
+            if (!currentSheet) {
+
+                throw new Error(
+                    'Aba não encontrada.'
+                );
+
+            }
+
+
+            log(
+                `Aba selecionada: ${sheetName}`
+            );
+
+
+            renderSheetInfo();
+
+            renderHeaders();
+
+            validateHeader();
+
+            validateData();
+
+            renderPreview();
+
+
+            dataSection.hidden = false;
+            exportSection.hidden = false;
+
+        } catch (error) {
+
+            log(
+                `ERRO: ${error.message}`
+            );
+
+            console.error(error);
+
+        }
+
+    }
+);
+
+
+/* ========================================================
+   INFORMAÇÕES DA ABA
+======================================================== */
+
+function renderSheetInfo() {
+
+    sheetInfo.innerHTML = `
+        <strong>${escapeHtml(
+            currentSheet.name
+        )}</strong>
+
+        <br>
+
+        Linhas:
+        ${currentSheet.rowCount}
+
+        |
+
+        Colunas:
+        ${currentSheet.columnCount}
+    `;
+
+}
+
+
+/* ========================================================
+   CABEÇALHOS
+======================================================== */
+
+function renderHeaders() {
+
+    headers.innerHTML = '';
+
+
+    currentSheet.headers.forEach(
+        (header, index) => {
+
+            const element =
+                document.createElement(
+                    'div'
+                );
+
+            element.className =
+                'header';
+
+
+            element.innerHTML = `
+                <strong>
+                    ${index + 1}
+                </strong>
+                -
+                ${escapeHtml(
+                    header || '(vazio)'
+                )}
+            `;
+
+
+            headers.appendChild(
+                element
+            );
+
+        }
+    );
+
+
+    headerSection.hidden = false;
+
+}
+
+
+/* ========================================================
+   HEADER VALIDATOR
+======================================================== */
+
+function validateHeader() {
+
+    currentHeaderResult =
+        HeaderValidator.validate(
+            currentSheet,
+            CadastroSchema
+        );
+
+
+    headerValidationSection.hidden =
+        false;
+
+
+    renderHeaderSummary();
+
+    renderHeaderFields();
+
+    renderExtraColumns();
+
+
+    log(
+        `Cabeçalho: ${
+            currentHeaderResult.valid
+                ? 'VÁLIDO'
+                : 'INVÁLIDO'
+        }`
+    );
+
+}
+
+
+/* ========================================================
+   RESUMO DO HEADER
+======================================================== */
+
+function renderHeaderSummary() {
+
+    const summary =
+        currentHeaderResult.summary;
+
+
+    headerSummary.innerHTML = `
+
+        <div class="summary-item">
+
+            Esperados
+
+            <strong>
+                ${summary.expected}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Encontrados
+
+            <strong>
+                ${summary.found}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Ausentes
+
+            <strong>
+                ${summary.missing}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Obrigatórios ausentes
+
+            <strong class="${
+                summary.requiredMissing > 0
+                    ? 'invalid'
+                    : 'valid'
+            }">
+
+                ${summary.requiredMissing}
+
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Extras
+
+            <strong>
+                ${summary.extra}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Duplicados
+
+            <strong>
+                ${summary.duplicates}
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================================
+   CAMPOS DO HEADER
+======================================================== */
+
+function renderHeaderFields() {
+
+    headerFields.innerHTML =
+        '<h3>Campos reconhecidos</h3>';
+
+
+    Object.values(
+        currentHeaderResult.fields
+    ).forEach(
+        field => {
+
+            const element =
+                document.createElement(
+                    'div'
+                );
+
+
+            element.className =
+                'field';
+
+
+            if (
+                field.status === 'missing'
+            ) {
+
+                element.classList.add(
+                    'missing'
+                );
+
+            }
+
+
+            if (
+                field.status === 'found'
+            ) {
+
+                element.innerHTML = `
+
+                    <div class="field-title valid">
+                        ✓ ${escapeHtml(
+                            field.label
+                        )}
+                    </div>
+
+                    <div class="field-info">
+
+                        Coluna encontrada:
+                        <strong>
+                            ${escapeHtml(
+                                field.originalHeader
+                            )}
+                        </strong>
+
+                        <br>
+
+                        Reconhecida através de:
+                        ${escapeHtml(
+                            field.matchedBy
+                        )}
+
+                    </div>
+
+                `;
+
+            } else {
+
+                element.innerHTML = `
+
+                    <div class="field-title ${
+                        field.required
+                            ? 'invalid'
+                            : 'warning'
+                    }">
+
+                        ${field.required
+                            ? '✗'
+                            : '⚠'}
+
+                        ${escapeHtml(
+                            field.label
+                        )}
+
+                    </div>
+
+                    <div class="field-info">
+
+                        Coluna não encontrada.
+
+                        ${
+                            field.required
+                                ? '<br><strong>Campo obrigatório.</strong>'
+                                : '<br>Campo opcional.'
+                        }
+
+                    </div>
+
+                `;
+
+            }
+
+
+            headerFields.appendChild(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+/* ========================================================
+   COLUNAS EXTRAS
+======================================================== */
+
+function renderExtraColumns() {
+
+    const columns =
+        currentHeaderResult.extraColumns;
+
+
+    if (!columns.length) {
+
+        extraColumns.innerHTML = `
+            <p class="valid">
+                ✓ Nenhuma coluna extra encontrada.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    extraColumns.innerHTML = `
+        <h3>Colunas extras</h3>
+    `;
+
+
+    columns.forEach(
+        column => {
+
+            extraColumns.innerHTML += `
+                <div class="field">
+
+                    <div class="field-title warning">
+
+                        ⚠ ${escapeHtml(
+                            column.header
+                        )}
+
+                    </div>
+
+                    <div class="field-info">
+
+                        Índice:
+                        ${column.index + 1}
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+    );
+
+}
+
+
+/* ========================================================
+   DATA VALIDATOR
+======================================================== */
+
+function validateData() {
+
+    currentDataResult =
+        DataValidator.validate(
+            currentSheet,
+            currentHeaderResult
+        );
+
+
+    dataValidationSection.hidden =
+        false;
+
+
+    renderDataSummary();
+
+    renderDataFields();
+
+
+    log(
+        `Registros analisados: ${
+            currentDataResult.rows.total
+        }`
+    );
+
+}
+
+
+/* ========================================================
+   RESUMO DOS DADOS
+======================================================== */
+
+function renderDataSummary() {
+
+    const summary =
+        currentDataResult.summary;
+
+
+    dataSummary.innerHTML = `
+
+        <div class="summary-item">
+
+            Registros
+
+            <strong>
+                ${currentDataResult.rows.total}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Campos analisados
+
+            <strong>
+                ${summary.fields}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Campos com dados
+
+            <strong>
+                ${summary.fieldsWithData}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            Campos com erros
+
+            <strong class="${
+                summary.fieldsWithInvalidData > 0
+                    ? 'invalid'
+                    : 'valid'
+            }">
+
+                ${summary.fieldsWithInvalidData}
+
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================================
+   DADOS POR CAMPO
+======================================================== */
+
+function renderDataFields() {
+
+    dataFields.innerHTML = '';
+
+
+    Object.values(
+        currentDataResult.fields
+    ).forEach(
+        field => {
+
+            const element =
+                document.createElement(
+                    'div'
+                );
+
+
+            element.className =
+                'field';
+
+
+            const statusClass =
+                field.invalid > 0
+                    ? 'invalid'
+                    : field.empty > 0
+                        ? 'warning'
+                        : 'valid';
+
+
+            const statusIcon =
+                field.invalid > 0
+                    ? '✗'
+                    : field.empty > 0
+                        ? '⚠'
+                        : '✓';
+
+
+            element.innerHTML = `
+
+                <div class="field-title ${statusClass}">
+
+                    ${statusIcon}
+
+                    ${escapeHtml(
+                        field.id
+                    )}
+
+                </div>
+
+
+                <div class="field-info">
+
+                    Coluna:
+                    <strong>
+                        ${escapeHtml(
+                            field.column || '-'
+                        )}
+                    </strong>
+
+                    <br><br>
+
+                    Preenchidos:
+                    <strong>
+                        ${field.filled}
+                    </strong>
+
+                    /
+
+                    ${field.total}
+
+                    <br>
+
+                    Vazios:
+                    <strong>
+                        ${field.empty}
+                    </strong>
+
+                    <br>
+
+                    Inválidos:
+                    <strong>
+                        ${field.invalid}
+                    </strong>
+
+                    <br>
+
+                    Preenchimento:
+                    <strong>
+                        ${field.fillRate}%
+                    </strong>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width: ${
+                            field.fillRate
+                        }%"
+                    ></div>
+
+                </div>
+
+            `;
+
+
+            dataFields.appendChild(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+/* ========================================================
+   PRÉVIA
+======================================================== */
+
+function renderPreview() {
+
+    const rows =
+        currentSheet.rows.slice(
+            0,
+            10
+        );
+
+
+    const sheetHeaders =
+        currentSheet.headers;
+
+
+    if (!rows.length) {
+
+        dataPreview.innerHTML =
+            '<p>Nenhum registro encontrado.</p>';
+
+        return;
+
+    }
+
+
+    let html = `
+        <table>
+
+            <thead>
+
+                <tr>
+    `;
+
+
+    sheetHeaders.forEach(
+        header => {
+
+            html += `
+                <th>
+                    ${escapeHtml(header)}
+                </th>
+            `;
+
+        }
+    );
+
+
+    html += `
+                </tr>
+
+            </thead>
+
+            <tbody>
+    `;
+
+
+    rows.forEach(
+        row => {
+
+            html += '<tr>';
+
+
+            sheetHeaders.forEach(
+                header => {
+
+                    html += `
+                        <td>
+                            ${escapeHtml(
+                                row[header] ?? ''
+                            )}
+                        </td>
+                    `;
+
+                }
+            );
+
+
+            html += '</tr>';
+
+        }
+    );
+
+
+    html += `
+            </tbody>
+
+        </table>
+    `;
+
+
+    dataPreview.innerHTML =
+        html;
+
+}
+
+
+/* ========================================================
+   EXPORTAR
+======================================================== */
+
+exportButton.addEventListener(
+    'click',
+    () => {
+
+        try {
+
+            const worksheet =
+                ExcelWriter.createSheetFromJson(
+                    currentSheet.rows
+                );
+
+
+            ExcelWriter.exportSheet(
+                worksheet,
+                currentSheet.name,
+                `teste_${currentSheet.name}.xlsx`
+            );
+
+
+            log(
+                'Arquivo exportado com sucesso.'
+            );
+
+        } catch (error) {
+
+            log(
+                `Erro ao exportar: ${error.message}`
+            );
+
+            console.error(error);
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
