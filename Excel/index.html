@@ -143,6 +143,23 @@
                 <button
                     type="button"
                     class="nav-item"
+                    data-page="docs"
+                >
+
+                    <span class="nav-icon">
+                        ?
+                    </span>
+
+                    <span>
+                        Documentação
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-item"
                     data-page="about"
                 >
 
@@ -560,6 +577,69 @@
                                 type="button"
                                 class="tool-card-action"
                                 data-validator="cross"
+                            >
+
+                                Abrir
+
+                                <span>
+                                    →
+                                </span>
+
+                            </button>
+
+                        </article>
+
+
+
+                        <!-- EXCEL → CSV -->
+
+                        <article class="tool-card">
+
+                            <div class="tool-card-icon">
+                                ⇢
+                            </div>
+
+
+                            <div class="tool-card-content">
+
+                                <span class="tool-card-category">
+                                    CONVERSÃO
+                                </span>
+
+                                <h2>
+                                    Excel → CSV
+                                </h2>
+
+                                <p>
+                                    Converta uma aba para CSV
+                                    concatenando valores ou quebrando
+                                    em colunas dinâmicas.
+                                </p>
+
+
+                                <div class="tool-tags">
+
+                                    <span>
+                                        CSV
+                                    </span>
+
+                                    <span>
+                                        Aliases
+                                    </span>
+
+                                    <span>
+                                        UTF-8 BOM
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tool-card-action"
+                                data-validator="csv"
                             >
 
                                 Abrir
@@ -1830,6 +1910,647 @@
 
                 </section>
 
+                <!-- ==================================================
+                     PÁGINA: DOCUMENTAÇÃO
+                =================================================== -->
+
+                <section
+                    id="page-docs"
+                    class="page"
+                    hidden
+                >
+
+                    <header class="page-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                UTILS / EXCEL
+                            </span>
+
+                            <h1>
+                                Documentação
+                            </h1>
+
+                            <p>
+                                Guia completo do módulo Excel:
+                                o que cada ferramenta faz, como usar
+                                e boas práticas para obter resultados
+                                confiáveis.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+                    <article class="doc-card doc-card-wide" id="doc-overview">
+
+                        <span class="doc-category">
+                            VISÃO GERAL
+                        </span>
+
+                        <h2>
+                            O que é o Utils Excel
+                        </h2>
+
+                        <p>
+                            O Utils Excel é um conjunto de ferramentas para
+                            analisar, validar, cruzar e converter planilhas
+                            <strong>.xlsx</strong> direto no navegador. Todo o
+                            processamento acontece localmente, na sua máquina:
+                            nenhum dado é enviado para servidores e nada fica
+                            armazenado — ao recarregar a página, tudo é limpo.
+                        </p>
+
+                        <div class="doc-facts">
+
+                            <div>
+                                <span>
+                                    Execução
+                                </span>
+                                <strong>
+                                    100% local (navegador)
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Entrada
+                                </span>
+                                <strong>
+                                    .xlsx com cabeçalho na 1ª linha
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Exportações
+                                </span>
+                                <strong>
+                                    .xlsx e .csv (UTF-8 BOM)
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Privacidade
+                                </span>
+                                <strong>
+                                    Nenhum dado sai do computador
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <nav class="docs-index" aria-label="Índice da documentação">
+
+                        <a href="#doc-overview">
+                            Visão geral
+                        </a>
+
+                        <a href="#doc-header-validator">
+                            Cabeçalho
+                        </a>
+
+                        <a href="#doc-quality-validator">
+                            Qualidade
+                        </a>
+
+                        <a href="#doc-format-validator">
+                            Formato
+                        </a>
+
+                        <a href="#doc-duplicate-validator">
+                            Duplicados
+                        </a>
+
+                        <a href="#doc-cross-validator">
+                            Cruzamento
+                        </a>
+
+                        <a href="#doc-csv-converter">
+                            Excel → CSV
+                        </a>
+
+                        <a href="#doc-aliases">
+                            Aliases
+                        </a>
+
+                        <a href="#doc-faq">
+                            Problemas comuns
+                        </a>
+
+                    </nav>
+
+
+                    <div class="doc-grid">
+
+
+                        <article class="doc-card" id="doc-header-validator">
+
+                            <span class="doc-category">
+                                VALIDAÇÕES · ESTRUTURA
+                            </span>
+
+                            <h2>
+                                Validação de cabeçalho
+                            </h2>
+
+                            <p>
+                                Reconhece automaticamente as colunas da
+                                planilha e compara com o modelo esperado.
+                                A comparação ignora maiúsculas/minúsculas,
+                                acentos e espaços extras: por isso
+                                <em>Nome Completo</em> e
+                                <em>nome_completo</em> são tratados como
+                                o mesmo campo.
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Em <strong>Modelo</strong>, escolha o
+                                    schema de referência (ex.: Cadastro).
+                                </li>
+
+                                <li>
+                                    Selecione o arquivo .xlsx
+                                    e aguarde a leitura.
+                                </li>
+
+                                <li>
+                                    Escolha a aba que contém os dados.
+                                </li>
+
+                                <li>
+                                    Confira os cabeçalhos detectados e o
+                                    resultado: campos encontrados, ausentes
+                                    e colunas extras fora do modelo.
+                                </li>
+
+                            </ol>
+
+                            <div class="doc-tip">
+                                <strong>Dica:</strong>
+                                campos ausentes indicam colunas que faltam
+                                antes do processamento; colunas extras não
+                                impedem a validação, mas ficam sinalizadas.
+                            </div>
+
+                        </article>
+
+
+                        <article class="doc-card" id="doc-quality-validator">
+
+                            <span class="doc-category">
+                                VALIDAÇÕES · QUALIDADE
+                            </span>
+
+                            <h2>
+                                Análise de qualidade dos dados
+                            </h2>
+
+                            <p>
+                                Mede o preenchimento de todas as colunas da
+                                aba selecionada, com destaque para os campos
+                                do modelo. É a forma rápida de saber se a
+                                planilha está pronta para uso ou precisa de
+                                tratamento antes das próximas etapas.
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Selecione o arquivo .xlsx
+                                    e a aba desejada.
+                                </li>
+
+                                <li>
+                                    Veja o resumo geral e o preenchimento
+                                    coluna a coluna.
+                                </li>
+
+                                <li>
+                                    Priorize corrigir as colunas obrigatórias
+                                    com maior percentual de vazios.
+                                </li>
+
+                            </ol>
+
+                            <div class="doc-tip">
+                                <strong>Dica:</strong>
+                                células apenas com espaços também contam
+                                como vazias na análise.
+                            </div>
+
+                        </article>
+
+
+                        <article class="doc-card" id="doc-format-validator">
+
+                            <span class="doc-category">
+                                VALIDAÇÕES · FORMATO
+                            </span>
+
+                            <h2>
+                                Validação de formato
+                            </h2>
+
+                            <p>
+                                Verifica se os valores estão no formato
+                                esperado nos campos reconhecidos pelo
+                                modelo: CPF com 11 dígitos válidos,
+                                e-mail bem formado e celular com código
+                                de área. Ideal para rodar antes do
+                                cruzamento, evitando que diferenças de
+                                digitação quebrem as correspondências.
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Escolha o modelo e selecione o
+                                    arquivo .xlsx.
+                                </li>
+
+                                <li>
+                                    Selecione a aba a ser analisada.
+                                </li>
+
+                                <li>
+                                    Revise a lista de registros com formato
+                                    inválido e corrija-os na origem.
+                                </li>
+
+                            </ol>
+
+                        </article>
+
+
+                        <article class="doc-card" id="doc-duplicate-validator">
+
+                            <span class="doc-category">
+                                VALIDAÇÕES · CONSISTÊNCIA
+                            </span>
+
+                            <h2>
+                                Detecção de duplicados
+                            </h2>
+
+                            <p>
+                                Identifica valores repetidos em uma coluna
+                                chave escolhida por você (ex.: CPF, e-mail,
+                                código). A comparação é normalizada — ignora
+                                maiúsculas/minúsculas, acentos e espaços —
+                                então <em>João Silva</em> e
+                                <em>joão  silva</em> contam como iguais.
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Selecione o arquivo .xlsx
+                                    e a aba desejada.
+                                </li>
+
+                                <li>
+                                    Escolha a coluna-chave da análise.
+                                </li>
+
+                                <li>
+                                    Veja cada valor repetido e as linhas
+                                    onde ele aparece (numeração igual à
+                                    do Excel).
+                                </li>
+
+                            </ol>
+
+                        </article>
+
+
+                        <article
+                            class="doc-card doc-card-wide"
+                            id="doc-cross-validator"
+                        >
+
+                            <span class="doc-category">
+                                COMPARAÇÃO
+                            </span>
+
+                            <h2>
+                                Cruzamento de planilhas
+                            </h2>
+
+                            <p>
+                                Compara duas planilhas por uma ou mais chaves
+                                equivalentes (ex.: CPF ↔ Documento) e mostra
+                                o que existe nas duas, só na planilha 1 e só
+                                na planilha 2. A extração de colunas é
+                                independente das chaves: você escolhe quais
+                                colunas de cada lado entram no arquivo final.
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Carregue a <strong>Planilha 1</strong> e a
+                                    <strong>Planilha 2</strong>, escolhendo a
+                                    aba de cada uma.
+                                </li>
+
+                                <li>
+                                    As chaves são sugeridas automaticamente
+                                    (até 3 pares equivalentes). Ajuste,
+                                    adicione ou remova pares conforme
+                                    necessário.
+                                </li>
+
+                                <li>
+                                    Clique em <strong>Cruzar planilhas</strong>:
+                                    o resumo mostra registros nas duas, só
+                                    na 1 e só na 2, com prévia das
+                                    correspondências.
+                                </li>
+
+                                <li>
+                                    Em <strong>Extrair planilha</strong>,
+                                    escolha o conjunto (nas duas / só 1 /
+                                    só 2), marque as colunas de cada lado e
+                                    exporte um .xlsx com o resultado.
+                                </li>
+
+                                <li>
+                                    Opcionalmente, gere a
+                                    <strong>planilha consolidada</strong>:
+                                    todos os registros das duas planilhas em
+                                    uma tabela única, indicando a origem de
+                                    cada informação e possíveis duplicidades.
+                                </li>
+
+                            </ol>
+
+                            <div class="doc-tip">
+                                <strong>Dica:</strong>
+                                as chaves não precisam ter o mesmo nome —
+                                basta que os valores sejam equivalentes.
+                                Registros com chave vazia ficam no conjunto
+                                "só na planilha" de origem.
+                            </div>
+
+                        </article>
+
+
+                        <article
+                            class="doc-card doc-card-wide"
+                            id="doc-csv-converter"
+                        >
+
+                            <span class="doc-category">
+                                CONVERSÃO · CSV
+                            </span>
+
+                            <h2>
+                                Conversão Excel → CSV
+                            </h2>
+
+                            <p>
+                                Converte uma aba da planilha para CSV
+                                consolidando registros repetidos da coluna
+                                principal. Dois formatos de saída:
+                                <strong>Concatenado</strong> (vários valores
+                                na mesma célula, unidos por um separador
+                                interno) ou <strong>Quebra de colunas</strong>
+                                (uma coluna numerada por valor:
+                                <em>Telefone 1</em>, <em>Telefone 2</em>…).
+                            </p>
+
+                            <ol class="doc-steps">
+
+                                <li>
+                                    Selecione o arquivo .xlsx
+                                    e a aba desejada.
+                                </li>
+
+                                <li>
+                                    Confira os cabeçalhos identificados —
+                                    colunas com alias conhecido recebem um
+                                    rótulo de categoria.
+                                </li>
+
+                                <li>
+                                    Escolha a <strong>coluna principal</strong>
+                                    (mãe/alvo): ela é validada na hora
+                                    (vazios, duplicados e categoria).
+                                </li>
+
+                                <li>
+                                    Marque as colunas relacionadas — as
+                                    sugestões da mesma categoria da principal
+                                    já vêm selecionadas.
+                                </li>
+
+                                <li>
+                                    Defina o formato (concatenado ou quebra),
+                                    os separadores e se duplicados devem ser
+                                    mantidos ou reduzidos a um.
+                                </li>
+
+                                <li>
+                                    Gere a <strong>prévia</strong>, confira
+                                    e clique em
+                                    <strong>Exportar CSV</strong>.
+                                </li>
+
+                            </ol>
+
+                            <div class="doc-tip">
+                                <strong>Dica:</strong>
+                                o CSV sai em UTF-8 com BOM e escape conforme
+                                RFC 4180 — abre direto no Excel preservando
+                                acentos, mesmo com vírgulas e quebras de
+                                linha dentro das células.
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+
+                    <article class="doc-card" id="doc-aliases">
+
+                        <span class="doc-category">
+                            RECONHECIMENTO
+                        </span>
+
+                        <h2>
+                            Categorias reconhecidas por alias
+                        </h2>
+
+                        <p>
+                            A camada de aliases identifica colunas
+                            semanticamente equivalentes mesmo com nomes
+                            diferentes. Ela alimenta as sugestões do
+                            cruzamento, os rótulos da conversão CSV e a
+                            escolha da coluna principal.
+                        </p>
+
+                        <div class="doc-table-wrap">
+
+                            <table class="doc-table">
+
+                                <thead>
+
+                                    <tr>
+                                        <th>
+                                            Categoria
+                                        </th>
+
+                                        <th>
+                                            Exemplos de nomes reconhecidos
+                                        </th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+                                        <td>
+                                            Nome
+                                        </td>
+                                        <td>
+                                            nome, nome completo, cliente,
+                                            pessoa, razão social
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            E-mail
+                                        </td>
+                                        <td>
+                                            email, correio eletrônico,
+                                            endereço de email
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            Telefone
+                                        </td>
+                                        <td>
+                                            telefone, tel, celular,
+                                            whatsapp, contato
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            CPF / CNPJ
+                                        </td>
+                                        <td>
+                                            cpf, documento cpf · cnpj,
+                                            documento cnpj
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            Código
+                                        </td>
+                                        <td>
+                                            codigo, id, matrícula, número do
+                                            cliente, identificador
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            Cidade
+                                        </td>
+                                        <td>
+                                            cidade, município
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="doc-card" id="doc-faq">
+
+                        <span class="doc-category">
+                            SUPORTE
+                        </span>
+
+                        <h2>
+                            Problemas comuns
+                        </h2>
+
+                        <ul class="doc-list">
+
+                            <li>
+                                <strong>
+                                    O arquivo não abre ou dá erro na leitura.
+                                </strong>
+                                Use apenas .xlsx (não .xls nem .csv) e garanta
+                                que a aba tem cabeçalho na primeira linha.
+                            </li>
+
+                            <li>
+                                <strong>
+                                    Nenhuma chave foi sugerida no cruzamento.
+                                </strong>
+                                Selecione os pares manualmente — a sugestão é
+                                apenas um atalho; o resultado depende dos
+                                valores serem equivalentes.
+                            </li>
+
+                            <li>
+                                <strong>
+                                    O CSV abriu com caracteres estranhos.
+                                </strong>
+                                O arquivo já sai em UTF-8 com BOM; ao importar
+                                em outro sistema, selecione a codificação
+                                UTF-8 e o separador usado na exportação.
+                            </li>
+
+                            <li>
+                                <strong>
+                                    Meus dados ficam salvos?
+                                </strong>
+                                Não. Tudo vive na memória da aba do navegador;
+                                recarregar a página limpa tudo.
+                            </li>
+
+                            <li>
+                                <strong>
+                                    Onde vejo o detalhe do que aconteceu?
+                                </strong>
+                                Cada ferramenta tem o console de log no fim
+                                da página, com data/hora de cada passo.
+                            </li>
+
+                        </ul>
+
+                    </article>
+
+                </section>
+
+
+                <!-- ==================================================
+                     PÁGINA: SOBRE
+                =================================================== -->
 
 
                 <!-- ==================================================
@@ -2182,6 +2903,14 @@
                                 Executar cruzamento
                             </button>
 
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                data-role="run-consolidate"
+                            >
+                                Consolidar planilhas
+                            </button>
+
                         </div>
 
                     </section>
@@ -2231,6 +2960,66 @@
                     </section>
 
 
+                    <!-- ==================================================
+                         CONSOLIDAÇÃO (PLANILHA FINAL)
+                    =================================================== -->
+
+                    <section
+                        class="validator-card"
+                        data-role="consolidate-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    05
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Planilha final consolidada
+                                    </h2>
+
+                                    <p>
+                                        Todos os registros das duas planilhas,
+                                        com a origem de cada coluna identificada.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validation-summary"
+                            data-role="consolidate-summary"
+                        ></div>
+
+                        <div
+                            class="consolidate-preview"
+                            data-role="consolidate-preview"
+                        ></div>
+
+                        <div class="key-actions consolidate-actions">
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                data-role="export-consolidate"
+                            >
+                                Exportar resultado
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
                     <section
                         class="validator-card"
                         data-role="export-section"
@@ -2242,7 +3031,7 @@
                             <div>
 
                                 <span class="validator-number">
-                                    05
+                                    06
                                 </span>
 
                                 <div>
@@ -2359,6 +3148,463 @@
                             </div>
 
                         </div>
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
+
+                </section>
+
+
+
+                <!-- ==================================================
+                     FERRAMENTA: EXCEL → CSV
+                =================================================== -->
+
+                <section
+                    id="page-validator-csv"
+                    class="page validator-page"
+                    hidden
+                >
+
+                    <header class="validator-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                CONVERSÃO / CSV
+                            </span>
+
+                            <h1>
+                                Excel → CSV
+                            </h1>
+
+                            <p>
+                                Converta uma aba para CSV com formato
+                                concatenado ou quebra de colunas, usando
+                                validação por aliases.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                            data-back-page="validators"
+                        >
+                            ← Voltar
+                        </button>
+
+                    </header>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    01
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Selecionar arquivo
+                                    </h2>
+
+                                    <p>
+                                        Envie um arquivo .xlsx e escolha a aba.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-stack">
+
+                            <div class="validator-upload">
+
+                                <label
+                                    class="validator-upload-label"
+                                >
+
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        data-role="excel-file"
+                                    >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="csv-sheet-select"
+                                >
+                                    Aba da planilha
+                                </label>
+
+                                <select
+                                    id="csv-sheet-select"
+                                    class="select"
+                                    data-role="sheet-select"
+                                >
+                                    <option value="">
+                                        Selecione uma aba
+                                    </option>
+                                </select>
+
+                                <div
+                                    class="sheet-info"
+                                    data-role="sheet-info"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="config-section"
+                        hidden
+                    >
+
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Cabeçalhos identificados
+                                    </h2>
+
+                                    <p>
+                                        Colunas da aba e categorias
+                                        reconhecidas via aliases.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="detected-headers"
+                            data-role="detected-headers"
+                        ></div>
+
+
+                        <!-- COLUNA PRINCIPAL -->
+
+                        <div class="csv-config-block">
+
+                            <label
+                                class="field-label"
+                                for="csv-main-column"
+                            >
+                                Coluna principal (mãe / alvo)
+                            </label>
+
+                            <select
+                                id="csv-main-column"
+                                class="select"
+                                data-role="main-column-select"
+                            >
+                                <option value="">
+                                    Selecione a coluna principal
+                                </option>
+                            </select>
+
+                            <div
+                                class="column-validation-wrap"
+                                data-role="column-validation"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- COLUNAS RELACIONADAS -->
+
+                        <div class="csv-config-block">
+
+                            <span class="field-label">
+                                Colunas relacionadas
+                            </span>
+
+                            <p class="mirror-hint">
+                                Colunas sugeridas por aliases aparecem
+                                marcadas. Selecione as que participarão
+                                da transformação.
+                            </p>
+
+                            <div
+                                class="column-checks"
+                                data-role="related-columns"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- FORMATO E OPÇÕES -->
+
+                        <div class="export-columns">
+
+                            <div>
+
+                                <span class="field-label">
+                                    Formato de extração
+                                </span>
+
+                                <div class="mirror-options">
+
+                                    <label class="mirror-option">
+                                        <input
+                                            type="radio"
+                                            name="csv-mode"
+                                            value="concat"
+                                            checked
+                                        >
+                                        <span>
+                                            <strong>Concatenado</strong>
+                                            <small>Valores unidos na mesma célula</small>
+                                        </span>
+                                    </label>
+
+                                    <label class="mirror-option">
+                                        <input
+                                            type="radio"
+                                            name="csv-mode"
+                                            value="split"
+                                        >
+                                        <span>
+                                            <strong>Quebra de colunas</strong>
+                                            <small>Colunas dinâmicas por quantidade</small>
+                                        </span>
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="csv-concat-separator"
+                                >
+                                    Separador interno (concatenado)
+                                </label>
+
+                                <select
+                                    id="csv-concat-separator"
+                                    class="select"
+                                    data-role="concat-separator"
+                                >
+                                    <option value=";">;</option>
+                                    <option value=",">,</option>
+                                    <option value="|">|</option>
+                                </select>
+
+                                <label
+                                    class="field-label"
+                                    for="csv-separator"
+                                >
+                                    Separador do CSV
+                                </label>
+
+                                <select
+                                    id="csv-separator"
+                                    class="select"
+                                    data-role="csv-separator"
+                                >
+                                    <option value=",">,</option>
+                                    <option value=";">;</option>
+                                </select>
+
+                            </div>
+
+                            <div>
+
+                                <span class="field-label">
+                                    Duplicados
+                                </span>
+
+                                <div class="mirror-options">
+
+                                    <label class="mirror-option">
+                                        <input
+                                            type="radio"
+                                            name="csv-duplicates"
+                                            value="keep"
+                                            checked
+                                        >
+                                        <span>
+                                            <strong>Manter todos</strong>
+                                            <small>Nenhuma informação é perdida</small>
+                                        </span>
+                                    </label>
+
+                                    <label class="mirror-option">
+                                        <input
+                                            type="radio"
+                                            name="csv-duplicates"
+                                            value="remove"
+                                        >
+                                        <span>
+                                            <strong>Remover iguais</strong>
+                                            <small>Valores equivalentes uma única vez</small>
+                                        </span>
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="key-actions">
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                data-role="generate-preview"
+                            >
+                                Gerar prévia
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="preview-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    03
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Prévia do resultado
+                                    </h2>
+
+                                    <p>
+                                        Confira o resultado antes de
+                                        exportar o arquivo CSV.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validation-summary"
+                            data-role="preview-summary"
+                        ></div>
+
+                        <div
+                            class="consolidate-preview"
+                            data-role="preview-table"
+                        ></div>
+
+                        <div class="key-actions consolidate-actions">
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                data-role="export-csv"
+                            >
+                                Exportar CSV
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="validator-card">
 
                         <pre
                             class="validator-log"
@@ -2643,7 +3889,7 @@
     =================================================== -->
 
     <script
-        src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js">
+        src="./vendor/xlsx.full.min.js">
     </script>
 
 
@@ -2656,16 +3902,22 @@
     </script>
 
     <script
+        src="./js/core/csv-writer.js">
+    </script>
+
+    <script
         src="./js/core/excel-utils.js">
     </script>
 
 
     <script src="./js/schemas/schema-registry.js"></script>
     <script src="./js/schemas/cadastro-schema.js"></script>
+    <script src="./js/schemas/column-aliases.js"></script>
 
     <script src="./js/validators/header-validator.js"></script>
     <script src="./js/validators/data-validator.js"></script>
     <script src="./js/validators/cross-validator.js"></script>
+    <script src="./js/validators/csv-transform-validator.js"></script>
 
     <script src="./js/ui/dom.js"></script>
     <script src="./js/ui/validator-registry.js"></script>
@@ -2675,6 +3927,7 @@
     <script src="./js/ui/format-validator-ui.js"></script>
     <script src="./js/ui/duplicate-validator-ui.js"></script>
     <script src="./js/ui/cross-validator-ui.js"></script>
+    <script src="./js/ui/csv-converter-ui.js"></script>
 
     <script src="./js/app.js"></script>
 

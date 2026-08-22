@@ -37,6 +37,19 @@ Este é um sistema **utilitário local** para manipulação de Excel. O foco atu
 - Mostra apenas as **colunas-chave** pré-selecionadas na extração
 - Extração por conjunto (nas duas / só na 1 / só na 2)
 - Usa `CrossValidator.compare()` e `CrossValidator.buildExportRows()`
+- **Consolidação** (todo.md): `CrossValidator.consolidate()` gera FULL OUTER JOIN com
+  coluna-chave única, sufixos de origem e coluna "Duplicado"; exportado como
+  `cruzamento-consolidado.xlsx`
+
+### Conversor Excel → CSV (`csv-converter-ui.js`, todo2.md)
+- **Uma planilha** (fluxo padrão do SheetWorkspace)
+- Cabeçalhos exibidos com **badges de categoria** (aliases via `ColumnAliases`)
+- **Coluna principal** validada com mensagens (vazios, duplicados, alias)
+- Colunas relacionadas **pré-marcadas** por alias
+- Formato: Concatenado (separador interno `; , |`) ou Quebra de colunas (dinâmicas `X 1..N`)
+- Duplicados: Manter todos (padrão) / Remover iguais
+- Separador do CSV configurável (`,` padrão)
+- Prévia em tabela + exportação `CsvWriter.download` (UTF-8 BOM)
 
 ## Armadilhas Comuns
 

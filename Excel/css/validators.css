@@ -680,6 +680,111 @@
 
 
 /* ========================================================
+ * CONSOLIDAÇÃO (PLANILHA FINAL)
+ * ====================================================== */
+
+.consolidate-preview {
+    overflow-x: auto;
+}
+
+
+.consolidate-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+
+.consolidate-table th,
+.consolidate-table td {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+
+.consolidate-table th {
+    background: var(--surface-secondary);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+}
+
+
+.consolidate-table tbody tr:nth-child(even) {
+    background: var(--surface-secondary);
+}
+
+
+.consolidate-table .duplicate-cell {
+    background: #fffbeb;
+    color: #b45309;
+    font-weight: 600;
+}
+
+
+.consolidate-note {
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+
+.consolidate-actions {
+    margin-top: 16px;
+}
+
+
+/* ========================================================
+ * CSV CONVERTER
+ * ====================================================== */
+
+.csv-config-block {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-secondary);
+}
+
+
+.column-validation-wrap {
+    margin-top: 12px;
+}
+
+
+.column-validation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 6px;
+}
+
+
+.column-validation.valid {
+    background: #f0fdf4;
+}
+
+
+.column-validation.invalid {
+    background: #fef2f2;
+}
+
+
+.column-validation ul {
+    margin: 0;
+    padding-left: 16px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+
+/* ========================================================
  * RESPONSIVO
  * ====================================================== */
 

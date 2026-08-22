@@ -16,31 +16,24 @@ const ExcelApp = (() => {
 
 
     function init() {
-
         initializeNavigation();
         initializeValidators();
         initializeBackButtons();
-
     }
-
 
     function initializeNavigation() {
 
         document.querySelectorAll(".nav-item").forEach(button => {
-
             button.addEventListener("click", () => {
                 navigateTo(button.dataset.page);
             });
-
         });
-
     }
 
 
     function initializeValidators() {
 
         document.querySelectorAll("[data-validator]").forEach(button => {
-
             button.addEventListener("click", () => {
                 openValidator(button.dataset.validator);
             });

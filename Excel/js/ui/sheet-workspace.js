@@ -193,8 +193,13 @@ const SheetWorkspace = (() => {
 
                 }
 
-                elements.fileSection.hidden = false;
-                elements.sheetSection.hidden = false;
+                if (elements.fileSection) {
+                    elements.fileSection.hidden = false;
+                }
+
+                if (elements.sheetSection) {
+                    elements.sheetSection.hidden = false;
+                }
 
                 elements.fileStatus.textContent =
                     "Arquivo carregado com sucesso.";

@@ -23,6 +23,13 @@
     - Cada valor duplicado mostra "Repetido nas linhas: linha X, linha Y"
 - [x] CSS para todos os novos componentes (mirror, common-columns, key-rows, column-checks, etc.)
 - [x] Uploads corrigidos (input dentro do label em 4 locais)
+- [x] **Consolidação de planilhas (todo.md)**: `CrossValidator.consolidate()` com FULL OUTER JOIN,
+      coluna-chave única, sufixos de origem, coluna "Duplicado", preview em tabela e exportação
+      `cruzamento-consolidado.xlsx` — testado com `Excel/test-consolidate.js` (12 verificações OK)
+- [x] **Conversão Excel → CSV (todo2.md)**: aliases (`column-aliases.js`), `CsvWriter`
+      (UTF-8 BOM + escape), `CsvTransformValidator` (validação da coluna principal +
+      formatos Concatenado/Quebra de colunas + dedupe opcional), UI completa com prévia
+      — testado com `Excel/test-csv-transform.js` (21 verificações OK)
 
 ### Próximos Passos
 - [ ] Página "Leitor" (em desenvolvimento)

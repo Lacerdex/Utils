@@ -13,6 +13,7 @@ const CrossValidatorUI = (() => {
     let leftWorkspace = null;
     let rightWorkspace = null;
     let lastResult = null;
+    let lastConsolidated = null;
 
 
     function sourceState(side) {
@@ -145,6 +146,7 @@ const CrossValidatorUI = (() => {
         const list = root.querySelector("[data-role='key-list']");
 
         lastResult = null;
+        lastConsolidated = null;
         hideResults();
 
         if (!bothReady()) {
@@ -210,6 +212,8 @@ const CrossValidatorUI = (() => {
 
         if (resultSection) resultSection.hidden = true;
         if (exportSection) exportSection.hidden = true;
+
+        hideConsolidated();
 
     }
 
@@ -345,6 +349,176 @@ const CrossValidatorUI = (() => {
     }
 
 
+    function runConsolidate() {
+
+        const left = sourceState("left");
+        const right = sourceState("right");
+        const log = leftWorkspace.log;
+
+        try {
+
+            lastConsolidated = CrossValidator.consolidate(
+                left.sheet,
+                right.sheet,
+                currentPairs()
+            );
+
+            renderConsolidated(lastConsolidated);
+
+            log(
+                `Consolidação: ${lastConsolidated.summary.rows} registro(s) na planilha final ` +
+                `(nas duas: ${lastConsolidated.summary.matched}, ` +
+                `só na 1: ${lastConsolidated.summary.onlyA}, ` +
+                `só na 2: ${lastConsolidated.summary.onlyB}).`
+            );
+
+        } catch (error) {
+
+            log(`ERRO: ${error.message}`);
+            hideConsolidated();
+
+        }
+
+    }
+
+
+    function renderConsolidated(consolidated) {
+
+        const section = root.querySelector("[data-role='consolidate-section']");
+        const summary = root.querySelector("[data-role='consolidate-summary']");
+        const preview = root.querySelector("[data-role='consolidate-preview']");
+
+        if (!section || !summary || !preview) {
+            return;
+        }
+
+        summary.innerHTML = `
+
+            <div class="validation-summary-item">
+                <span>Planilha final</span>
+                <strong>${consolidated.summary.rows}</strong>
+            </div>
+
+            <div class="validation-summary-item">
+                <span>Nas duas</span>
+                <strong class="success">${consolidated.summary.matched}</strong>
+            </div>
+
+            <div class="validation-summary-item">
+                <span>Só na planilha 1</span>
+                <strong class="warning">${consolidated.summary.onlyA}</strong>
+            </div>
+
+            <div class="validation-summary-item">
+                <span>Só na planilha 2</span>
+                <strong class="warning">${consolidated.summary.onlyB}</strong>
+            </div>
+
+        `;
+
+        const maxPreview = 20;
+        const previewRows = consolidated.rows.slice(0, maxPreview);
+
+        const head = `
+            <thead>
+                <tr>
+                    ${consolidated.columns.map(column => `
+                        <th>${DomUtils.escapeHtml(column)}</th>
+                    `).join("")}
+                </tr>
+            </thead>
+        `;
+
+        const body = `
+            <tbody>
+                ${previewRows.map(row => `
+                    <tr>
+                        ${consolidated.columns.map(column => {
+                            const value = row[column] ?? "";
+                            const isDuplicate = column === "Duplicado" && value;
+                            return `
+                                <td${isDuplicate ? ' class="duplicate-cell"' : ""}>
+                                    ${value === "" ? "—" : DomUtils.escapeHtml(String(value))}
+                                </td>
+                            `;
+                        }).join("")}
+                    </tr>
+                `).join("")}
+            </tbody>
+        `;
+
+        preview.innerHTML = `
+            <table class="consolidate-table">
+                ${head}
+                ${body}
+            </table>
+            ${consolidated.rows.length > maxPreview ? `
+                <p class="consolidate-note">
+                    Exibindo ${maxPreview} de ${consolidated.rows.length} registro(s).
+                    Todos serão incluídos na exportação.
+                </p>
+            ` : ""}
+        `;
+
+        section.hidden = false;
+
+    }
+
+
+    function hideConsolidated() {
+
+        const section = root.querySelector("[data-role='consolidate-section']");
+
+        if (section) {
+            section.hidden = true;
+        }
+
+        lastConsolidated = null;
+
+    }
+
+
+    function exportConsolidated() {
+
+        const log = leftWorkspace.log;
+
+        if (!lastConsolidated) {
+
+            log("Execute a consolidação antes de exportar.");
+            return;
+
+        }
+
+        try {
+
+            if (!lastConsolidated.rows.length) {
+
+                throw new Error(
+                    "Não há registros consolidados para exportar."
+                );
+
+            }
+
+            ExcelWriter.exportJson(
+                lastConsolidated.rows,
+                "Consolidado",
+                "cruzamento-consolidado.xlsx"
+            );
+
+            log(
+                `Planilha final exportada com ` +
+                `${lastConsolidated.rows.length} registro(s).`
+            );
+
+        } catch (error) {
+
+            log(`ERRO: ${error.message}`);
+
+        }
+
+    }
+
+
     function exportSheet() {
 
         const log = leftWorkspace.log;
@@ -425,6 +599,12 @@ const CrossValidatorUI = (() => {
         root.querySelector("[data-role='run-cross']")
             .addEventListener("click", runCross);
 
+        root.querySelector("[data-role='run-consolidate']")
+            .addEventListener("click", runConsolidate);
+
+        root.querySelector("[data-role='export-consolidate']")
+            .addEventListener("click", exportConsolidated);
+
         root.querySelector("[data-role='export-button']")
             .addEventListener("click", exportSheet);
 
@@ -436,6 +616,7 @@ const CrossValidatorUI = (() => {
     function reset() {
 
         lastResult = null;
+        lastConsolidated = null;
 
         if (leftWorkspace) {
             leftWorkspace.reset();

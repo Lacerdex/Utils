@@ -1146,6 +1146,384 @@ body {
 
 
 /* ========================================================
+ * DOCUMENTAÇÃO
+ * ====================================================== */
+
+.docs-index {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 24px;
+
+}
+
+
+.docs-index a {
+
+    padding:
+        7px 14px;
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 999px;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 12px;
+
+    text-decoration: none;
+
+}
+
+
+.docs-index a:hover {
+
+    border-color:
+        var(--primary);
+
+    color:
+        var(--primary);
+
+}
+
+
+.doc-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+
+}
+
+
+.doc-card {
+
+    padding: 26px;
+
+    margin-bottom: 0;
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 10px;
+
+}
+
+
+.doc-card + .doc-card {
+
+    margin-top: 16px;
+
+}
+
+
+.doc-grid .doc-card {
+
+    margin-bottom: 0;
+
+}
+
+
+.doc-grid .doc-card-wide,
+.doc-card-wide {
+
+    grid-column:
+        span 2;
+
+}
+
+
+.doc-category {
+
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    padding:
+        4px 10px;
+
+    background:
+        var(--primary-soft);
+
+    border-radius: 5px;
+
+    color:
+        var(--primary);
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+
+}
+
+
+.doc-card h2 {
+
+    margin:
+        0 0 12px;
+
+    font-size: 17px;
+
+}
+
+
+.doc-card p {
+
+    max-width:
+        720px;
+
+    margin:
+        0 0 14px;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+}
+
+
+.doc-steps {
+
+    margin:
+        0 0 14px;
+
+    padding-left: 20px;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 13px;
+
+    line-height: 1.9;
+
+}
+
+
+.doc-list {
+
+    margin: 0;
+
+    padding-left: 18px;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+}
+
+
+.doc-list li {
+
+    margin-bottom: 12px;
+
+}
+
+
+.doc-list li:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+.doc-list strong {
+
+    color:
+        var(--text);
+
+}
+
+
+.doc-tip {
+
+    padding:
+        12px 15px;
+
+    background:
+        var(--surface-secondary);
+
+    border-left:
+        3px solid
+        var(--primary);
+
+    border-radius: 6px;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 12.5px;
+
+    line-height: 1.6;
+
+}
+
+
+.doc-facts {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+}
+
+
+.doc-facts div {
+
+    padding:
+        14px;
+
+    background:
+        var(--surface-secondary);
+
+    border-radius: 7px;
+
+}
+
+
+.doc-facts span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color:
+        var(--text-muted);
+
+    font-size: 10px;
+
+}
+
+
+.doc-facts strong {
+
+    font-size: 12.5px;
+
+}
+
+
+.doc-table-wrap {
+
+    overflow-x: auto;
+
+}
+
+
+.doc-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 12.5px;
+
+}
+
+
+.doc-table th,
+
+.doc-table td {
+
+    padding:
+        10px 14px;
+
+    border:
+        1px solid
+        var(--border);
+
+    text-align: left;
+
+}
+
+
+.doc-table th {
+
+    background:
+        var(--surface-secondary);
+
+    color:
+        var(--text);
+
+    font-size: 11px;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+
+}
+
+
+.doc-table td {
+
+    color:
+        var(--text-secondary);
+
+    line-height: 1.6;
+
+}
+
+
+@media (max-width: 900px) {
+
+    .doc-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .doc-grid .doc-card-wide,
+    .doc-card-wide {
+
+        grid-column:
+            span 1;
+
+    }
+
+
+    .doc-facts {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* ========================================================
  * RESPONSIVIDADE
  * ====================================================== */
 
