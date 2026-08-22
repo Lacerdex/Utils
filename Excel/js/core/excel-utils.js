@@ -580,6 +580,73 @@ const ExcelUtils = (() => {
     }
 
 
+    /**
+     * Retorna as ocorrências de valores duplicados
+     * de uma coluna, com os índices das linhas.
+     *
+     * Exemplo:
+     *
+     * [
+     *   "ANA",
+     *   "BIA",
+     *   "ANA"
+     * ]
+     *
+     * retorna:
+     *
+     * [
+     *   {
+     *      value: "ANA",
+     *      rowIndexes: [0, 2]
+     *   }
+     * ]
+     *
+     * @param {Object[]} rows
+     * @param {string} columnName
+     *
+     * @returns {Object[]}
+     */
+    function findDuplicateOccurrences(rows, columnName) {
+
+        if (!Array.isArray(rows)) {
+            return [];
+        }
+
+        const occurrences = new Map();
+
+        rows.forEach((row, rowIndex) => {
+
+            const value =
+                row?.[columnName];
+
+            if (isEmpty(value)) {
+                return;
+            }
+
+            const normalized =
+                normalizeForComparison(value);
+
+            if (!occurrences.has(normalized)) {
+
+                occurrences.set(normalized, {
+                    value,
+                    rowIndexes: []
+                });
+
+            }
+
+            occurrences
+                .get(normalized)
+                .rowIndexes
+                .push(rowIndex);
+
+        });
+
+        return [...occurrences.values()]
+            .filter(item => item.rowIndexes.length > 1);
+    }
+
+
     /* =====================================================
      * ESTRUTURA
      * ===================================================== */
@@ -694,6 +761,7 @@ const ExcelUtils = (() => {
         removeEmptyRows,
         countUniqueValues,
         findDuplicateValues,
+        findDuplicateOccurrences,
 
         // Estrutura
         analyzeSheet,

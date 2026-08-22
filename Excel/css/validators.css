@@ -342,6 +342,11 @@
 }
 
 
+.validation-summary-item strong.info {
+    color: var(--primary);
+}
+
+
 /* ========================================================
  * FIELD RESULT
  * ====================================================== */
@@ -493,6 +498,188 @@
 
 
 /* ========================================================
+ * CRUZAMENTO
+ * ====================================================== */
+
+.cross-source {
+    display: grid;
+    gap: 16px;
+}
+
+
+.key-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+
+.key-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-secondary);
+}
+
+
+.key-row .select {
+    max-width: none;
+}
+
+
+.key-row-separator {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+
+.key-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.export-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+
+.column-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-secondary);
+}
+
+
+.column-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: #ffffff;
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+
+.column-check:hover {
+    border-color: var(--primary);
+}
+
+
+.column-check input {
+    accent-color: var(--primary);
+}
+
+
+.column-check.checked {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+
+/* ========================================================
+ * MIRROR (ESPELHO)
+ * ====================================================== */
+
+.mirror-selector {
+    margin-bottom: 20px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-secondary);
+}
+
+
+.mirror-hint {
+    margin: 0 0 14px;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+
+.mirror-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+
+.mirror-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+
+.mirror-option:hover {
+    border-color: var(--primary);
+}
+
+
+.mirror-option input {
+    accent-color: var(--primary);
+}
+
+
+.mirror-option:has(input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+
+.mirror-option strong {
+    display: block;
+    font-size: 12px;
+}
+
+
+.mirror-option small {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+
+/* ================================================================
+ * COMMON COLUMNS
+ * ============================================================== */
+
+.common-columns-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+
+.common-columns-block {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-secondary);
+}
+
+
+/* ========================================================
  * RESPONSIVO
  * ====================================================== */
 
@@ -509,6 +696,26 @@
     .validation-field {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .key-row {
+        grid-template-columns: 1fr;
+    }
+
+    .key-row-separator {
+        display: none;
+    }
+
+    .export-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .mirror-options {
+        grid-template-columns: 1fr;
+    }
+
+    .common-columns-list {
+        grid-template-columns: 1fr;
     }
 
 }

@@ -173,18 +173,24 @@ const CrossValidatorUI = (() => {
     }
 
 
-    function renderCheckboxes(container, headers, name) {
+    function renderCheckboxes(container, headers, name, checkedValues) {
 
-        container.innerHTML = (headers || []).map(header => `
-            <label class="column-check">
-                <input
-                    type="checkbox"
-                    name="${name}"
-                    value="${DomUtils.escapeHtml(header)}"
-                >
-                <span>${DomUtils.escapeHtml(header)}</span>
-            </label>
-        `).join("");
+        const checkedSet = new Set(checkedValues || []);
+
+        container.innerHTML = (headers || []).map(header => {
+            const checked = checkedSet.has(header);
+            return `
+                <label class="column-check${checked ? " checked" : ""}">
+                    <input
+                        type="checkbox"
+                        name="${name}"
+                        value="${DomUtils.escapeHtml(header)}"
+                        ${checked ? "checked" : ""}
+                    >
+                    <span>${DomUtils.escapeHtml(header)}</span>
+                </label>
+            `;
+        }).join("");
 
     }
 
@@ -284,16 +290,21 @@ const CrossValidatorUI = (() => {
         const left = sourceState("left");
         const right = sourceState("right");
 
+        const leftKeys = result.keyPairs.map(pair => pair.left);
+        const rightKeys = result.keyPairs.map(pair => pair.right);
+
         renderCheckboxes(
             root.querySelector("[data-role='export-columns-a']"),
-            left.sheet.headers,
-            "export-a"
+            leftKeys,
+            "export-a",
+            leftKeys
         );
 
         renderCheckboxes(
             root.querySelector("[data-role='export-columns-b']"),
-            right.sheet.headers,
-            "export-b"
+            rightKeys,
+            "export-b",
+            rightKeys
         );
 
         resultSection.hidden = false;

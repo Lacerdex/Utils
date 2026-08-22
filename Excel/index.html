@@ -948,8 +948,8 @@
                             </h1>
 
                             <p>
-                                Analise preenchimento, vazios e
-                                inconsistências nos campos reconhecidos.
+                                Compare duas planilhas, valide as colunas
+                                em comum e gere o resultado final.
                             </p>
 
                         </div>
@@ -978,8 +978,12 @@
                                 <div>
 
                                     <h2>
-                                        Selecionar arquivo
+                                        Planilha 1
                                     </h2>
+
+                                    <p>
+                                        Selecione o primeiro arquivo e a aba.
+                                    </p>
 
                                 </div>
 
@@ -987,38 +991,22 @@
 
                         </div>
 
-                        <div class="form-stack">
-
-                            <div>
-
-                                <label
-                                    class="field-label"
-                                    for="data-schema-select"
-                                >
-                                    Modelo
-                                </label>
-
-                                <select
-                                    id="data-schema-select"
-                                    class="select"
-                                    data-role="schema-select"
-                                ></select>
-
-                            </div>
+                        <div
+                            class="cross-source"
+                            data-data-source="left"
+                        >
 
                             <div class="validator-upload">
 
-                                <input
-                                    type="file"
-                                    id="data-excel-file"
-                                    accept=".xlsx"
-                                    data-role="excel-file"
-                                >
-
                                 <label
-                                    for="data-excel-file"
                                     class="validator-upload-label"
                                 >
+
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        data-role="excel-file"
+                                    >
 
                                     <span class="validator-upload-icon">
                                         XLSX
@@ -1027,7 +1015,7 @@
                                     <span>
 
                                         <strong>
-                                            Selecionar planilha
+                                            Selecionar planilha 1
                                         </strong>
 
                                         <small>
@@ -1040,13 +1028,194 @@
 
                             </div>
 
+                            <div
+                                class="validator-status"
+                                data-role="file-status"
+                            >
+                                Nenhum arquivo selecionado.
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="file-section"
+                                hidden
+                            >
+
+                                <div class="validator-info-grid">
+
+                                    <div>
+                                        <span>Arquivo</span>
+                                        <strong data-role="file-name">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Tamanho</span>
+                                        <strong data-role="file-size">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Abas</span>
+                                        <strong data-role="sheet-count">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="sheet-section"
+                                hidden
+                            >
+
+                                <label class="field-label">
+                                    Aba da planilha 1
+                                </label>
+
+                                <select
+                                    class="select"
+                                    data-role="sheet-select"
+                                >
+                                    <option value="">
+                                        Selecione uma aba
+                                    </option>
+                                </select>
+
+                                <div
+                                    class="sheet-info"
+                                    data-role="sheet-info"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Planilha 2
+                                    </h2>
+
+                                    <p>
+                                        Selecione o segundo arquivo e a aba.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
                         <div
-                            class="validator-status"
-                            data-role="file-status"
+                            class="cross-source"
+                            data-data-source="right"
                         >
-                            Nenhum arquivo selecionado.
+
+                            <div class="validator-upload">
+
+                                <label
+                                    class="validator-upload-label"
+                                >
+
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        data-role="excel-file"
+                                    >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha 2
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                            <div
+                                class="validator-status"
+                                data-role="file-status"
+                            >
+                                Nenhum arquivo selecionado.
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="file-section"
+                                hidden
+                            >
+
+                                <div class="validator-info-grid">
+
+                                    <div>
+                                        <span>Arquivo</span>
+                                        <strong data-role="file-name">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Tamanho</span>
+                                        <strong data-role="file-size">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Abas</span>
+                                        <strong data-role="sheet-count">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="sheet-section"
+                                hidden
+                            >
+
+                                <label class="field-label">
+                                    Aba da planilha 2
+                                </label>
+
+                                <select
+                                    class="select"
+                                    data-role="sheet-select"
+                                >
+                                    <option value="">
+                                        Selecione uma aba
+                                    </option>
+                                </select>
+
+                                <div
+                                    class="sheet-info"
+                                    data-role="sheet-info"
+                                ></div>
+
+                            </div>
+
                         </div>
 
                     </section>
@@ -1054,54 +1223,84 @@
 
                     <section
                         class="validator-card"
-                        data-role="file-section"
+                        data-role="common-section"
                         hidden
                     >
 
-                        <div class="validator-info-grid">
+                        <div class="validator-card-header">
 
                             <div>
-                                <span>Arquivo</span>
-                                <strong data-role="file-name">-</strong>
-                            </div>
 
-                            <div>
-                                <span>Tamanho</span>
-                                <strong data-role="file-size">-</strong>
-                            </div>
+                                <span class="validator-number">
+                                    03
+                                </span>
 
-                            <div>
-                                <span>Abas</span>
-                                <strong data-role="sheet-count">-</strong>
+                                <div>
+
+                                    <h2>
+                                        Colunas em comum
+                                    </h2>
+
+                                    <p>
+                                        Colunas presentes nas duas planilhas,
+                                        usadas para validação e extração.
+                                    </p>
+
+                                </div>
+
                             </div>
 
                         </div>
 
-                    </section>
 
+                        <div class="mirror-selector">
 
-                    <section
-                        class="validator-card"
-                        data-role="sheet-section"
-                        hidden
-                    >
+                            <span class="field-label">
+                                Planilha espelho final
+                            </span>
 
-                        <label class="field-label">
-                            Aba da planilha
-                        </label>
+                            <p class="mirror-hint">
+                                Escolha qual planilha servirá de
+                                base (espelho) para o resultado final.
+                            </p>
 
-                        <select
-                            class="select"
-                            data-role="sheet-select"
-                        >
-                            <option value="">
-                                Selecione uma aba
-                            </option>
-                        </select>
+                            <div class="mirror-options">
+
+                                <label class="mirror-option">
+                                    <input
+                                        type="radio"
+                                        name="data-mirror"
+                                        value="left"
+                                        data-role="mirror-left"
+                                        checked
+                                    >
+                                    <span>
+                                        <strong>Planilha 1</strong>
+                                        <small>Como espelho do resultado final</small>
+                                    </span>
+                                </label>
+
+                                <label class="mirror-option">
+                                    <input
+                                        type="radio"
+                                        name="data-mirror"
+                                        value="right"
+                                        data-role="mirror-right"
+                                    >
+                                    <span>
+                                        <strong>Planilha 2</strong>
+                                        <small>Como espelho do resultado final</small>
+                                    </span>
+                                </label>
+
+                            </div>
+
+                        </div>
+
 
                         <div
-                            class="sheet-info"
-                            data-role="sheet-info"
+                            class="common-columns"
+                            data-role="common-columns"
                         ></div>
 
                     </section>
@@ -1118,14 +1317,19 @@
                             <div>
 
                                 <span class="validator-number">
-                                    02
+                                    04
                                 </span>
 
                                 <div>
 
                                     <h2>
-                                        Qualidade dos dados
+                                        Resultado da validação
                                     </h2>
+
+                                    <p>
+                                        Qualidade das colunas em comum
+                                        na planilha espelho.
+                                    </p>
 
                                 </div>
 
@@ -1142,6 +1346,86 @@
                             class="validation-fields"
                             data-role="result-fields"
                         ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="export-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    05
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Extrair resultado final
+                                    </h2>
+
+                                    <p>
+                                        Gere a planilha final com os dados
+                                        das duas planilhas e as colunas em comum.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-stack">
+
+                            <div class="export-columns">
+
+                                <div>
+
+                                    <span class="field-label">
+                                        Colunas da planilha 1
+                                    </span>
+
+                                    <div
+                                        class="column-checks"
+                                        data-role="export-columns-a"
+                                    ></div>
+
+                                </div>
+
+                                <div>
+
+                                    <span class="field-label">
+                                        Colunas da planilha 2
+                                    </span>
+
+                                    <div
+                                        class="column-checks"
+                                        data-role="export-columns-b"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <button
+                                    type="button"
+                                    class="button button-primary"
+                                    data-role="export-button"
+                                >
+                                    Baixar planilha final
+                                </button>
+
+                            </div>
+
+                        </div>
 
                     </section>
 
@@ -1588,23 +1872,500 @@
                     </header>
 
 
-                    <div class="empty-state">
+                    <section class="validator-card">
 
-                        <div class="empty-state-icon">
-                            ⇄
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    01
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Planilha 1
+                                    </h2>
+
+                                    <p>
+                                        Selecione o primeiro arquivo e a aba.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        <h2>
-                            Em desenvolvimento
-                        </h2>
+                        <div
+                            class="cross-source"
+                            data-cross-source="left"
+                        >
 
-                        <p>
-                            Esta verificação entra na próxima etapa:
-                            dois arquivos, colunas equivalentes e
-                            relatório de divergências.
-                        </p>
+                            <div class="validator-upload">
 
-                    </div>
+                                <label
+                                    class="validator-upload-label"
+                                >
+
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        data-role="excel-file"
+                                    >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha 1
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                            <div
+                                class="validator-status"
+                                data-role="file-status"
+                            >
+                                Nenhum arquivo selecionado.
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="file-section"
+                                hidden
+                            >
+
+                                <div class="validator-info-grid">
+
+                                    <div>
+                                        <span>Arquivo</span>
+                                        <strong data-role="file-name">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Tamanho</span>
+                                        <strong data-role="file-size">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Abas</span>
+                                        <strong data-role="sheet-count">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="sheet-section"
+                                hidden
+                            >
+
+                                <label class="field-label">
+                                    Aba da planilha 1
+                                </label>
+
+                                <select
+                                    class="select"
+                                    data-role="sheet-select"
+                                >
+                                    <option value="">
+                                        Selecione uma aba
+                                    </option>
+                                </select>
+
+                                <div
+                                    class="sheet-info"
+                                    data-role="sheet-info"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    02
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Planilha 2
+                                    </h2>
+
+                                    <p>
+                                        Selecione o segundo arquivo e a aba.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="cross-source"
+                            data-cross-source="right"
+                        >
+
+                            <div class="validator-upload">
+
+                                <label
+                                    class="validator-upload-label"
+                                >
+
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        data-role="excel-file"
+                                    >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha 2
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                            <div
+                                class="validator-status"
+                                data-role="file-status"
+                            >
+                                Nenhum arquivo selecionado.
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="file-section"
+                                hidden
+                            >
+
+                                <div class="validator-info-grid">
+
+                                    <div>
+                                        <span>Arquivo</span>
+                                        <strong data-role="file-name">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Tamanho</span>
+                                        <strong data-role="file-size">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Abas</span>
+                                        <strong data-role="sheet-count">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="validator-card"
+                                data-role="sheet-section"
+                                hidden
+                            >
+
+                                <label class="field-label">
+                                    Aba da planilha 2
+                                </label>
+
+                                <select
+                                    class="select"
+                                    data-role="sheet-select"
+                                >
+                                    <option value="">
+                                        Selecione uma aba
+                                    </option>
+                                </select>
+
+                                <div
+                                    class="sheet-info"
+                                    data-role="sheet-info"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="keys-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    03
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Chaves de cruzamento
+                                    </h2>
+
+                                    <p>
+                                        Defina as colunas que devem
+                                        corresponder entre as planilhas.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="key-list"
+                            data-role="key-list"
+                        ></div>
+
+                        <div class="key-actions">
+
+                            <button
+                                type="button"
+                                class="button button-secondary"
+                                data-role="add-key"
+                            >
+                                + Adicionar chave
+                            </button>
+
+                            <button
+                                type="button"
+                                class="button button-primary"
+                                data-role="run-cross"
+                            >
+                                Executar cruzamento
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="result-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    04
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Resultado do cruzamento
+                                    </h2>
+
+                                    <p>
+                                        Resumo das correspondências
+                                        entre as duas planilhas.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="validation-summary"
+                            data-role="result-summary"
+                        ></div>
+
+                        <div
+                            class="validation-fields"
+                            data-role="result-preview"
+                        ></div>
+
+                    </section>
+
+
+                    <section
+                        class="validator-card"
+                        data-role="export-section"
+                        hidden
+                    >
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    05
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Extrair planilha
+                                    </h2>
+
+                                    <p>
+                                        Escolha o conjunto e as colunas
+                                        para gerar o arquivo .xlsx.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-stack">
+
+                            <div>
+
+                                <label
+                                    class="field-label"
+                                    for="export-set"
+                                >
+                                    Conjunto
+                                </label>
+
+                                <select
+                                    id="export-set"
+                                    class="select"
+                                    data-role="export-set"
+                                >
+
+                                    <option value="matched">
+                                        Nas duas planilhas
+                                    </option>
+
+                                    <option value="onlyA">
+                                        Só na planilha 1
+                                    </option>
+
+                                    <option value="onlyB">
+                                        Só na planilha 2
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="export-columns">
+
+                                <div>
+
+                                    <span class="field-label">
+                                        Colunas da planilha 1
+                                    </span>
+
+                                    <div
+                                        class="column-checks"
+                                        data-role="export-columns-a"
+                                    ></div>
+
+                                </div>
+
+                                <div>
+
+                                    <span class="field-label">
+                                        Colunas da planilha 2
+                                    </span>
+
+                                    <div
+                                        class="column-checks"
+                                        data-role="export-columns-b"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <button
+                                    type="button"
+                                    class="button button-primary"
+                                    data-role="export-button"
+                                >
+                                    Baixar planilha extraída
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="validator-card">
+
+                        <div class="validator-card-header">
+
+                            <div>
+
+                                <span class="validator-number">
+                                    LOG
+                                </span>
+
+                                <div>
+                                    <h2>Console</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <pre
+                            class="validator-log"
+                            data-role="log"
+                        ></pre>
+
+                    </section>
 
                 </section>
 
@@ -1904,6 +2665,7 @@
 
     <script src="./js/validators/header-validator.js"></script>
     <script src="./js/validators/data-validator.js"></script>
+    <script src="./js/validators/cross-validator.js"></script>
 
     <script src="./js/ui/dom.js"></script>
     <script src="./js/ui/validator-registry.js"></script>

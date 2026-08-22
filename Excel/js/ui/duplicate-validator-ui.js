@@ -47,7 +47,7 @@ const DuplicateValidatorUI = (() => {
         }
 
         const duplicates =
-            ExcelUtils.findDuplicateValues(
+            ExcelUtils.findDuplicateOccurrences(
                 sheet.rows,
                 columnName
             );
@@ -77,6 +77,11 @@ const DuplicateValidatorUI = (() => {
                 </strong>
             </div>
 
+            <div class="validation-summary-item">
+                <span>Coluna</span>
+                <strong class="info">${columnName}</strong>
+            </div>
+
         `;
 
         if (!duplicates.length) {
@@ -99,22 +104,27 @@ const DuplicateValidatorUI = (() => {
 
         } else {
 
-            resultFields.innerHTML = duplicates.map(value => `
-                <div class="validation-field">
-                    <div class="validation-field-main">
-                        <div class="validation-field-name">
-                            ${DomUtils.escapeHtml(String(value))}
+            resultFields.innerHTML = duplicates.map(item => {
+                const rowLabels = item.rowIndexes
+                    .map(index => `linha ${index + 1}`)
+                    .join(", ");
+                return `
+                    <div class="validation-field">
+                        <div class="validation-field-main">
+                            <div class="validation-field-name">
+                                ${DomUtils.escapeHtml(String(item.value))}
+                            </div>
+                            <div class="validation-field-detail">
+                                Repetido nas linhas:
+                                <strong>${rowLabels}</strong>
+                            </div>
                         </div>
-                        <div class="validation-field-detail">
-                            Valor repetido na coluna
-                            ${DomUtils.escapeHtml(columnName)}
-                        </div>
+                        <span class="validation-field-status invalid">
+                            DUPLICADO
+                        </span>
                     </div>
-                    <span class="validation-field-status invalid">
-                        DUPLICADO
-                    </span>
-                </div>
-            `).join("");
+                `;
+            }).join("");
 
         }
 
