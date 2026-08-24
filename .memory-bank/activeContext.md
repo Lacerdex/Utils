@@ -41,6 +41,20 @@
 - CSS: estilos em `.category-form`, `.category-pill`, `.category-stats`, `.categorizer-checkbox`
 - **Status**: Implementado e validado junto ao conjunto de testes do projeto
 
+#### 5. Cadastro e gerenciamento local de planilhas
+- Arquivo: `Excel/js/core/planilha-storage.js` e `Excel/js/ui/planilha-cadastro-ui.js`
+- Funcionalidade: catálogo local de arquivos `.xlsx`, `.xls` e `.csv` em navegador
+- Recursos:
+  - área de cadastro integrada ao shell principal
+  - drag & drop + seleção tradicional
+  - nome personalizado para o cadastro do arquivo e seleção de pasta (Excel/CSV)
+  - conversão automática do arquivo para a pasta escolhida antes de salvar
+  - validação de extensão no frontend
+  - persistência local em IndexedDB com metadados e organização por tipo
+  - busca por nome, filtro por extensão, atualização, download e exclusão com confirmação
+  - integração para reutilizar a planilha em ferramentas do sistema
+- Status: Implementado e validado
+
 ### Funcionalidades Existentes
 
 #### 1. Validador de Cabeçalho

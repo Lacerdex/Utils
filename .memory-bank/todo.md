@@ -1,1052 +1,1407 @@
-# Task — Validar, corrigir e atualizar o Validador de Duplicatas
+# TASK — Cadastro e Gerenciamento Local de Planilhas
 
-O projeto já possui uma funcionalidade de **Validador de Duplicatas**.
+O projeto já está em desenvolvimento e possui diversas funcionalidades relacionadas à leitura, validação, cruzamento, categorização e exportação de planilhas.
 
-Agora preciso realizar uma etapa de **validação, revisão e atualização dessa funcionalidade**, garantindo que ela esteja correta, consistente com as demais features do projeto e preparada para exportação em diferentes formatos.
+Agora precisamos implementar uma nova funcionalidade de **Cadastro e Gerenciamento Local de Planilhas**.
 
-**Não recriar a funcionalidade do zero.**
+Essa funcionalidade deverá permitir que o usuário cadastre arquivos `.xlsx`, `.xls` e `.csv`, mantendo-os organizados em uma estrutura de pastas localmente no computador.
 
-Primeiro analise a implementação existente, identifique o que já funciona, o que está incompleto e o que precisa ser alterado.
+O sistema deverá conseguir consultar essa estrutura posteriormente para listar, pesquisar e selecionar as planilhas cadastradas.
 
-A implementação final deve manter compatibilidade com as demais funcionalidades do projeto.
+## REGRA PRINCIPAL
 
----
+Não criar uma aplicação ou página independente.
 
-# 1. Objetivo do Validador de Duplicatas
+A funcionalidade deve ser integrada ao projeto existente, respeitando:
 
-O Validador de Duplicatas deve permitir que o usuário importe uma planilha, identifique registros duplicados e escolha como deseja organizar e exportar o resultado.
+* Estrutura HTML atual;
+* Design System existente;
+* CSS existente;
+* Componentes existentes;
+* Padrões de UX já utilizados;
+* Organização atual de JavaScript;
+* Backend existente;
+* Rotas existentes;
+* Sistema de leitura de Excel/CSV já implementado.
 
-A funcionalidade deverá trabalhar com:
-
-* Excel (`.xlsx`);
-* CSV (`.csv`).
-
-O usuário deverá poder escolher:
-
-1. Qual arquivo deseja analisar;
-2. Qual aba deseja utilizar, quando for Excel;
-3. Qual coluna será utilizada como referência/chave;
-4. Se deseja trabalhar com:
-
-   * Únicos;
-   * Duplicados;
-5. Qual método de extração deseja utilizar;
-6. Qual formato de saída deseja:
-
-   * Excel;
-   * CSV.
+Antes de implementar, analisar a estrutura atual do projeto e reutilizar o máximo possível do que já existe.
 
 ---
 
-# 2. Primeiro passo — analisar a implementação atual
+# 1. Objetivo
 
-Antes de alterar qualquer código:
-
-1. Analise a estrutura atual do projeto.
-2. Localize a implementação atual do Validador de Duplicatas.
-3. Identifique frontend, backend, endpoints, funções e componentes relacionados.
-4. Verifique como Excel e CSV são atualmente lidos.
-5. Verifique como os dados são atualmente agrupados.
-6. Verifique como as duplicidades estão sendo identificadas.
-7. Verifique como a exportação atual funciona.
-8. Verifique se já existem funções reutilizáveis das outras features.
-9. Identifique possíveis conflitos com:
-
-   * Validador de Cabeçalhos;
-   * Cruzamento de Planilhas;
-   * Excel → CSV;
-   * Categorizador;
-   * Sistema de aliases;
-   * Normalização de dados.
-10. Só depois implemente as alterações.
-
-Não modificar funcionalidades não relacionadas sem necessidade.
-
----
-
-# 3. Conceito de duplicata
-
-É importante diferenciar:
-
-### Registro completamente duplicado
-
-Exemplo:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-
-Esses dois registros são **idênticos**.
-
-A segunda ocorrência poderá ser considerada duplicada e removida quando o usuário selecionar:
+Criar uma nova área:
 
 ```text
-Únicos
+Cadastro de Planilhas
 ```
 
-### Registros com a mesma chave, mas informações diferentes
+Essa área funcionará como um gerenciador local de arquivos de planilhas.
 
-Exemplo:
+O usuário deverá conseguir:
 
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Esses registros **não são completamente duplicados**.
-
-Eles possuem o mesmo `Nome`, porém possuem informações diferentes.
-
-Portanto, não devem ser simplesmente excluídos.
-
-Esses dados devem ser preservados e reorganizados conforme o método de extração escolhido.
+* Cadastrar uma planilha;
+* Armazenar a planilha localmente;
+* Consultar as planilhas já cadastradas;
+* Pesquisar por nome;
+* Filtrar por extensão;
+* Visualizar informações do arquivo;
+* Selecionar uma planilha;
+* Abrir/utilizar uma planilha nas funcionalidades do sistema;
+* Excluir uma planilha cadastrada;
+* Atualizar a listagem;
+* Manter os arquivos organizados em pastas.
 
 ---
 
-# 4. Seleção de Únicos ou Duplicados
+# 2. Formatos suportados
 
-O usuário deverá possuir uma opção semelhante a:
+Inicialmente aceitar:
 
 ```text
-Tipo de resultado:
-
-○ Únicos
-○ Duplicados
+.xlsx
+.xls
+.csv
 ```
 
-## Únicos
+Não permitir arquivos que não sejam desses formatos.
 
-Deve retornar os registros sem repetições completas.
+A validação deverá existir tanto no frontend quanto no backend.
 
 Exemplo:
 
-Entrada:
+```text
+.xlsx → permitido
+.xls  → permitido
+.csv  → permitido
+.pdf  → rejeitado
+.docx → rejeitado
+.exe  → rejeitado
+.png  → rejeitado
+```
 
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
+---
+
+# 3. Estrutura local de armazenamento
+
+Criar uma estrutura local para armazenamento das planilhas.
+
+A estrutura deverá ficar isolada dos demais arquivos do sistema.
+
+Sugestão:
+
+```text
+data/
+└── planilhas/
+    ├── excel/
+    │   ├── arquivo1.xlsx
+    │   ├── arquivo2.xlsx
+    │   └── arquivo3.xls
+    │
+    └── csv/
+        ├── clientes.csv
+        └── produtos.csv
+```
+
+Porém, antes de criar essa estrutura, verificar se o projeto já possui uma pasta destinada a uploads/arquivos.
+
+Se já existir uma estrutura consolidada, reutilizá-la em vez de criar outra estrutura paralela.
+
+---
+
+# 4. Organização por extensão
+
+As extensões poderão ser organizadas em diretórios próprios.
+
+Exemplo:
+
+```text
+planilhas/
+├── excel/
+└── csv/
+```
+
+Arquivos Excel:
+
+```text
+planilhas/excel/
+```
+
+Arquivos CSV:
+
+```text
+planilhas/csv/
+```
+
+Caso o projeto já possua uma estrutura melhor para isso, adaptar sem quebrar a organização existente.
+
+---
+
+# 5. Não armazenar o arquivo no banco
+
+O arquivo físico não deverá ser armazenado como BLOB no banco de dados.
+
+O arquivo deverá permanecer no sistema de arquivos local.
+
+Caso seja necessário utilizar banco de dados para metadados, armazenar apenas informações como:
+
+```text
+id
+nome_original
+nome_arquivo
+extensao
+caminho_relativo
+tamanho
+data_cadastro
+data_modificacao
+```
+
+Nunca armazenar o conteúdo completo da planilha no banco sem necessidade.
+
+---
+
+# 6. Cadastro
+
+A interface deverá possuir uma área clara para cadastrar uma nova planilha.
+
+Exemplo:
+
+```text
+┌─────────────────────────────────────────┐
+│ Cadastrar planilha                      │
+│                                         │
+│ [ Selecionar arquivo ]                  │
+│                                         │
+│ Formatos aceitos: XLSX, XLS e CSV       │
+│                                         │
+│                [ Cadastrar ]            │
+└─────────────────────────────────────────┘
+```
+
+Também poderá suportar:
+
+```text
+Arraste e solte sua planilha aqui
+```
+
+com:
+
+```text
+ou
+```
+
+e um botão:
+
+```text
+[ Selecionar arquivo ]
+```
+
+---
+
+# 7. Drag and Drop
+
+Implementar uma área de Drag & Drop seguindo o padrão visual do projeto.
+
+Exemplo:
+
+```text
+┌───────────────────────────────────────────┐
+│                                           │
+│        Arraste sua planilha aqui          │
+│                                           │
+│                 ou                        │
+│                                           │
+│          [ Selecionar arquivo ]           │
+│                                           │
+│       XLSX • XLS • CSV                    │
+└───────────────────────────────────────────┘
+```
+
+Ao arrastar um arquivo para a área:
+
+* destacar visualmente a região;
+* informar que o arquivo pode ser solto;
+* validar a extensão;
+* mostrar o nome do arquivo após a seleção.
+
+---
+
+# 8. Validação antes do cadastro
+
+Antes de salvar:
+
+### Validar extensão
+
+```text
+.xlsx
+.xls
+.csv
+```
+
+### Validar arquivo
+
+Não aceitar:
+
+```text
+arquivo.pdf
+arquivo.docx
+imagem.png
+```
+
+### Validar nome
+
+O nome do arquivo deve ser tratado com segurança.
+
+Não permitir que o nome fornecido pelo usuário consiga:
+
+* navegar para diretórios superiores;
+* criar caminhos arbitrários;
+* sobrescrever arquivos fora da pasta de planilhas.
+
+Utilizar o nome original apenas como informação de exibição quando necessário.
+
+---
+
+# 9. Nomes duplicados
+
+Caso o usuário tente cadastrar:
+
+```text
+clientes.xlsx
+```
+
+e já exista:
+
+```text
+clientes.xlsx
+```
+
+não sobrescrever silenciosamente o arquivo existente.
+
+Apresentar uma decisão clara.
+
+Exemplo:
+
+```text
+A planilha "clientes.xlsx" já está cadastrada.
+
+O que deseja fazer?
+
+[ Cancelar ]
+
+[ Cadastrar como nova versão ]
+
+[ Substituir existente ]
+```
+
+Se a substituição for implementada, deverá exigir confirmação explícita.
+
+---
+
+# 10. Alternativa para nomes duplicados
+
+Caso o projeto prefira não permitir substituição, gerar um nome seguro automaticamente.
+
+Exemplo:
+
+```text
+clientes.xlsx
+clientes (1).xlsx
+clientes (2).xlsx
+```
+
+A escolha deverá seguir o padrão existente do projeto.
+
+Não criar comportamentos diferentes entre funcionalidades.
+
+---
+
+# 11. Listagem de planilhas
+
+Abaixo ou ao lado da área de cadastro deverá existir o leitor/listagem das planilhas cadastradas.
+
+Exemplo:
+
+```text
+Planilhas cadastradas
+
+┌─────────────────────────────────────────────┐
+│ Nome             Tipo     Tamanho    Data   │
+├─────────────────────────────────────────────┤
+│ clientes.xlsx    XLSX     2.4 MB    24/08  │
+│ vendas.csv       CSV      850 KB     23/08  │
+│ produtos.xlsx    XLSX     1.2 MB    22/08  │
+└─────────────────────────────────────────────┘
+```
+
+A interface deve respeitar o HTML e os componentes já utilizados no projeto.
+
+---
+
+# 12. Informações apresentadas
+
+Cada arquivo deverá apresentar, quando disponível:
+
+```text
+Nome
+Extensão
+Tamanho
+Data de cadastro
+Data de modificação
+```
+
+Opcionalmente:
+
+```text
+Quantidade de linhas
+Quantidade de colunas
+Quantidade de abas
+```
+
+Essas informações adicionais só devem ser calculadas se não causarem impacto significativo no carregamento.
+
+---
+
+# 13. Filtro por nome
+
+Adicionar um campo de busca:
+
+```text
+🔎 Pesquisar planilha...
+```
+
+A pesquisa deverá permitir procurar pelo nome do arquivo.
+
+Exemplo:
+
+Arquivos:
+
+```text
+clientes.xlsx
+clientes_2026.xlsx
+produtos.xlsx
+vendas.csv
+```
+
+Pesquisa:
+
+```text
+clientes
+```
 
 Resultado:
 
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-A segunda linha idêntica foi ignorada.
-
-**Importante:** não remover a segunda linha apenas porque o `Nome` é igual.
-
-A comparação deve considerar o conjunto de dados definido para identificar uma duplicata.
-
----
-
-# 5. Duplicados
-
-Quando o usuário selecionar:
-
 ```text
-Duplicados
+clientes.xlsx
+clientes_2026.xlsx
 ```
 
-o sistema deverá identificar os registros que possuem duplicidade conforme a regra estabelecida.
+A pesquisa deverá funcionar sem diferenciar maiúsculas/minúsculas.
 
 Exemplo:
 
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-O sistema deve identificar que:
-
 ```text
-João Pedro + teste1@gmail.com + 11901234567
+CLIENTES
+clientes
+Clientes
 ```
 
-aparece mais de uma vez.
-
-A interface deve deixar claro quais registros foram considerados duplicados.
+devem produzir o mesmo resultado.
 
 ---
 
-# 6. Não confundir duplicidade completa com agrupamento
+# 14. Filtro por extensão
 
-Esta regra é fundamental.
-
-O sistema deverá diferenciar:
+Adicionar um filtro:
 
 ```text
-Duplicidade completa
+Tipo:
+
+[ Todos ▼ ]
 ```
 
-de:
+Opções:
 
 ```text
-Mesmo valor na coluna-chave
+Todos
+Excel
+CSV
+XLSX
+XLS
 ```
 
 Exemplo:
 
 ```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste2@gmail.com | 222
+Tipo: CSV
 ```
 
-Existe repetição em `Nome`, mas não existe duplicidade completa.
+deverá mostrar somente:
 
-Portanto, os dois registros devem continuar sendo considerados dados válidos.
+```text
+clientes.csv
+vendas.csv
+produtos.csv
+```
 
 ---
 
-# 7. Coluna-chave
+# 15. Busca combinada
 
-O usuário deverá poder selecionar uma coluna para servir como referência do agrupamento.
+O filtro por nome e extensão deverá funcionar simultaneamente.
 
 Exemplo:
 
 ```text
-Coluna-chave:
+Pesquisa:
+clientes
+
+Tipo:
+CSV
+```
+
+Resultado:
+
+```text
+clientes.csv
+clientes_2026.csv
+```
+
+Não mostrar:
+
+```text
+clientes.xlsx
+```
+
+---
+
+# 16. Limpar filtros
+
+Adicionar uma ação:
+
+```text
+[ Limpar filtros ]
+```
+
+que restaure:
+
+```text
+Pesquisa → vazia
+Tipo → Todos
+```
+
+e apresente novamente todas as planilhas.
+
+---
+
+# 17. Ordenação
+
+Permitir ordenar a listagem.
+
+Opções sugeridas:
+
+```text
+Nome
+Data de cadastro
+Data de modificação
+Tamanho
+Extensão
+```
+
+Exemplo:
+
+```text
+Ordenar por:
 
 [ Nome ▼ ]
+
+[ ↑ Crescente ]
+[ ↓ Decrescente ]
 ```
 
-Nesse caso:
+Caso já exista componente de ordenação no projeto, reutilizá-lo.
+
+---
+
+# 18. Atualizar listagem
+
+Adicionar um botão:
 
 ```text
-João Pedro
-João Pedro
-João Pedro
+↻ Atualizar
 ```
 
-serão considerados registros pertencentes ao mesmo grupo.
+O objetivo é consultar novamente a estrutura local.
 
-Porém, o sistema deverá continuar comparando as demais colunas para determinar se os registros são realmente idênticos.
-
----
-
-# 8. Métodos de extração
-
-O usuário deverá poder escolher como deseja organizar o resultado.
-
-Disponibilizar:
+Ao clicar:
 
 ```text
-Método de extração:
-
-○ Quebra de linhas
-○ Quebra de colunas
-○ Concatenado
+estrutura local
+      ↓
+listar arquivos
+      ↓
+atualizar interface
 ```
 
----
+Não depender exclusivamente do estado mantido no frontend.
 
-# 9. Método — Quebra de linhas
-
-Este método deverá preservar os registros em linhas separadas.
-
-Entrada:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Resultado:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Não realizar qualquer concatenação ou criação de novas colunas.
-
-Esse método representa o formato mais próximo possível dos dados originais após a aplicação da regra de duplicidade.
+A fonte de verdade deverá ser o armazenamento local.
 
 ---
 
-# 10. Método — Quebra de colunas
+# 19. Seleção de planilha
 
-Neste método, registros pertencentes à mesma chave deverão ser consolidados em uma única linha.
+Cada item da listagem deverá possuir uma ação:
+
+```text
+[ Selecionar ]
+```
+
+ou permitir selecionar diretamente o registro.
 
 Exemplo:
 
-Entrada:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Resultado:
-
-| Nome       | Email 1                                     | Email 2                                     | Telefone 1  | Telefone 2  |
-| ---------- | ------------------------------------------- | ------------------------------------------- | ----------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234567 | 11901234568 |
-
-A criação das colunas deverá ser dinâmica.
-
-Se existirem:
-
 ```text
-3 e-mails
+☐ clientes.xlsx
+☐ vendas.csv
+☐ produtos.xlsx
 ```
 
-criar:
+Também poderá existir:
 
 ```text
-Email 1
-Email 2
-Email 3
+[ Selecionar ]
 ```
 
-Se existirem:
-
-```text
-5 telefones
-```
-
-criar:
-
-```text
-Telefone 1
-Telefone 2
-Telefone 3
-Telefone 4
-Telefone 5
-```
+na própria linha.
 
 ---
 
-# 11. Método — Concatenado
+# 20. Utilização da planilha
 
-Criar um método:
-
-```text
-Concatenado
-```
-
-Nesse método, os registros pertencentes à mesma chave deverão ser consolidados em uma linha e os valores diferentes deverão ser concatenados.
+Depois que uma planilha for selecionada, o sistema deverá permitir utilizá-la nas funcionalidades existentes.
 
 Exemplo:
 
-Entrada:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Resultado:
-
-| Nome       | Emails                                                                                  | Telefones               |
-| ---------- | --------------------------------------------------------------------------------------- | ----------------------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com);[teste2@gmail.com](mailto:teste2@gmail.com) | 11901234567;11901234568 |
-
-O separador padrão deverá ser:
-
 ```text
-;
+clientes.xlsx
 ```
 
-Mas, se já existir no projeto uma configuração de separador, reutilizá-la.
+poderá ser enviado para:
+
+```text
+Validador de Cabeçalhos
+Validador de Duplicatas
+Cruzamento de Planilhas
+Categorizador
+Excel → CSV
+```
+
+Sempre que possível, as funcionalidades devem trabalhar com a referência do arquivo cadastrado em vez de exigir que o usuário selecione novamente o arquivo.
 
 ---
 
-# 12. Remoção de duplicatas no modo Únicos
+# 21. Integração com o Cruzamento de Planilhas
 
-Considerar:
-
-Entrada:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-As duas primeiras linhas são completamente iguais.
-
-Quando o usuário selecionar:
-
-```text
-Únicos
-```
-
-elas deverão resultar em apenas uma ocorrência.
-
-Resultado intermediário:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
----
-
-# 13. Aplicação do método de extração após a remoção de duplicatas
-
-Depois de remover as duplicatas completas, o sistema deverá aplicar o método de extração escolhido.
+O Cadastro de Planilhas deverá permitir selecionar arquivos cadastrados para o cruzamento.
 
 Exemplo:
 
-### Dados originais
-
 ```text
-João Pedro | teste1@gmail.com | 11901234567
-João Pedro | teste1@gmail.com | 11901234567
-João Pedro | teste2@gmail.com | 11901234568
+Planilha 1:
+[ clientes.xlsx ▼ ]
+
+Planilha 2:
+[ contatos.csv ▼ ]
 ```
 
-### Remoção da duplicata
+Isso deverá utilizar a mesma fonte de arquivos cadastrados.
+
+Não criar outro sistema de armazenamento.
+
+---
+
+# 22. Integração com o Validador de Duplicatas
+
+O usuário poderá selecionar:
 
 ```text
-João Pedro | teste1@gmail.com | 11901234567
-João Pedro | teste2@gmail.com | 11901234568
+clientes.xlsx
 ```
 
-### Método Concatenado
+diretamente do cadastro.
 
-Resultado:
+Depois escolher:
 
 ```text
-Nome | Emails | Telefones
-João Pedro | teste1@gmail.com;teste2@gmail.com | 11901234567;11901234568
+Coluna-chave
+Únicos/Duplicados
+Método de extração
+Formato de exportação
 ```
 
-### Método Quebra de colunas
+A funcionalidade deve utilizar o arquivo cadastrado.
 
-Resultado:
+---
 
-```text
-Nome | Email 1 | Email 2 | Telefone 1 | Telefone 2
-João Pedro | teste1@gmail.com | teste2@gmail.com | 11901234567 | 11901234568
-```
+# 23. Integração com o Categorizador
 
-### Método Quebra de linhas
+O Categorizador também deverá conseguir utilizar uma planilha cadastrada.
 
-Resultado:
+Fluxo:
 
 ```text
-Nome | Email | Telefone
-João Pedro | teste1@gmail.com | 11901234567
-João Pedro | teste2@gmail.com | 11901234568
+Cadastro
+   ↓
+Selecionar clientes.xlsx
+   ↓
+Categorizador
+   ↓
+Selecionar aba
+   ↓
+Selecionar coluna
+   ↓
+Categorizar
 ```
 
 ---
 
-# 14. Exportação para Excel
+# 24. Visualização rápida
 
-O usuário deverá poder escolher:
+Considerar adicionar uma ação:
 
 ```text
-Formato de saída:
-
-○ Excel (.xlsx)
-○ CSV (.csv)
+[ Visualizar ]
 ```
 
-Quando selecionar Excel:
+que permita abrir uma prévia da planilha sem necessariamente entrar em uma ferramenta de processamento.
+
+Exemplo:
 
 ```text
-[ Exportar Excel ]
-```
-
-deverá ser criado um novo arquivo `.xlsx`.
-
-O arquivo original nunca deverá ser alterado.
-
----
-
-# 15. Exportação para CSV
-
-Quando selecionar:
-
-```text
-CSV (.csv)
-```
-
-deverá ser criado um arquivo `.csv`.
-
-O CSV deverá preservar corretamente:
-
-* Acentuação;
-* Caracteres especiais;
-* Valores com espaços;
-* Separadores internos;
-* Valores concatenados.
-
-Dar preferência à codificação:
-
-```text
-UTF-8 com BOM
-```
-
-para manter compatibilidade com Excel no Windows.
-
----
-
-# 16. Configurações da exportação
-
-A interface deverá apresentar claramente as opções:
-
-```text
-Arquivo:
-[ clientes.xlsx ]
+clientes.xlsx
 
 Aba:
 [ Clientes ▼ ]
 
-Coluna-chave:
-[ Nome ▼ ]
-
-Resultado:
-○ Únicos
-○ Duplicados
-
-Método:
-○ Quebra de linhas
-○ Quebra de colunas
-○ Concatenado
-
-Formato:
-○ Excel
-○ CSV
+Nome       | Email
+-----------|------------------
+João Pedro | teste@gmail.com
+Maria      | maria@gmail.com
 ```
 
-E então:
+A visualização deverá ser somente leitura.
+
+Não alterar o arquivo original.
+
+---
+
+# 25. Abrir detalhes
+
+Opcionalmente, cada planilha poderá possuir uma área de detalhes:
 
 ```text
-[ Visualizar resultado ]
+clientes.xlsx
 
-[ Exportar ]
+Tipo: Excel
+Tamanho: 2.4 MB
+Cadastrada: 24/08/2026
+Modificada: 24/08/2026
+
+Abas:
+- Clientes
+- Histórico
+- Configurações
+
+[ Visualizar ]
+[ Usar planilha ]
+[ Excluir ]
 ```
 
 ---
 
-# 17. Pré-visualização
+# 26. Exclusão
 
-Antes da exportação, apresentar uma prévia do resultado.
+Permitir excluir uma planilha cadastrada.
+
+Porém, nunca excluir sem confirmação.
 
 Exemplo:
 
 ```text
-Método: Concatenado
-Filtro: Únicos
+Deseja realmente excluir:
 
-Nome        | Emails                         | Telefones
-João Pedro  | teste1@gmail.com;teste2@gmail.com | 11901234567;11901234568
+clientes.xlsx
+
+Esta ação removerá o arquivo da estrutura local.
+
+[ Cancelar ] [ Excluir ]
 ```
 
-Também mostrar informações como:
+Após a exclusão:
 
 ```text
-Registros originais: 3
-Duplicatas encontradas: 1
-Registros após deduplicação: 2
-Grupos encontrados: 1
+arquivo físico
+      ↓
+removido
+      ↓
+listagem atualizada
 ```
-
-Isso ajuda o usuário a validar o resultado antes de exportar.
 
 ---
 
-# 18. Integridade dos dados
+# 27. Proteção contra exclusão acidental
 
-Esta é uma regra obrigatória.
-
-Durante qualquer etapa:
-
-```text
-Importação
-↓
-Validação
-↓
-Identificação de duplicatas
-↓
-Agrupamento
-↓
-Transformação
-↓
-Exportação
-```
-
-nenhum dado válido deverá ser perdido.
-
-A única remoção permitida ocorrerá quando:
-
-1. O usuário selecionar `Únicos`;
-2. O registro for realmente duplicado segundo a regra de duplicidade completa.
-
-Mesmo nesse caso, a ocorrência removida não deverá fazer com que informações diferentes sejam perdidas.
-
----
-
-# 19. Colunas duplicadas
-
-Caso existam colunas com o mesmo nome, não sobrescrever valores.
+O botão de exclusão não deve estar excessivamente próximo de ações comuns sem diferenciação visual.
 
 Exemplo:
 
 ```text
-Nome | Email | Email
+[ Usar ] [ Visualizar ] [ ⋮ ]
 ```
 
-deverá ser tratado como:
+Dentro do menu:
 
 ```text
-Nome | Email 1 | Email 2
+Visualizar
+Renomear
+Usar
+Excluir
 ```
 
-ou utilizando identificação de origem quando disponível.
-
-Nunca executar uma operação que resulte em:
-
-```text
-Email → último valor sobrescreve o primeiro
-```
+Isso reduz a possibilidade de exclusão acidental.
 
 ---
 
-# 20. Valores diferentes devem ser preservados
+# 28. Renomear
+
+Considerar permitir renomear o arquivo através da interface.
 
 Exemplo:
 
 ```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste2@gmail.com | 222
+clientes.xlsx
+
+[ Renomear ]
 ```
 
-Não pode resultar em:
+Novo nome:
 
 ```text
-João Pedro | teste2@gmail.com | 222
+clientes_2026.xlsx
 ```
 
-perdendo o primeiro registro.
+A extensão deverá ser preservada ou validada.
 
-Dependendo do método:
-
-### Quebra de linhas
-
-```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste2@gmail.com | 222
-```
-
-### Quebra de colunas
-
-```text
-João Pedro | teste1@gmail.com | teste2@gmail.com | 111 | 222
-```
-
-### Concatenado
-
-```text
-João Pedro | teste1@gmail.com;teste2@gmail.com | 111;222
-```
+Não permitir que o usuário altere `.xlsx` para uma extensão incompatível sem confirmação.
 
 ---
 
-# 21. Integração com o sistema de aliases
+# 29. Estrutura de diretórios
 
-Verificar se o Validador de Duplicatas pode reutilizar o sistema de aliases existente.
+A implementação deverá possuir uma função central responsável por garantir que as pastas existam.
+
+Conceitualmente:
+
+```text
+ensure_storage_structure()
+```
+
+Ela deverá verificar:
+
+```text
+data/
+└── planilhas/
+    ├── excel/
+    └── csv/
+```
+
+e criar os diretórios quando necessário.
+
+Não depender de criação manual das pastas.
+
+---
+
+# 30. Consulta das pastas
+
+A listagem deverá ser construída a partir dos arquivos realmente existentes na estrutura local.
 
 Exemplo:
 
 ```text
-Nome
-Nome Completo
-Nome do Cliente
-Cliente
+data/planilhas/excel/
+data/planilhas/csv/
 ```
 
-podem ser reconhecidos como relacionados.
+O backend deverá consultar essas pastas e retornar os arquivos encontrados.
 
-Da mesma forma:
-
-```text
-Email
-E-mail
-E-Mail
-Correio Eletrônico
-```
-
-podem ser identificados como equivalentes.
-
-Não duplicar a implementação de aliases se já existir uma estrutura central no projeto.
+Não utilizar somente uma lista armazenada no frontend.
 
 ---
 
-# 22. Integração com as demais funcionalidades
+# 31. Sincronização
 
-Verificar se a implementação final permanece coerente com:
-
-* Validador de Cabeçalhos;
-* Cruzamento de Planilhas;
-* Conversor Excel → CSV;
-* Categorizador;
-* Sistema de aliases;
-* Normalização de dados;
-* Exportação Excel;
-* Exportação CSV.
-
-Sempre que possível, centralizar funções comuns como:
+Caso um arquivo seja removido manualmente da pasta local, ao clicar:
 
 ```text
-normalização de cabeçalhos
-normalização de valores
-identificação de aliases
-detecção de duplicidades
-tratamento de colunas
-geração de nomes de colunas
-exportação Excel
-exportação CSV
+[ Atualizar ]
 ```
 
-Evitar criar múltiplas versões da mesma lógica.
-
----
-
-# 23. Regra sobre duplicidade completa
-
-A definição padrão de duplicata deverá considerar o conjunto de dados do registro.
+o arquivo não deverá continuar aparecendo como disponível.
 
 Exemplo:
 
 ```text
-Nome = João Pedro
-Email = teste1@gmail.com
-Telefone = 11901234567
+arquivo existe
+      ↓
+aparece na interface
 ```
 
-e:
+Se for removido:
 
 ```text
-Nome = João Pedro
-Email = teste1@gmail.com
-Telefone = 11901234567
+arquivo não existe
+      ↓
+atualizar
+      ↓
+remove da listagem
 ```
 
-→ duplicados.
-
-Porém:
-
-```text
-Nome = João Pedro
-Email = teste1@gmail.com
-Telefone = 11901234567
-```
-
-e:
-
-```text
-Nome = João Pedro
-Email = teste2@gmail.com
-Telefone = 11901234568
-```
-
-→ não são duplicados completos.
-
-Os dois devem ser preservados.
+A interface deverá refletir o estado real do armazenamento.
 
 ---
 
-# 24. Registros com valores parcialmente iguais
+# 32. Arquivos adicionados externamente
+
+Se um arquivo compatível for colocado diretamente na pasta:
+
+```text
+data/planilhas/excel/
+```
+
+ou:
+
+```text
+data/planilhas/csv/
+```
+
+ao atualizar a listagem, ele deverá ser identificado.
 
 Exemplo:
 
 ```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste1@gmail.com | 222
+arquivo colocado manualmente
+        ↓
+[ Atualizar ]
+        ↓
+arquivo aparece no sistema
 ```
 
-Esses registros não são completamente iguais.
-
-Portanto:
-
-```text
-Únicos
-```
-
-deve manter ambos.
-
-Resultado em quebra de linhas:
-
-```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste1@gmail.com | 222
-```
-
-Resultado concatenado:
-
-```text
-João Pedro | teste1@gmail.com | 111;222
-```
-
-Resultado em quebra de colunas:
-
-```text
-João Pedro | teste1@gmail.com | teste1@gmail.com | 111 | 222
-```
-
-Caso existam valores iguais que possam ser deduplicados durante a consolidação, essa decisão deverá respeitar a opção selecionada pelo usuário.
+Não assumir que somente arquivos cadastrados pela interface podem existir.
 
 ---
 
-# 25. UX
+# 33. UX — Estado vazio
 
-A interface deve deixar extremamente claro que existem duas decisões diferentes:
-
-### O que mostrar?
+Quando não houver planilhas:
 
 ```text
-Únicos
-Duplicados
+┌──────────────────────────────────────┐
+│                                      │
+│         Nenhuma planilha cadastrada  │
+│                                      │
+│   Comece adicionando um arquivo      │
+│                                      │
+│       [ Cadastrar planilha ]         │
+│                                      │
+└──────────────────────────────────────┘
 ```
 
-### Como organizar?
+Não mostrar uma tabela vazia sem explicação.
+
+---
+
+# 34. UX — Carregamento
+
+Durante a leitura:
 
 ```text
-Quebra de linhas
-Quebra de colunas
-Concatenado
+Carregando planilhas...
 ```
 
-Não misturar esses conceitos na interface.
+Utilizar loading/skeleton já existente no projeto, caso exista.
+
+Evitar congelamento visual da interface.
+
+---
+
+# 35. UX — Erros
+
+Erros devem ser apresentados de maneira amigável.
 
 Exemplo:
 
 ```text
-┌─────────────────────────────────────┐
-│ VALIDAÇÃO                           │
-│                                     │
-│ Mostrar:                            │
-│ ○ Únicos                            │
-│ ○ Duplicados                        │
-│                                     │
-│ Método de extração:                 │
-│ ○ Quebra de linhas                  │
-│ ○ Quebra de colunas                 │
-│ ○ Concatenado                       │
-│                                     │
-│ Formato:                            │
-│ ○ Excel                             │
-│ ○ CSV                               │
-└─────────────────────────────────────┘
+Não foi possível cadastrar a planilha.
+
+Verifique se:
+• o arquivo está acessível;
+• possui uma extensão suportada;
+• não está sendo utilizado por outro programa.
 ```
 
----
-
-# 26. Execução local
-
-A funcionalidade deverá continuar seguindo a arquitetura local do projeto.
-
-Não utilizar:
-
-* APIs externas;
-* serviços de conversão online;
-* armazenamento em nuvem;
-* upload dos arquivos para servidores externos.
-
-Todo processamento deverá ocorrer no computador do usuário.
-
----
-
-# 27. Testes obrigatórios
-
-## Teste 1 — duplicata completa
-
-Entrada:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
-Selecionar:
+Evitar apresentar somente:
 
 ```text
-Únicos
+500 Internal Server Error
 ```
 
-Resultado intermediário:
+ao usuário.
 
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
+O erro técnico poderá ser registrado nos logs.
 
 ---
 
-## Teste 2 — Quebra de linhas
+# 36. UX — sucesso
 
-Resultado:
-
-| Nome       | Email                                       | Telefone    |
-| ---------- | ------------------------------------------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | 11901234567 |
-| João Pedro | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234568 |
-
----
-
-## Teste 3 — Quebra de colunas
-
-Resultado:
-
-| Nome       | Email 1                                     | Email 2                                     | Telefone 1  | Telefone 2  |
-| ---------- | ------------------------------------------- | ------------------------------------------- | ----------- | ----------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com) | [teste2@gmail.com](mailto:teste2@gmail.com) | 11901234567 | 11901234568 |
-
----
-
-## Teste 4 — Concatenado
-
-Resultado:
-
-| Nome       | Emails                                                                                  | Telefones               |
-| ---------- | --------------------------------------------------------------------------------------- | ----------------------- |
-| João Pedro | [teste1@gmail.com](mailto:teste1@gmail.com);[teste2@gmail.com](mailto:teste2@gmail.com) | 11901234567;11901234568 |
-
----
-
-## Teste 5 — CSV
-
-Executar os três métodos de extração e confirmar que todos podem ser exportados para CSV.
-
----
-
-## Teste 6 — Excel
-
-Executar os três métodos de extração e confirmar que todos podem ser exportados para Excel.
-
----
-
-## Teste 7 — valores parcialmente iguais
-
-Entrada:
+Após cadastro:
 
 ```text
-João Pedro | teste1@gmail.com | 111
-João Pedro | teste1@gmail.com | 222
+✓ Planilha cadastrada com sucesso.
+
+clientes.xlsx
 ```
 
-Confirmar que os dois registros são preservados em `Únicos`.
+A nova planilha deverá aparecer automaticamente na listagem.
+
+Não obrigar o usuário a atualizar manualmente.
 
 ---
 
-## Teste 8 — vários valores
+# 37. Contador
 
-Entrada:
+Mostrar uma informação como:
 
 ```text
-João Pedro | email1 | telefone1
-João Pedro | email2 | telefone2
-João Pedro | email3 | telefone3
-João Pedro | email4 | telefone4
+Planilhas cadastradas: 24
 ```
 
-Confirmar:
-
-### Quebra de colunas
+Opcionalmente:
 
 ```text
-Email 1
-Email 2
-Email 3
-Email 4
+Excel: 18
+CSV: 6
 ```
 
-### Concatenado
+Os números deverão respeitar os filtros quando fizer sentido.
+
+Exemplo:
 
 ```text
-email1;email2;email3;email4
+24 planilhas encontradas
 ```
 
 ---
 
-# 28. Validação final de toda a implementação
+# 38. Layout responsivo
 
-Depois de implementar a atualização do Validador de Duplicatas, realizar uma **auditoria da feature e do contexto geral do projeto**.
+A interface deve respeitar o layout existente.
 
-Verificar:
+Não criar elementos que quebrem:
 
-### Validador de Duplicatas
+* desktop;
+* resoluções menores;
+* tabelas;
+* sidebar;
+* header;
+* cards;
+* espaçamentos.
 
-* [ ] Excel funciona.
-* [ ] CSV funciona.
-* [ ] Únicos funciona.
-* [ ] Duplicados funciona.
-* [ ] Quebra de linhas funciona.
-* [ ] Quebra de colunas funciona.
-* [ ] Concatenado funciona.
-* [ ] Duplicatas completas são identificadas corretamente.
-* [ ] Registros apenas parcialmente iguais não são removidos.
-* [ ] Valores diferentes são preservados.
-* [ ] Colunas duplicadas são tratadas corretamente.
-* [ ] Exportação Excel funciona.
-* [ ] Exportação CSV funciona.
+Caso o projeto já tenha breakpoints, reutilizá-los.
+
+---
+
+# 39. Respeitar HTML existente
+
+Não modificar indiscriminadamente o HTML atual.
+
+Antes de criar novos elementos:
+
+1. verificar componentes existentes;
+2. verificar classes existentes;
+3. verificar padrões de cards;
+4. verificar botões;
+5. verificar modais;
+6. verificar inputs;
+7. verificar tabelas;
+8. verificar mensagens de feedback.
+
+Reutilizar a estrutura existente sempre que possível.
+
+---
+
+# 40. CSS
+
+Não criar um novo Design System.
+
+Reutilizar:
+
+```text
+variáveis CSS
+cores
+tipografia
+bordas
+sombras
+botões
+inputs
+cards
+modais
+tabelas
+```
+
+já existentes.
+
+Se uma nova classe for necessária, seguir o padrão de nomenclatura atual.
+
+Não utilizar estilos inline desnecessariamente.
+
+---
+
+# 41. JavaScript
+
+Organizar a lógica seguindo a arquitetura existente.
+
+Separar responsabilidades entre:
+
+```text
+upload
+listagem
+filtro
+ordenação
+seleção
+exclusão
+visualização
+renomeação
+atualização
+```
+
+Evitar criar um único arquivo JS gigante se o projeto já possui organização modular.
+
+---
+
+# 42. Backend
+
+Criar/reutilizar endpoints adequados para:
+
+```text
+listar planilhas
+cadastrar planilha
+excluir planilha
+renomear planilha
+consultar informações
+visualizar planilha
+```
+
+Exemplo conceitual:
+
+```text
+GET  /api/planilhas
+POST /api/planilhas
+DELETE /api/planilhas/<id>
+PUT /api/planilhas/<id>
+GET /api/planilhas/<id>/preview
+```
+
+Os nomes devem seguir o padrão de rotas já existente no projeto.
+
+Não criar endpoints duplicados se já existir uma estrutura equivalente.
+
+---
+
+# 43. Segurança do caminho
+
+Nunca confiar diretamente no nome/caminho enviado pelo frontend.
+
+O backend deverá controlar:
+
+```text
+diretório permitido
+nome permitido
+extensão permitida
+```
+
+Impedir caminhos como:
+
+```text
+../../arquivo.xlsx
+..\..\arquivo.xlsx
+C:\arquivo.xlsx
+```
+
+O usuário deverá conseguir trabalhar apenas dentro da estrutura destinada às planilhas.
+
+---
+
+# 44. Não sobrescrever arquivos
+
+Nunca sobrescrever automaticamente um arquivo existente sem uma ação explícita.
+
+Exemplo:
+
+```text
+clientes.xlsx
+```
+
+já existe.
+
+Novo upload:
+
+```text
+clientes.xlsx
+```
+
+deve gerar:
+
+```text
+conflito
+```
+
+e apresentar uma decisão ao usuário.
+
+---
+
+# 45. Metadados
+
+Caso seja útil para o sistema, manter metadados derivados do arquivo.
+
+Exemplo:
+
+```text
+{
+    nome: "clientes.xlsx",
+    extensao: ".xlsx",
+    caminho: "excel/clientes.xlsx",
+    tamanho: 2450000,
+    data_cadastro: "...",
+    data_modificacao: "..."
+}
+```
+
+Não duplicar o conteúdo da planilha em banco de dados.
+
+---
+
+# 46. Compatibilidade com execução local
+
+O projeto será executado em um computador local.
+
+Portanto, a implementação deverá funcionar sem depender de serviços externos.
+
+A estrutura deverá ser criada automaticamente no primeiro uso.
+
+Exemplo:
+
+```text
+primeira execução
+       ↓
+verificar data/planilhas
+       ↓
+não existe
+       ↓
+criar diretórios
+       ↓
+sistema pronto
+```
+
+---
+
+# 47. Regra de integridade
+
+O Cadastro de Planilhas não deve modificar o conteúdo da planilha durante o cadastro.
+
+Cadastrar significa:
+
+```text
+arquivo original
+      ↓
+armazenar
+      ↓
+indexar/listar
+```
+
+Não significa:
+
+```text
+arquivo original
+      ↓
+alterar dados
+      ↓
+armazenar
+```
+
+A planilha deverá permanecer intacta.
+
+---
+
+# 48. Integração com o princípio geral do projeto
+
+Essa nova funcionalidade deverá respeitar a regra geral já estabelecida:
+
+> **Transformar, organizar ou cadastrar uma planilha nunca deve significar perder dados.**
+
+Todas as funcionalidades devem trabalhar com o arquivo original preservado.
+
+Quando uma ferramenta gerar um resultado:
+
+```text
+Planilha original
+       ↓
+Processamento
+       ↓
+Novo arquivo
+```
+
+e nunca:
+
+```text
+Planilha original
+       ↓
+sobrescrever
+```
+
+a menos que o usuário solicite explicitamente uma substituição.
+
+---
+
+# 49. Critérios de aceitação
+
+A implementação será considerada concluída quando:
+
+* [ ] Existir uma nova área de Cadastro de Planilhas.
+* [ ] O usuário conseguir cadastrar `.xlsx`.
+* [ ] O usuário conseguir cadastrar `.xls`.
+* [ ] O usuário conseguir cadastrar `.csv`.
+* [ ] Arquivos inválidos forem rejeitados.
+* [ ] Existir Drag & Drop.
+* [ ] Existir seleção tradicional de arquivo.
+* [ ] Os arquivos forem armazenados localmente.
+* [ ] A estrutura de pastas for criada automaticamente.
+* [ ] O sistema conseguir consultar a estrutura local.
+* [ ] A listagem mostrar os arquivos existentes.
+* [ ] Existir busca por nome.
+* [ ] Existir filtro por extensão.
+* [ ] Busca e extensão puderem ser utilizadas simultaneamente.
+* [ ] Existir opção de limpar filtros.
+* [ ] Existir atualização da listagem.
+* [ ] Arquivos removidos externamente desaparecerem após atualização.
+* [ ] Arquivos adicionados externamente aparecerem após atualização.
+* [ ] Existir seleção de arquivo.
+* [ ] Arquivos puderem ser utilizados nas demais ferramentas.
+* [ ] Existir confirmação antes de exclusão.
+* [ ] Não ocorrer exclusão acidental.
+* [ ] Não ocorrer sobrescrita silenciosa.
+* [ ] O arquivo original permanecer intacto.
+* [ ] A interface respeitar o HTML existente.
+* [ ] A interface respeitar o CSS existente.
+* [ ] O Design System existente seja reutilizado.
+* [ ] A UX seja consistente com o restante do projeto.
+* [ ] O funcionamento seja local.
+* [ ] Nenhuma funcionalidade existente seja quebrada.
+
+---
+
+# 50. Validação final obrigatória
+
+Depois da implementação, não apenas informar que a funcionalidade foi criada.
+
+Realizar uma validação completa.
+
+Testar:
+
+### Cadastro
+
+```text
+clientes.xlsx
+clientes.csv
+produtos.xlsx
+```
+
+### Pesquisa
+
+```text
+clientes
+```
+
+### Filtro
+
+```text
+CSV
+```
+
+### Pesquisa + filtro
+
+```text
+clientes + CSV
+```
+
+### Exclusão
+
+Excluir uma planilha e atualizar.
+
+### Inclusão externa
+
+Adicionar uma planilha diretamente na pasta e atualizar.
+
+### Duplicidade
+
+Cadastrar um arquivo com o mesmo nome.
 
 ### Integração
 
-* [ ] Não existe código duplicado desnecessariamente.
-* [ ] Aliases são reutilizados.
-* [ ] Normalização é reutilizada.
-* [ ] Exportadores existentes são reutilizados quando possível.
-* [ ] O Validador de Cabeçalhos continua funcionando.
-* [ ] O Cruzamento de Planilhas continua funcionando.
-* [ ] O Conversor Excel → CSV continua funcionando.
-* [ ] O Categorizador continua funcionando.
-* [ ] Nenhuma rota existente foi quebrada.
-* [ ] Nenhuma funcionalidade existente foi removida.
+Selecionar uma planilha cadastrada e utilizá-la em:
+
+```text
+Validador de Cabeçalhos
+Validador de Duplicatas
+Cruzamento de Planilhas
+Categorizador
+Conversor Excel → CSV
+```
 
 ### Integridade
 
-* [ ] Nenhuma coluna original é perdida.
-* [ ] Nenhum registro válido é perdido.
-* [ ] Duplicatas completas só são removidas quando `Únicos` estiver selecionado.
-* [ ] Valores diferentes nunca são sobrescritos.
-* [ ] Exportações representam corretamente o resultado exibido na prévia.
+Confirmar que:
+
+* nenhum arquivo original foi alterado;
+* nenhum dado da planilha foi perdido;
+* os arquivos continuam acessíveis;
+* a listagem representa o estado real das pastas;
+* as funcionalidades existentes continuam funcionando.
 
 ---
 
-# 29. Regra final do projeto
+# 51. Entrega esperada
 
-Após implementar e validar essa feature, considere esta regra como princípio geral para todas as funcionalidades relacionadas a planilhas:
-
-> **Transformar a estrutura dos dados não significa perder os dados.**
-
-Sempre preservar:
-
-* registros;
-* colunas;
-* valores;
-* duplicidades relevantes;
-* informações diferentes;
-* origem das informações quando aplicável.
-
-Uma informação somente poderá ser removida quando houver uma ação explícita do usuário solicitando isso, como:
+Ao finalizar, apresentar um relatório objetivo contendo:
 
 ```text
-Únicos → remover ocorrências completamente duplicadas
+1. Estrutura de armazenamento criada
+2. Arquivos alterados
+3. Arquivos criados
+4. Endpoints criados/alterados
+5. Componentes reutilizados
+6. Funcionalidades implementadas
+7. Regras de segurança aplicadas
+8. Testes executados
+9. Resultado dos testes
+10. Problemas encontrados
+11. Problemas corrigidos
+12. Impacto nas funcionalidades existentes
+13. Confirmação de que a integridade dos dados foi preservada
 ```
 
-Mesmo nesse caso, nunca remover uma informação que seja diferente ou que esteja presente somente em uma ocorrência.
+**Não considerar a tarefa concluída apenas porque a interface está funcionando.**
 
-Ao final da implementação, apresente:
+A implementação somente estará concluída quando:
 
-1. Arquivos alterados;
-2. Funções criadas;
-3. Funções reutilizadas;
-4. Regras de duplicidade implementadas;
-5. Métodos de extração implementados;
-6. Formatos de exportação implementados;
-7. Testes realizados;
-8. Resultado dos testes;
-9. Possíveis problemas encontrados;
-10. Confirmação de que a regra de **preservação integral dos dados** está sendo respeitada em todo o contexto do projeto.
+> **A interface, armazenamento local, consulta dos arquivos, filtros, UX, backend, exportações e integração com as demais funcionalidades estiverem funcionando de maneira consistente dentro da arquitetura existente do projeto.**

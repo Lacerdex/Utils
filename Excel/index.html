@@ -138,6 +138,23 @@
                 <button
                     type="button"
                     class="nav-item"
+                    data-page="cadastro-planilhas"
+                >
+
+                    <span class="nav-icon">
+                        ▣
+                    </span>
+
+                    <span>
+                        Cadastro
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-item"
                     data-page="categorizer"
                 >
 
@@ -1991,7 +2008,8 @@
                                <input
                                    id="categorizer-file"
                                    type="file"
-                                   accept=".xlsx"
+                                   accept=".xlsx,.xls,.csv"
+                                   data-role="excel-file"
                                >
 
                                <span class="validator-upload-icon">
@@ -2183,6 +2201,243 @@
                        </div>
 
                    </section>
+
+                </section>
+
+
+                <!-- ==================================================
+                     PÁGINA: CADASTRO DE PLANILHAS
+                =================================================== -->
+
+                <section
+                   id="page-cadastro-planilhas"
+                   class="page"
+                   hidden
+                >
+
+                   <header class="page-header">
+
+                       <div>
+
+                           <span class="eyebrow">
+                               UTILS / EXCEL
+                           </span>
+
+                           <h1>
+                               Cadastro de Planilhas
+                           </h1>
+
+                           <p>
+                               Registre planilhas locais em um catálogo seguro,
+                               mantenha a estrutura por extensão e reutilize os arquivos
+                               já cadastrados nas ferramentas existentes.
+                           </p>
+
+                       </div>
+
+                   </header>
+
+                   <div class="registry-layout">
+
+                       <section class="validator-card registry-panel">
+
+                           <div class="validator-card-header">
+
+                               <div>
+
+                                   <span class="validator-number">
+                                       01
+                                   </span>
+
+                                   <div>
+
+                                       <h2>
+                                           Cadastrar planilha
+                                       </h2>
+
+                                       <p>
+                                           Aceita .xlsx, .xls e .csv com validação no navegador.
+                                       </p>
+
+                                   </div>
+
+                               </div>
+
+                           </div>
+
+                           <div
+                               id="planilha-dropzone"
+                               class="registry-dropzone"
+                               tabindex="0"
+                           >
+
+                               <input
+                                   id="planilha-file-input"
+                                   type="file"
+                                   accept=".xlsx,.xls,.csv"
+                                   multiple
+                                   hidden
+                               >
+
+                               <div class="registry-dropzone-copy">
+
+                                   <span class="validator-upload-icon">
+                                       XLSX · XLS · CSV
+                                   </span>
+
+                                   <strong>
+                                       Arraste sua planilha aqui
+                                   </strong>
+
+                                   <small>
+                                       ou
+                                   </small>
+
+                                   <button
+                                       id="planilha-trigger"
+                                       type="button"
+                                       class="button button-primary"
+                                   >
+                                       Selecionar arquivo
+                                   </button>
+
+                               </div>
+
+                           </div>
+
+                           <div class="registry-actions-row">
+                               <button
+                                   id="planilha-refresh"
+                                   type="button"
+                                   class="button button-secondary"
+                               >
+                                   ↻ Atualizar
+                               </button>
+                           </div>
+
+                           <div class="registry-form-grid">
+
+                               <div>
+                                   <label class="field-label" for="planilha-nome">
+                                       Nome para cadastro
+                                   </label>
+                                   <input
+                                       id="planilha-nome"
+                                       class="select"
+                                       type="text"
+                                       placeholder="Ex.: clientes_2026"
+                                       aria-label="Nome para cadastro"
+                                   >
+                               </div>
+
+                               <div>
+                                   <label class="field-label" for="planilha-folder">
+                                       Pasta de destino
+                                   </label>
+                                   <select id="planilha-folder" class="select" aria-label="Pasta de destino">
+                                       <option value="excel">Excel</option>
+                                       <option value="csv">CSV</option>
+                                   </select>
+                               </div>
+
+                               <button
+                                   id="planilha-save"
+                                   type="button"
+                                   class="button button-primary"
+                               >
+                                   Cadastrar
+                               </button>
+
+                           </div>
+
+                           <div
+                               id="planilha-status"
+                               class="validator-status"
+                           >
+                               Nenhuma planilha cadastrada.
+                           </div>
+
+                       </section>
+
+                       <section class="validator-card registry-panel registry-panel-wide">
+
+                           <div class="validator-card-header">
+
+                               <div>
+
+                                   <span class="validator-number">
+                                       02
+                                   </span>
+
+                                   <div>
+
+                                       <h2>
+                                           Planilhas cadastradas
+                                       </h2>
+
+                                       <p>
+                                           Busque, filtre e selecione registros locais já cadastrados.
+                                       </p>
+
+                                   </div>
+
+                               </div>
+
+                           </div>
+
+                           <div class="registry-toolbar">
+
+                               <input
+                                   id="planilha-search"
+                                   class="select"
+                                   type="search"
+                                   placeholder="Pesquisar planilha..."
+                                   aria-label="Pesquisar planilha"
+                               >
+
+                               <select
+                                   id="planilha-filter-type"
+                                   class="select"
+                                   aria-label="Filtrar por extensão"
+                               >
+                                   <option value="todos">Todos</option>
+                                   <option value=".xlsx">XLSX</option>
+                                   <option value=".xls">XLS</option>
+                                   <option value=".csv">CSV</option>
+                               </select>
+
+                               <button
+                                   id="planilha-clear-filters"
+                                   type="button"
+                                   class="button button-secondary"
+                               >
+                                   Limpar filtros
+                               </button>
+
+                           </div>
+
+                           <div id="planilha-counter" class="registry-counter">
+                               0 planilhas encontradas
+                           </div>
+
+                           <div class="registry-table-wrap">
+                               <table class="registry-table">
+                                   <thead>
+                                       <tr>
+                                           <th>Nome</th>
+                                           <th>Tipo</th>
+                                           <th>Tamanho</th>
+                                           <th>Cadastro</th>
+                                           <th>Ações</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody id="planilha-table-body"></tbody>
+                               </table>
+                           </div>
+
+                       </section>
+
+                   </div>
 
                 </section>
 
@@ -4384,7 +4639,9 @@
     <script src="./js/ui/model-downloader.js"></script>
     <script src="./js/ui/reader-ui.js"></script>
     <script src="./js/core/category-utils.js"></script>
+    <script src="./js/core/planilha-storage.js"></script>
     <script src="./js/ui/categorizer-ui.js"></script>
+    <script src="./js/ui/planilha-cadastro-ui.js"></script>
     <script src="./js/app.js"></script>
 
 

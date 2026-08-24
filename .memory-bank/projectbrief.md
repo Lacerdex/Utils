@@ -1,7 +1,7 @@
 # Project Brief — Utils Excel
 
 ## Visão Geral
-Sistema **100% local** para manipulação de arquivos Excel (.xlsx) diretamente no navegador, **sem conexão externa** e **sem ambiente de execução** (apenas HTML/CSS/JavaScript estático).
+Sistema **100% local** para manipulação de arquivos Excel (.xlsx) diretamente no navegador, **sem conexão externa** e **sem ambiente de execução** (apenas HTML/CSS/JavaScript estático). O projeto também mantém um catálogo local de arquivos em navegador, armazenando metadados e conteúdo em IndexedDB para permitir cadastro, busca e reutilização sem criar backend ou banco de dados externo.
 
 ## Objetivo
 Fornecer ferramentas para:

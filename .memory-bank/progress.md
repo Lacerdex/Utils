@@ -67,6 +67,25 @@
       formatos Concatenado/Quebra de colunas + dedupe opcional), UI completa com prévia
       — testado com `Excel/test-csv-transform.js` (21 verificações OK)
 
+### 24/08/2026 — Cadastro local de planilhas
+
+#### Concluído
+- [x] Área de cadastro integrada ao shell principal em `Excel/index.html`
+- [x] Validação de extensões `.xlsx`, `.xls` e `.csv`
+- [x] Nome manual para cadastro + seleção de pasta de destino (`Excel`/`CSV`)
+- [x] Conversão automática do arquivo para a pasta selecionada antes de salvar (`.csv` para Excel ou Excel para CSV)
+- [x] Drag & drop e seleção tradicional de arquivo
+- [x] Persistência local de metadados em IndexedDB + organização por extensão
+- [x] Busca por nome, filtro por tipo, atualização da listagem e download do arquivo persistido
+- [x] Seleção, uso e exclusão de planilhas com confirmação
+- [x] Validação por testes automatizados do fluxo existente e checagem de sintaxe dos novos módulos
+
+#### Resultado
+- [x] O catálogo local está funcionando sem criar backend nem estrutura independente fora do app existente
+- [x] A funcionalidade respeita a arquitetura do projeto e a restrição de ambiente local do memory bank
+- [x] O cadastro agora aceita nome customizado, converte automaticamente para a pasta de destino escolhida e salva no formato correto antes do armazenamento
+- [x] O download do arquivo salvo continua disponível a partir da listagem local
+
 ### Status Final Validado
 - [x] Página "Leitor" implementada e integrada ao fluxo principal.
 - [x] Lógica de download dos modelos validada na página "Modelos".
