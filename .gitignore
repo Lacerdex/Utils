@@ -23,3 +23,54 @@
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 
 *.testes
+
+.todo.md
+
+# -----------------------------
+# Project-specific ignores
+# -----------------------------
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node dependencies
+node_modules/
+
+# Build and temporary folders
+dist/
+build/
+tmp/
+temp/
+*.tmp
+
+# Editor swap/backup files
+*~
+*.swp
+*.swo
+
+# IDE/project files
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Environment / secret files
+.env
+.env.*.local
+
+# Excel and spreadsheet binaries (sample/generated data)
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+
+# End of project-specific ignores
