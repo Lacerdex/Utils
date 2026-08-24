@@ -785,6 +785,231 @@
 
 
 /* ========================================================
+ * READER
+ * ====================================================== */
+
+.reader-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+
+.reader-table th,
+.reader-table td {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.reader-table th {
+    background: var(--surface-secondary);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+}
+
+
+.reader-table tbody tr:nth-child(even) {
+    background: var(--surface-secondary);
+}
+
+
+.reader-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+
+.reader-info-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.reader-info-grid span {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+.reader-info-grid strong {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+
+.reader-notice {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+}
+
+
+/* ========================================================
+ * CATEGORIZAÇÃO
+ * ====================================================== */
+
+.button-primary {
+   border: 1px solid var(--primary);
+   border-radius: 6px;
+   background: var(--primary);
+   color: #ffffff;
+   padding: 10px 14px;
+   font-size: 12px;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.button-primary:hover {
+   background: var(--primary-hover);
+}
+
+.button-secondary {
+   border: 1px solid var(--border);
+   border-radius: 6px;
+   background: var(--surface);
+   color: var(--text-secondary);
+   padding: 10px 12px;
+   font-size: 12px;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.button-secondary:hover {
+   border-color: var(--border-strong);
+   color: var(--text);
+}
+
+.category-form {
+   display: flex;
+   gap: 12px;
+   align-items: center;
+}
+
+.category-list {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+   margin-top: 18px;
+}
+
+.category-pill {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   padding: 8px 12px;
+   border: 1px solid var(--border);
+   border-radius: 999px;
+   background: var(--surface-secondary);
+   color: var(--text);
+   font-size: 12px;
+   cursor: pointer;
+}
+
+.category-pill.active {
+   border-color: var(--primary);
+   background: var(--primary-soft);
+   color: var(--primary);
+}
+
+.category-pill strong {
+   color: var(--text-muted);
+   font-size: 11px;
+}
+
+.category-toolbar {
+   display: grid;
+   gap: 14px;
+   margin-bottom: 16px;
+}
+
+.category-inline-actions {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+}
+
+.category-stats {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+   gap: 12px;
+   margin-bottom: 16px;
+}
+
+.category-stat {
+   padding: 12px 14px;
+   border: 1px solid var(--border);
+   border-radius: 8px;
+   background: var(--surface-secondary);
+}
+
+.category-stat span {
+   display: block;
+   margin-bottom: 6px;
+   color: var(--text-muted);
+   font-size: 10px;
+   font-weight: 700;
+   letter-spacing: .05em;
+   text-transform: uppercase;
+}
+
+.category-stat strong {
+   font-size: 22px;
+}
+
+.categorizer-scroll {
+   overflow-x: auto;
+   margin-top: 10px;
+}
+
+.categorizer-checkbox {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   width: 34px;
+   height: 34px;
+   border: 1px solid var(--border);
+   border-radius: 6px;
+   background: var(--surface);
+}
+
+.categorizer-checkbox.checked {
+   border-color: var(--primary);
+   background: var(--primary-soft);
+   color: var(--primary);
+   font-weight: 700;
+}
+
+.categorizer-checkbox input {
+   display: none;
+}
+
+.categorizer-export-wrap {
+   margin-top: 18px;
+}
+
+.categorizer-empty {
+   padding: 12px;
+   color: var(--text-secondary);
+   font-size: 12px;
+}
+
+
+/* ========================================================
  * RESPONSIVO
  * ====================================================== */
 
@@ -820,6 +1045,19 @@
     }
 
     .common-columns-list {
+        grid-template-columns: 1fr;
+    }
+
+    .reader-table {
+        font-size: 10px;
+    }
+
+    .reader-table th,
+    .reader-table td {
+        padding: 6px 8px;
+    }
+
+    .reader-info-grid {
         grid-template-columns: 1fr;
     }
 

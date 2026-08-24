@@ -2,7 +2,43 @@
 
 ## História de Progresso
 
-### 22/08/2026 — Sessão Atual
+### 23/08/2026 — Sessão de Atualização de Funcionalidades
+
+#### Concluído
+- [x] **Schema de Indicadores** criado (`indicadores-schema.js`)
+  - Campos: período, indicador, valor, meta, status, responsável, observações
+  - Registro automático no SchemaRegistry
+- [x] **Download de Modelos** implementado (`model-downloader.js`)
+  - Módulo reutilizável para criar modelos baseados em schemas
+  - Dois botões de download na página "Modelos" (Cadastro + Indicadores)
+  - Geração de planilhas .xlsx com headers do schema
+  - Export com BOM UTF-8 via SheetJS
+- [x] **Página Leitor** completamente implementada (`reader-ui.js`)
+  - Upload de arquivo Excel via SheetWorkspace
+  - Seleção de aba com pré-visualização
+  - Tabela com primeiras 50 linhas e informações da aba
+  - Estilos CSS para tabelas e grid de informações
+  - Notice quando há mais linhas (sugestão de export)
+- [x] **Categorizador Excel** implementado (`category-utils.js` + `categorizer-ui.js`)
+  - Importação local de Excel com seleção de aba e coluna-alvo
+  - Criação de categorias independentes e categoria ativa
+  - Marcação por checkbox preservando dados originais
+  - Busca por registros visíveis, seleção em massa e exportação em .xlsx
+  - Testes automatizados: `Excel/test-categorizer.js`
+- [x] **CSS para Leitor e Categorização** adicionado (`validators.css`)
+  - Estilos de tabela (.reader-table)
+  - Grid de informações (.reader-info-grid)
+  - Notice informativos (.reader-notice)
+  - Componentes de categorias (.category-pill, .category-stat, .categorizer-checkbox)
+  - Media queries para responsividade
+- [x] **Validação de funcionalidade**
+  - SchemaRegistry carregando corretamente
+  - Ambos os schemas registrados (cadastro, indicadores)
+  - ModelDownloader pronto para uso
+  - ReaderUI e CategorizerUI disponíveis na interface
+  - Testes de categorização e regressão executados com sucesso
+
+### 22/08/2026 — Sessão Anterior
 
 #### Concluído
 - [x] Página de Data Tools com navegação por abas (Validações, Modelos, Leitor, Sobre)
@@ -31,21 +67,35 @@
       formatos Concatenado/Quebra de colunas + dedupe opcional), UI completa com prévia
       — testado com `Excel/test-csv-transform.js` (21 verificações OK)
 
-### Próximos Passos
-- [ ] Página "Leitor" (em desenvolvimento)
-- [ ] Lógica de download dos modelos (botões "Baixar modelo")
-- [ ] Testes com arquivos reais .xlsx
-- [ ] Possível refatoração do `validate()` do DataValidator para aceitar lista de colunas diretamente
-</｜DSML｜_file>
-<task_progress>
+### Status Final Validado
+- [x] Página "Leitor" implementada e integrada ao fluxo principal.
+- [x] Lógica de download dos modelos validada na página "Modelos".
+- [x] Testes com arquivos reais e cenários automatizados executados com sucesso.
+- [x] O fluxo atual de validação e exportação está consistente com a implementação em `Excel/`.
+
+## Atualização do Memory Bank
 - [x] Ler o arquivo .clinerules atual
 - [x] Localizar a estrutura do memory bank no projeto
 - [x] Criar a estrutura do memory bank (projectbrief)
 - [x] Documentar o estado atual do projeto (activeContext)
 - [x] Criar progress.md
-- [ ] Criar technologyContext.md
-- [ ] Criar systemPatterns.md
-- [ ] Criar agent.md
-- [ ] Concluir a atualização
-</task_progress>
-</｜DSML｜_file>
+- [x] Criar techContext.md
+- [x] Criar systemPatterns.md
+- [x] Criar agent.md
+- [x] Concluir a atualização
+
+### 23/08/2026 — Validação final do Validador de Duplicatas
+
+#### Concluído
+- [x] Revisão da implementação atual do validador de duplicatas e alinhamento com o `todo.md`.
+- [x] Criação do módulo central `DuplicateValidator` para deduplicação completa, agrupamento por chave e transformações por método.
+- [x] Integração da interface com seleção da coluna-chave, filtro de resultados, método de extração e exportação.
+- [x] Implementação de exportação no fluxo local para Excel (.xlsx) e CSV com compatibilidade de codificação.
+- [x] Validação dos cenários obrigatórios do `todo.md` em teste automatizado local.
+- [x] Verificação concluída com sucesso via `node Excel/test-duplicate-validator.js`.
+
+#### Resultado
+- [x] O validador diferencia corretamente `Únicos` de `Duplicados`.
+- [x] Mantém dados distintos com a mesma chave sem perda de informação.
+- [x] Suporta `Quebra de linhas`, `Quebra de colunas` e `Concatenado`.
+- [x] O módulo está pronto para uso no fluxo local do projeto e alinhado com a documentação do memory bank.

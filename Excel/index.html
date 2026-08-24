@@ -135,6 +135,23 @@
                 </button>
 
 
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-page="categorizer"
+                >
+
+                    <span class="nav-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Categorização
+                    </span>
+
+                </button>
+
+
                 <span class="nav-title nav-title-spaced">
                     SISTEMA
                 </span>
@@ -1911,13 +1928,273 @@
                 </section>
 
                 <!-- ==================================================
+                     PÁGINA: CATEGORIZAÇÃO
+                =================================================== -->
+
+                <section
+                   id="page-categorizer"
+                    class="page"
+                    hidden
+                >
+
+                   <header class="page-header">
+
+                       <div>
+
+                           <span class="eyebrow">
+                               UTILS / EXCEL
+                           </span>
+
+                           <h1>
+                               Categorizador Excel
+                           </h1>
+
+                           <p>
+                               Importe uma planilha, organize categorias e marque os registros
+                               por classificação sem perder nenhum dado original da planilha.
+                           </p>
+
+                       </div>
+
+                   </header>
+
+                   <section class="validator-card">
+
+                       <div class="validator-card-header">
+
+                           <div>
+
+                               <span class="validator-number">
+                                   01
+                               </span>
+
+                               <div>
+
+                                   <h2>
+                                       Importar planilha
+                                   </h2>
+
+                                   <p>
+                                       Selecione um arquivo .xlsx para começar a categorização.
+                                   </p>
+
+                               </div>
+
+                           </div>
+
+                       </div>
+
+                       <div class="validator-upload">
+
+                           <label class="validator-upload-label">
+
+                               <input
+                                   id="categorizer-file"
+                                   type="file"
+                                   accept=".xlsx"
+                               >
+
+                               <span class="validator-upload-icon">
+                                   XLSX
+                               </span>
+
+                               <span>
+                                   <strong>Selecionar arquivo Excel</strong>
+                                   <small>Somente arquivos .xlsx</small>
+                               </span>
+
+                           </label>
+
+                       </div>
+
+                       <div
+                           id="categorizer-status"
+                           class="validator-status"
+                       >
+                           Nenhum arquivo selecionado.
+                       </div>
+
+                   </section>
+
+                   <section class="validator-card">
+
+                       <div class="validator-card-header">
+
+                           <div>
+
+                               <span class="validator-number">
+                                   02
+                               </span>
+
+                               <div>
+
+                                   <h2>
+                                       Seleção de aba e coluna-alvo
+                                   </h2>
+
+                                   <p>
+                                       Defina a aba e a coluna usada como referência visual para a classificação.
+                                   </p>
+
+                               </div>
+
+                           </div>
+
+                       </div>
+
+                       <div class="form-stack">
+
+                           <div>
+                               <label class="field-label" for="categorizer-sheet">
+                                   Aba da planilha
+                               </label>
+                               <select id="categorizer-sheet" class="select" disabled>
+                                   <option value="">Selecione uma aba</option>
+                               </select>
+                           </div>
+
+                           <div>
+                               <label class="field-label" for="categorizer-target-column">
+                                   Coluna-alvo
+                               </label>
+                               <select id="categorizer-target-column" class="select" disabled>
+                                   <option value="">Selecione uma coluna</option>
+                               </select>
+                           </div>
+
+                       </div>
+
+                   </section>
+
+                   <section class="validator-card">
+
+                       <div class="validator-card-header">
+
+                           <div>
+
+                               <span class="validator-number">
+                                   03
+                               </span>
+
+                               <div>
+
+                                   <h2>
+                                       Criar categorias
+                                   </h2>
+
+                                   <p>
+                                       Cada categoria vira uma nova coluna lógica adicionada ao resultado final.
+                                   </p>
+
+                               </div>
+
+                           </div>
+
+                       </div>
+
+                       <div class="category-form">
+                           <input
+                               id="categorizer-category-name"
+                               class="select"
+                               type="text"
+                               placeholder="Ex.: Clientes VIP"
+                               aria-label="Nome da categoria"
+                           >
+                           <button
+                               id="categorizer-add-category"
+                               type="button"
+                               class="button-primary"
+                           >
+                               + Criar categoria
+                           </button>
+                       </div>
+
+                       <div id="categorizer-categories" class="category-list"></div>
+
+                   </section>
+
+                   <section class="validator-card">
+
+                       <div class="validator-card-header">
+
+                           <div>
+
+                               <span class="validator-number">
+                                   04
+                               </span>
+
+                               <div>
+
+                                   <h2>
+                                       Marcação dos registros
+                                   </h2>
+
+                                   <p>
+                                       A categoria ativa determina quais checkboxes serão editados na tabela abaixo.
+                                   </p>
+
+                               </div>
+
+                           </div>
+
+                       </div>
+
+                       <div class="category-toolbar">
+                           <input
+                               id="categorizer-search"
+                               class="select"
+                               type="search"
+                               placeholder="Pesquisar por nome, e-mail ou valor..."
+                               aria-label="Buscar registros"
+                           >
+
+                           <div class="category-inline-actions">
+                               <button
+                                   id="categorizer-select-visible"
+                                   type="button"
+                                   class="button-secondary"
+                               >
+                                   Selecionar todos visíveis
+                               </button>
+                               <button
+                                   id="categorizer-clear-visible"
+                                   type="button"
+                                   class="button-secondary"
+                               >
+                                   Desmarcar todos
+                               </button>
+                           </div>
+                       </div>
+
+                       <div id="categorizer-stats" class="category-stats"></div>
+
+                       <div class="categorizer-scroll">
+                           <table id="categorizer-table" class="reader-table"></table>
+                       </div>
+
+                       <div class="categorizer-export-wrap">
+                           <button
+                               id="categorizer-export"
+                               type="button"
+                               class="button-primary"
+                           >
+                               Exportar Excel
+                           </button>
+                       </div>
+
+                   </section>
+
+                </section>
+
+
+                <!-- ==================================================
                      PÁGINA: DOCUMENTAÇÃO
                 =================================================== -->
 
                 <section
-                    id="page-docs"
-                    class="page"
-                    hidden
+                   id="page-docs"
+                   class="page"
+                   hidden
                 >
 
                     <header class="page-header">
@@ -1957,10 +2234,12 @@
                         <p>
                             O Utils Excel é um conjunto de ferramentas para
                             analisar, validar, cruzar e converter planilhas
-                            <strong>.xlsx</strong> direto no navegador. Todo o
-                            processamento acontece localmente, na sua máquina:
-                            nenhum dado é enviado para servidores e nada fica
-                            armazenado — ao recarregar a página, tudo é limpo.
+                            <strong>.xlsx</strong> diretamente no navegador.
+                            O projeto foi conceitualizado como uma suíte
+                            local, sem banco de dados, sem backend e sem
+                            ambiente de execução obrigatório: o usuário carrega
+                            arquivos na máquina, a lógica processa e exporta
+                            resultados em arquivo local.
                         </p>
 
                         <div class="doc-facts">
@@ -1970,7 +2249,7 @@
                                     Execução
                                 </span>
                                 <strong>
-                                    100% local (navegador)
+                                    Local no navegador
                                 </strong>
                             </div>
 
@@ -1985,19 +2264,19 @@
 
                             <div>
                                 <span>
-                                    Exportações
+                                    Fluxos
                                 </span>
                                 <strong>
-                                    .xlsx e .csv (UTF-8 BOM)
+                                    Validação, cruzamento e exportação
                                 </strong>
                             </div>
 
                             <div>
                                 <span>
-                                    Privacidade
+                                   Modelo de operação
                                 </span>
                                 <strong>
-                                    Nenhum dado sai do computador
+                                    Sem servidor e sem persistência
                                 </strong>
                             </div>
 
@@ -3737,6 +4016,7 @@
                     id="page-reader"
                     class="page"
                     hidden
+                    data-reader-source
                 >
 
                     <header class="page-header">
@@ -3761,21 +4041,141 @@
                     </header>
 
 
-                    <div class="empty-state">
+                    <!-- UPLOAD -->
 
-                        <div class="empty-state-icon">
-                            ◫
+                    <section class="validator-card">
+
+                        <div class="form-stack">
+
+                            <div class="validator-upload">
+
+                                <input
+                                    type="file"
+                                    id="reader-excel-file"
+                                    accept=".xlsx"
+                                    data-role="excel-file"
+                                >
+
+                                <label
+                                    for="reader-excel-file"
+                                    class="validator-upload-label"
+                                >
+
+                                    <span class="validator-upload-icon">
+                                        XLSX
+                                    </span>
+
+                                    <span>
+
+                                        <strong>
+                                            Selecionar planilha
+                                        </strong>
+
+                                        <small>
+                                            Apenas arquivos .xlsx
+                                        </small>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
                         </div>
 
-                        <h2>
-                            Leitor Excel
-                        </h2>
+                        <div
+                            class="validator-status"
+                            data-role="file-status"
+                        >
+                            Nenhum arquivo selecionado.
+                        </div>
 
-                        <p>
-                            Ferramenta em desenvolvimento.
-                        </p>
+                    </section>
 
-                    </div>
+
+                    <!-- INFO DO ARQUIVO -->
+
+                    <section
+                        class="validator-card"
+                        data-role="file-section"
+                        hidden
+                    >
+
+                        <div class="validator-info-grid">
+
+                            <div>
+                                <span>Arquivo</span>
+                                <strong data-role="file-name">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Tamanho</span>
+                                <strong data-role="file-size">-</strong>
+                            </div>
+
+                            <div>
+                                <span>Abas</span>
+                                <strong data-role="sheet-count">-</strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- SELEÇÃO DE ABA -->
+
+                    <section
+                        class="validator-card"
+                        data-role="sheet-section"
+                        hidden
+                    >
+
+                        <label class="field-label">
+                            Aba da planilha
+                        </label>
+
+                        <select
+                            class="select"
+                            data-role="sheet-select"
+                        >
+                            <option value="">
+                                Selecione uma aba
+                            </option>
+                        </select>
+
+                        <div
+                            class="sheet-info"
+                            data-role="sheet-info"
+                        ></div>
+
+                    </section>
+
+
+                    <!-- INFO DA ABA -->
+
+                    <section
+                        class="validator-card"
+                        data-role="reader-info"
+                        hidden
+                    >
+
+                        <h3>Informações da aba</h3>
+
+                    </section>
+
+
+                    <!-- PREVIEW DA TABELA -->
+
+                    <section
+                        class="validator-card"
+                        data-role="reader-preview"
+                        hidden
+                    >
+
+                        <h3>Visualização</h3>
+
+                    </section>
 
                 </section>
 
@@ -3804,8 +4204,9 @@
                             </h1>
 
                             <p>
-                                Informações sobre
-                                o módulo Excel.
+                                Arquitetura local,
+                                objetivos, regras e
+                                limites do utilitário Excel.
                             </p>
 
                         </div>
@@ -3820,10 +4221,13 @@
                         </h2>
 
                         <p>
-                            Conjunto de ferramentas
-                            para leitura, validação,
-                            tratamento e processamento
-                            de arquivos Excel.
+                            Ferramenta local para leitura,
+                            análise, validação, cruzamento
+                            e exportação de planilhas Excel.
+                            O produto foi pensado para apoiar
+                            tarefas de qualidade de dados sem
+                            depender de banco, backend ou
+                            infraestrutura de execução.
                         </p>
 
 
@@ -3836,7 +4240,7 @@
                                 </span>
 
                                 <strong>
-                                    Local
+                                    Local no navegador
                                 </strong>
 
                             </div>
@@ -3845,11 +4249,11 @@
                             <div>
 
                                 <span>
-                                    Versão
+                                    Arquitetura
                                 </span>
 
                                 <strong>
-                                    1.0.0
+                                    HTML + CSS + JS
                                 </strong>
 
                             </div>
@@ -3858,7 +4262,7 @@
                             <div>
 
                                 <span>
-                                    Formato
+                                    Dados de entrada
                                 </span>
 
                                 <strong>
@@ -3868,6 +4272,55 @@
                             </div>
 
                         </div>
+
+                    </div>
+
+                    <div class="about-card">
+
+                        <h2>
+                            O que a ferramenta resolve
+                        </h2>
+
+                        <ul class="doc-list">
+                            <li>
+                                Valida estrutura de cabeçalhos e campos esperados.
+                            </li>
+                            <li>
+                                Verifica qualidade de preenchimento e consistência dos dados.
+                            </li>
+                            <li>
+                                Checa formato de CPF, e-mail, celular e demais campos reconhecidos.
+                            </li>
+                            <li>
+                                Detecta duplicidades e compara dados entre duas planilhas.
+                            </li>
+                            <li>
+                                Exporta resultados em arquivos locais para uso posterior.
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="about-card">
+
+                        <h2>
+                            Regras do projeto
+                        </h2>
+
+                        <ul class="doc-list">
+                            <li>
+                                Sem banco de dados e sem persistência externa.
+                            </li>
+                            <li>
+                                Sem backend ou ambiente de execução obrigatório.
+                            </li>
+                            <li>
+                                Processamento realizado diretamente no navegador.
+                            </li>
+                            <li>
+                                Foco em produtividade operacional e controle de qualidade de dados.
+                            </li>
+                        </ul>
 
                     </div>
 
@@ -3912,15 +4365,15 @@
 
     <script src="./js/schemas/schema-registry.js"></script>
     <script src="./js/schemas/cadastro-schema.js"></script>
+    <script src="./js/schemas/indicadores-schema.js"></script>
     <script src="./js/schemas/column-aliases.js"></script>
 
     <script src="./js/validators/header-validator.js"></script>
     <script src="./js/validators/data-validator.js"></script>
     <script src="./js/validators/cross-validator.js"></script>
     <script src="./js/validators/csv-transform-validator.js"></script>
-
-    <script src="./js/ui/dom.js"></script>
-    <script src="./js/ui/validator-registry.js"></script>
+    <script src="./js/validators/duplicate-validator.js"></script>
+    <script src="./js/ui/dom.js"></script>    <script src="./js/ui/validator-registry.js"></script>
     <script src="./js/ui/sheet-workspace.js"></script>
     <script src="./js/ui/header-validator-ui.js"></script>
     <script src="./js/ui/data-validator-ui.js"></script>
@@ -3928,7 +4381,10 @@
     <script src="./js/ui/duplicate-validator-ui.js"></script>
     <script src="./js/ui/cross-validator-ui.js"></script>
     <script src="./js/ui/csv-converter-ui.js"></script>
-
+    <script src="./js/ui/model-downloader.js"></script>
+    <script src="./js/ui/reader-ui.js"></script>
+    <script src="./js/core/category-utils.js"></script>
+    <script src="./js/ui/categorizer-ui.js"></script>
     <script src="./js/app.js"></script>
 
 

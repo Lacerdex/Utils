@@ -54,16 +54,8 @@ Cada validador se registra no `ValidatorRegistry` com:
 - Indentação: 4 espaços
 - Comentários em português
 - String quotes: aspas simples no núcleo, duplas nas camadas UI do Excel/js/ui (consistente em cada arquivo)
-</｜DSML｜_file>
-<task_progress>
-- [x] Ler o arquivo .clinerules atual
-- [x] Localizar a estrutura do memory bank no projeto
-- [x] Criar a estrutura do memory bank (projectbrief)
-- [x] Documentar o estado atual do projeto (activeContext)
-- [x] Criar progress.md
-- [x] Criar technologyContext.md
-- [x] Criar systemPatterns.md
-- [ ] Criar agent.md
-- [ ] Concluir a atualização
-</task_progress>
-</｜DSML｜_file>
+
+## Status Final
+- [x] O memory bank foi revisado contra a implementação real em `Excel/`.
+- [x] As convenções documentadas continuam válidas para o projeto atual.
+- [x] A atualização do memory bank foi concluída.

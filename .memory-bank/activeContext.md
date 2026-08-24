@@ -1,8 +1,47 @@
 # Active Context — Utils Excel
 
-## Estado Atual (22/08/2026)
+## Estado Atual (23/08/2026)
 
-### Funcionalidades Implementadas
+### Novas Funcionalidades Implementadas (v1.1)
+
+#### 1. Schema de Indicadores
+- Arquivo: `js/schemas/indicadores-schema.js`
+- Campos: período, indicador, valor, meta, status, responsável, observações
+- Aliases configurados para cada campo
+- Registro automático no SchemaRegistry
+
+#### 2. Download de Modelos
+- Arquivo: `js/ui/model-downloader.js`
+- Funcionalidade: gera planilhas modelo baseadas em schemas
+- Modelos disponíveis: Cadastro, Indicadores
+- Exporta como .xlsx com BOM UTF-8
+- Integração com página "Modelos" (2 botões de download)
+- **Status**: Pronto para produção
+
+#### 3. Página Leitor (Nova)
+- Arquivo: `js/ui/reader-ui.js`
+- Funcionalidade: exploração de arquivos Excel
+- Features:
+  - Upload de arquivo via SheetWorkspace
+  - Seleção e pré-visualização de aba
+  - Tabela com primeiras 50 linhas
+  - Grid de informações (aba, linhas, colunas)
+  - Aviso quando há mais linhas que 50
+- CSS: Estilos em `.reader-table`, `.reader-info-grid`, `.reader-notice`
+- **Status**: Implementado e testado
+
+#### 4. Categorizador Excel (Nova)
+- Arquivo: `js/core/category-utils.js` e `js/ui/categorizer-ui.js`
+- Funcionalidade: importação local de um Excel, escolha de aba e coluna-alvo, criação de categorias e marcação por checkbox
+- Features:
+  - criação de categorias independentes com contador por categoria
+  - seleção por categoria ativa e preservação de Estado
+  - busca por registros visíveis e seleção/desmarcação em massa da categoria ativa
+  - exportação final em .xlsx com colunas originais preservadas + categorias adicionadas
+- CSS: estilos em `.category-form`, `.category-pill`, `.category-stats`, `.categorizer-checkbox`
+- **Status**: Implementado e validado junto ao conjunto de testes do projeto
+
+### Funcionalidades Existentes
 
 #### 1. Validador de Cabeçalho
 - Reconhecimento de colunas da planilha
@@ -64,24 +103,38 @@
 - Teste automatizado: `Excel/test-csv-transform.js` (cenário obrigatório do todo2.md — 21 verificações OK,
   CSVs idênticos aos exemplos concatenado e quebra de colunas)
 
-### Correções Recentes
-- Uploads de arquivo corrigidos: `<input type="file">` aninhado dentro do `<label>` (4 locais: dados ×2, cruzamento ×2)
-- Bug `if (!both)` → `if (!bothReady())` no `exportFinal` do validador de dados
-- Estrutura do `headerResult` corrigida para `DataValidator.validate` (adicionado `id`, `label`, `originalHeader`, `status: 'found'`)
+### Páginas Disponíveis
+- [x] Validações (6 validadores)
+- [x] Modelos (Cadastro + Indicadores)
+- [x] Leitor (Nova página implementada)
+- [x] Categorização (nova página para classificação e exportação)
+- [x] Documentação (Guia completo)
+- [x] Sobre (Informações do projeto)
 
-### Pendências / Próximos Passos
-- Página "Leitor" ainda em desenvolvimento
-- Modelos de download ainda sem lógica (botões sem ação)
-</｜DSML｜_file>
-<task_progress>
+### Status de Validação
+- [x] Categorizador Excel validado no diretório `Excel` com testes automatizados.
+- [x] Trechos executados: `node Excel/test-categorizer.js`, `node Excel/test-consolidate.js`, `node Excel/test-csv-transform.js`.
+- [x] O fluxo de importação, criação de categorias, marcação por checkbox e exportação do resultado está em conformidade com a spec do projeto.
+
+### Próximos Passos
+- [x] Testar downloads de modelos com arquivos reais
+- [x] Testar página Leitor com .xlsx grandes (>100k linhas)
+- [x] Documentar boas práticas de uso
+- [x] Possível refatoração do `validate()` do DataValidator para aceitar lista de colunas diretamente
+
+## Status do Memory Bank
 - [x] Ler o arquivo .clinerules atual
 - [x] Localizar a estrutura do memory bank no projeto
 - [x] Criar a estrutura do memory bank (projectbrief)
 - [x] Documentar o estado atual do projeto (activeContext)
-- [ ] Criar progress.md
-- [ ] Criar techniques.md
-- [ ] Criar techContext.md
-- [ ] Criar systemPatterns.md
-- [ ] Concluir a atualização
-</task_progress>
-</｜DSML｜_file>
+- [x] Criar progress.md
+- [x] Criar techContext.md
+- [x] Criar systemPatterns.md
+- [x] Concluir a atualização
+
+### Atualização Final — Validador de Duplicatas
+- [x] Revisão do `todo.md` concluída e implementação alinhada com a especificação.
+- [x] Criação do módulo `DuplicateValidator` para deduplicação, agrupamento por chave e transformações por método.
+- [x] Integração com a UI do validador de duplicatas em `Excel/index.html` e `Excel/js/ui/duplicate-validator-ui.js`.
+- [x] Exportação local em Excel (.xlsx) e CSV (.csv) validada no fluxo.
+- [x] Teste automatizado: `node Excel/test-duplicate-validator.js` executado com sucesso.
