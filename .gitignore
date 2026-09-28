@@ -1,0 +1,23 @@
+# Evidências e arquivos gerados pelas suítes de navegador
+/Campanha-Marketing/tests/results/
+
+# Dependências e relatórios locais de desenvolvimento
+node_modules/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# Configuração local e segredos
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Arquivos temporários do sistema e dos editores
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+~$*

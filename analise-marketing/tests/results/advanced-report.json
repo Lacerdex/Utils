@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-28T02:29:11.346Z",
+  "checks": [
+    "Excel legado .xls e datas seriais do Excel",
+    "múltiplos arquivos, múltiplas abas e aviso de aba incompatível",
+    "cancelar substituição e selecionar novamente o mesmo arquivo",
+    "arrastar e soltar, dados sem data e aviso correspondente",
+    "conteúdo importado é exibido como texto, sem execução de HTML",
+    "investimento incompleto é rejeitado; evento sem custo e sem presentes é válido",
+    "cancelar edição preserva o registro salvo",
+    "filtros de período de eventos e intervalo inválido",
+    "PDF com todas as campanhas e múltiplas páginas",
+    "PDF individual com nomes longos e 60 investimentos",
+    "falha de armazenamento mantém dados na sessão e orienta backup"
+  ],
+  "errors": []
+}

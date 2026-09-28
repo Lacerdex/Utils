@@ -1,0 +1,17 @@
+/* Dados de demonstração do projeto original. */
+window.DEMO_ROWS = [
+  { id: "d1", campanha: "Boas-vindas | setembro", date: "2026-09-24", enviados: 12480, entregues: 12182, visualizacao: 0, lidos: 4861, cliques: 1432, taxaAbertura: 0.399, taxaCliques: 0.118, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d2", campanha: "Lançamento coleção Aurora", date: "2026-09-20", enviados: 8420, entregues: 8206, visualizacao: 0, lidos: 3749, cliques: 1071, taxaAbertura: 0.457, taxaCliques: 0.130, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d3", campanha: "Reativação de clientes", date: "2026-09-15", enviados: 3640, entregues: 3582, visualizacao: 0, lidos: 1220, cliques: 286, taxaAbertura: 0.341, taxaCliques: 0.080, canal: "WhatsApp", arquivo: "Dados de demonstração" },
+  { id: "d4", campanha: "Flash sale — WhatsApp", date: "2026-09-11", enviados: 5980, entregues: 5741, visualizacao: 4988, lidos: 0, cliques: 991, taxaAbertura: 0.869, taxaCliques: 0.173, canal: "WhatsApp", arquivo: "Dados de demonstração" },
+  { id: "d5", campanha: "Carrinho abandonado", date: "2026-09-06", enviados: 2710, entregues: 2664, visualizacao: 0, lidos: 1065, cliques: 432, taxaAbertura: 0.400, taxaCliques: 0.162, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d6", campanha: "Lembrete de pagamento", date: "2026-08-29", enviados: 1980, entregues: 1961, visualizacao: 1684, lidos: 0, cliques: 512, taxaAbertura: 0.859, taxaCliques: 0.261, canal: "SMS", arquivo: "Dados de demonstração" },
+  { id: "d7", campanha: "Boas-vindas | agosto", date: "2026-08-23", enviados: 11920, entregues: 11678, visualizacao: 0, lidos: 4564, cliques: 1282, taxaAbertura: 0.391, taxaCliques: 0.110, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d8", campanha: "Semana do consumidor", date: "2026-08-18", enviados: 7760, entregues: 7454, visualizacao: 6670, lidos: 0, cliques: 1228, taxaAbertura: 0.895, taxaCliques: 0.165, canal: "WhatsApp", arquivo: "Dados de demonstração" },
+  { id: "d9", campanha: "Lançamento coleção Aurora", date: "2026-08-12", enviados: 8040, entregues: 7850, visualizacao: 0, lidos: 3460, cliques: 902, taxaAbertura: 0.441, taxaCliques: 0.115, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d10", campanha: "Reativação de clientes", date: "2026-08-08", enviados: 3290, entregues: 3212, visualizacao: 2755, lidos: 0, cliques: 521, taxaAbertura: 0.858, taxaCliques: 0.162, canal: "WhatsApp", arquivo: "Dados de demonstração" },
+  { id: "d11", campanha: "Lembrete de pagamento", date: "2026-07-30", enviados: 1830, entregues: 1807, visualizacao: 1572, lidos: 0, cliques: 468, taxaAbertura: 0.870, taxaCliques: 0.259, canal: "SMS", arquivo: "Dados de demonstração" },
+  { id: "d12", campanha: "Carrinho abandonado", date: "2026-07-22", enviados: 2480, entregues: 2441, visualizacao: 0, lidos: 927, cliques: 365, taxaAbertura: 0.380, taxaCliques: 0.150, canal: "E-mail", arquivo: "Dados de demonstração" },
+  { id: "d13", campanha: "Semana do consumidor", date: "2026-07-12", enviados: 7190, entregues: 6924, visualizacao: 6140, lidos: 0, cliques: 1078, taxaAbertura: 0.887, taxaCliques: 0.156, canal: "WhatsApp", arquivo: "Dados de demonstração" },
+  { id: "d14", campanha: "Boas-vindas | julho", date: "2026-07-03", enviados: 10760, entregues: 10549, visualizacao: 0, lidos: 3987, cliques: 1098, taxaAbertura: 0.378, taxaCliques: 0.104, canal: "E-mail", arquivo: "Dados de demonstração" },
+];

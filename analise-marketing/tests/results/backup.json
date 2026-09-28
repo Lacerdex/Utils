@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "rows": [
+    {
+      "campanha": "Ação; setembro",
+      "date": "2026-09-24",
+      "enviados": 1000,
+      "entregues": 900,
+      "visualizacao": null,
+      "lidos": 450,
+      "cliques": 90,
+      "optOut": 2,
+      "taxaAbertura": null,
+      "taxaCliques": null,
+      "canal": "E-mail",
+      "arquivo": "dados.csv",
+      "id": "dados.csv-Sheet1-0"
+    },
+    {
+      "campanha": "Teste",
+      "date": "2026-09-25",
+      "enviados": 200,
+      "entregues": 180,
+      "visualizacao": null,
+      "lidos": 90,
+      "cliques": 18,
+      "optOut": 0,
+      "taxaAbertura": null,
+      "taxaCliques": null,
+      "canal": "SMS",
+      "arquivo": "dados.csv",
+      "id": "dados.csv-Sheet1-1"
+    }
+  ],
+  "events": [
+    {
+      "id": "a85ec2db-fe20-48df-9d10-0f3732e2b31c",
+      "nome": "Encontro anual",
+      "data": "2026-09-27",
+      "inscritos": 100,
+      "presentes": 60,
+      "campanhas": [
+        {
+          "campanha": "Campanha A",
+          "investimento": 100
+        },
+        {
+          "campanha": "Campanha B",
+          "investimento": 200
+        }
+      ]
+    }
+  ],
+  "source": "imported",
+  "exportedAt": "2026-09-28T02:29:12.261Z"
+}

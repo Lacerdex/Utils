@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-28T02:29:13.664Z",
+  "checks": [
+    "file:// inicial, 14 registros e seis indicadores",
+    "busca, seleção, datas, canais, ordenação e estados vazios",
+    "tema escuro e persistência de preferência",
+    "modelo Excel e importação .xlsx",
+    "CSV UTF-8, delimitador, aspas, números brasileiros e persistência dos disparos",
+    "importação inválida preserva dados anteriores",
+    "Excel e PDF do recorte filtrado",
+    "criação, múltiplos investimentos, edição, cálculo e persistência de eventos",
+    "validação impede presença maior que inscrições",
+    "seleção oculta, filtros e exportação de eventos com investimentos",
+    "exclusão de evento e restauração completa de backup",
+    "backup inválido rejeitado sem perda de dados",
+    "limpeza e restauração de demonstração preservam eventos",
+    "responsividade de ambas as telas em 390, 768 e 1440 px",
+    "ajuda e fechamento por teclado",
+    "zero erros no console e zero requisições HTTP/HTTPS"
+  ],
+  "errors": [],
+  "network": []
+}
