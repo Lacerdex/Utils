@@ -1,63 +1,94 @@
 # Análise de disparos
 
-## Objetivo e acesso
+## Acesso e entrada
 
-A página consolida o desempenho dos envios de campanhas por período e canal. Abra `Campanha-Marketing/index.html` e selecione **Análise de disparos**. A rota é `#disparos`, vinculada à seção `#dispatch-page`; não existe um HTML separado para esta tela.
+Abra `index.html` na raiz do projeto e selecione **Análise de disparos** (`#disparos`, seção `#dispatch-page`). Funciona offline e por `file://`.
 
-## Fluxo de uso
+Baixe **Modelo Excel** e preencha as colunas obrigatórias `empresas`, `campanha` e `enviados`. Cada linha exige empresa com até 200 caracteres. Aliases: empresa, nome da empresa, company, companies e company name. Campo interno: `empresa`. Espaços nas extremidades são removidos; a identidade usa grafia exata, incluindo maiúsculas e acentos.
 
-1. Baixe **Modelo Excel** e preencha os dados ou prepare um arquivo `.xlsx`, `.xls` ou `.csv` compatível.
-2. Use **Importar planilha**, **Escolher arquivo** ou arraste os arquivos para a área de importação.
-3. Refine o painel por nome, campanhas selecionadas, datas e canal.
-4. Consulte indicadores, gráficos e a tabela ordenável.
-5. Exporte o recorte atual em Excel ou PDF.
+Opcionais: data de envio, entregues, visualização, lidos, cliques, taxa de abertura, taxa de cliques, canal e opt-out. CSV usa UTF-8, números brasileiros e datas brasileiras, ISO ou seriais Excel. Contagens são inteiras não negativas; entregues não supera enviados.
 
-Uma nova importação substitui os disparos existentes e preserva os eventos. Quando já existem dados importados, a substituição pede confirmação. Limpar dados ou restaurar a demonstração também preserva os eventos e solicita confirmação.
+`colaboradores` identifica um responsável por linha, com até 200 caracteres. Aliases: colaborador, responsável, responsável pelo disparo, nome do colaborador, employee e owner. Cabeçalho ausente recebe **Colaborador não informado**, com aviso, para compatibilidade. Quando presente, valores vazios, traços ou nomes acima do limite cancelam toda a importação. Campo interno: `colaborador`; identidade por nome exato após remover espaços nas extremidades.
 
-## Entrada e validação
+Nova importação substitui disparos e preserva eventos. Abas sem campanha/enviados são ignoradas com aviso. Abas de disparos sem empresas e linhas com empresa vazia rejeitam toda a importação, preservando dados anteriores. Valores inválidos também cancelam. Linhas vazias são ignoradas; não há deduplicação. Limites: 30 arquivos, 20 MB por arquivo, 50 MB no total, 100.000 registros.
 
-As colunas `campanha` e `enviados` são obrigatórias. São opcionais: `data de envio`, `entregues`, `visualização`, `lidos`, `cliques`, `taxa de abertura`, `taxa de cliques`, `canal` e `opt-out`. O modelo fornece os cabeçalhos esperados; os aliases aceitos estão em `core.js`.
+## Filtros
 
-- CSV deve estar em UTF-8; números brasileiros são aceitos.
-- Contagens devem ser inteiras e não negativas. Entregues não pode superar enviados.
-- Datas inválidas ou valores incompatíveis cancelam toda a importação e preservam os dados anteriores.
-- Linhas vazias são ignoradas. Abas incompatíveis são ignoradas com aviso; arquivos sem registros compatíveis cancelam a operação.
-- Limites: 30 arquivos, 20 MB por arquivo, 50 MB no total e 100.000 registros.
-- Não há deduplicação automática de registros.
+Empresas e colaboradores permitem seleção múltipla. **Nenhuma seleção significa todos naquela categoria**. Empresa, colaborador, busca, campanhas, datas e canal se combinam antes dos cálculos, inclusive nas contagens dos canais. Responsáveis podem atuar em várias empresas; os filtros se intersectam. Busca ignora acentos; datas são inclusivas. Intervalo invertido exibe aviso e nenhum resultado. Disparos sem data entram em totais sem período, mas ficam fora de recortes datados e do gráfico temporal.
 
-## Indicadores e regras
+Selecionar campanhas usa chave JSON `[empresa, campanha]`, independente de canal/responsável. Apenas campanhas compatíveis com empresas e colaboradores escolhidos aparecem. Ao mudar esses filtros, seleções incompatíveis são removidas. Trocar dashboard ou listagem preserva filtros. Limpar filtros mantém os modos e remove empresas, colaboradores, campanhas, busca, canal e datas. Canais: Todos, E-mail, WhatsApp, SMS e Outros.
 
-| Indicador | Cálculo |
-| --- | --- |
-| Total de envios | Soma de enviados |
-| Mensagens entregues | Soma de entregues; taxa = entregues ÷ enviados |
-| Abertura / visualização | Lidos positivos; caso contrário, visualizações positivas |
-| Cliques registrados | Cliques explícitos ou estimados pela taxa quando a contagem está ausente |
-| Falhas de entrega | Enviados − entregues |
-| Opt-out | Soma das contagens informadas; taxa = opt-out ÷ entregues |
+## Desempenho e listagens
 
-Taxas de abertura e CTR consolidadas dividem as contagens efetivas pelo total de entregues, sem média simples das taxas. Taxas importadas estimam contagens apenas quando as respectivas contagens estão ausentes; zero explícito prevalece. Aberturas e visualizações não são somadas. Sem denominador positivo, a taxa é zero.
+As seleções são independentes e começam em empresas:
 
-Opt-out ausente aparece como “—”; cobertura incompleta é marcada como parcial. Percentuais na interface e nos PDFs têm duas casas decimais, por exemplo `40,00%`. No Excel, o formato `0.00%` mantém o valor numérico original para cálculos.
+| Controle | Opção | Resultado |
+| --- | --- | --- |
+| Visualização do dashboard | Desempenho por empresas | Comparativo por empresa, somando canais |
+| Visualização do dashboard | Desempenho por campanhas | Comparativo por empresa + campanha + canal + responsável |
+| Visualização do dashboard | Produção por colaboradores | Quantidade de disparos por responsável e dia; comparativo de produção |
+| Tipo de listagem | Empresas e suas campanhas | Totais da empresa seguidos de suas campanhas por canal |
+| Tipo de listagem | Listagem geral de campanhas | Tabela única com empresa, canal e responsável identificados |
+| Tipo de listagem | Colaboradores e seus disparos | Totais por responsável seguidos das suas campanhas e empresas |
 
-## Filtros e visualizações
+O comparativo inclui todos os grupos do recorte, ordenados por envios, com rolagem após 420 px. Compara abertura e CTR. A tabela mostra contagens de abertura/cliques e taxas; a linha de empresa consolida métricas. A ordenação funciona por grupos de empresas e dentro deles, ou globalmente na listagem geral. Estados vazios desabilitam exportações.
 
-A busca ignora acentos. Os filtros de data são inclusivos; intervalos invertidos exibem aviso e nenhum resultado. Registros sem data participam do total sem filtro de período, mas não entram no gráfico temporal nem em recortes por datas.
+### Séries e cores por empresa
 
-Os canais são Todos, E-mail, WhatsApp, SMS e Outros. A tabela agrupa por campanha e canal e permite ordenar pelos cabeçalhos. O gráfico temporal soma envios e cliques por dia; o comparativo apresenta abertura e CTR das cinco combinações de campanha/canal com mais envios. Estados vazios são exibidos quando não há resultados, e as exportações ficam desabilitadas.
+O gráfico temporal agrega **contagens efetivas de aberturas e cliques por empresa e dia**, em eixo vertical comum. Cada empresa tem duas séries: abertura contínua na cor principal e cliques tracejados no tom claro. Legenda e pontos identificam empresa/métrica; pontos incluem data e quantidade ao passar o mouse. Datas sem disparos da empresa não recebem zeros artificiais; uma única data gera pontos. Empresa sem registros datados no recorte fica fora do gráfico e da legenda.
+
+`COMPANY_PALETTE`, `updateCompanyColors` e `companyColorMap` em `app.js` atribuem as cores pelo conjunto completo de empresas, antes do recorte. EmpA = vermelho, EmpB = azul, EmpC = verde, EmpD = amarelo. Seguem roxo, laranja, turquesa e rosa; além da paleta, pares de cores HSL são gerados. Nomes EmpA a EmpZ reservam seus índices; demais nomes ocupam os índices disponíveis em ordem alfabética. Filtrar ou trocar modo não muda as cores; substituir o conjunto importado pode mudar a atribuição de nomes livres.
+
+`renderTrend` recebe apenas os registros filtrados. A mesma atribuição colore as barras de abertura/CTR do comparativo em empresas e campanhas. `tests/company-charts.test.cjs` verifica cores, somas diárias, zeros, estimativas, datas ausentes, filtros, modo, estados vazios, temas e responsividade.
+
+### Caixa de detalhes (tooltip)
+
+`tooltipAttrs` e `summaryTooltip` em `app.js` adicionam metadados de detalhes aos indicadores, pontos/linhas SVG, comparativo e linhas de tabela. O elemento único `#dashboard-tooltip` usa `role="tooltip"`, posição fixa, limites da tela e tema atual. `showTooltip` cria o conteúdo com `textContent`, preservando texto importado sem execução de HTML.
+
+Nos pontos, os dados são agregados por empresa/dia após os filtros: aberturas, cliques, respectivas taxas, enviados e entregues. Nas linhas, total da série e intervalo. Comparativo e listagens usam resumos filtrados; indicadores mostram valor e contexto, inclusive em Pós-evento.
+
+Eventos de ponteiro e foco no `#main` abrem a caixa; `aria-describedby` associa o alvo à descrição. Tab permite acesso; Escape fecha. Sair do alvo, trocar filtros/modos, atualizar eventos, navegar ou redimensionar remove os detalhes. Rolagem mantém a caixa apenas se o mesmo alvo continuar sob o mouse ou em foco visível. A caixa não participa das exportações. Testes: `tests/tooltips.test.cjs`; capturas e relatório em `tests/results/`.
+
+## Cálculos
+
+### Produção
+
+Um registro importado representa um disparo; `enviados` representa seu volume de mensagens. O modo colaboradores apresenta disparos realizados, campanhas atendidas, empresas atendidas, mensagens enviadas, aberturas e cliques. Campanhas atendidas contam chaves `[empresa, campanha]` distintas; empresas atendidas contam nomes distintos. Categorias compartilhadas não são somadas entre responsáveis no consolidado. Não há deduplicação de registros.
+
+`summarize(rows, 'colaboradores')` agrega por responsável, inclusive entre empresas/canais, e retorna `registros`, `campanhasOperadas` e `empresasAtendidas`. Agrupamento padrão inclui o responsável para separar a mesma campanha operada por pessoas diferentes. Empresa consolida seus responsáveis sem duplicar volume.
+
+No modo produção, `renderTrend` usa `colaborador` como dimensão e `registros` como série, com eixo inteiro e tooltip com empresas, responsável, volume e engajamento do dia. O comparativo ordena por número de disparos (desempate: mensagens), com cores estáveis atribuídas ao conjunto completo de responsáveis. Demais modos mantêm as séries por empresa, limitadas também pelo filtro de colaboradores. A coluna Disparos e o responsável aparecem nas três listagens. Seletores continuam independentes.
+
+Registros sem atribuição são preservados em **Colaborador não informado**; aparecem como grupo separado e não entram na contagem de colaboradores identificados. O aviso solicita reimportação para associação correta.
+
+- Envios e entregues: somas; taxa de entrega = entregues ÷ enviados.
+- Aberturas: lidos positivos, senão visualizações positivas; não são somados.
+- Contagens explícitas, inclusive zero, prevalecem. Quando ausentes, taxa × entregues estima contagem, arredondada por disparo.
+- Abertura e CTR: contagens efetivas totais ÷ entregues totais. Sem denominador, zero. Não há média simples de percentuais.
+- Falhas: enviados − entregues, sem indicar causa.
+- Opt-out: soma disponível; ausente é “—”; cobertura incompleta é parcial. Taxa usa todas as entregas do recorte.
+- Percentuais: duas casas na tela/PDF; Excel preserva valores numéricos e formato `0.00%`.
 
 ## Exportação e persistência
 
-O Excel contém as abas **Disparos** (dados originais do recorte) e **Resumo** (agregações). O PDF inclui indicadores e resumos por campanha/canal, com paginação automática. Ambos respeitam os filtros ativos.
+Excel contém **Disparos** (originais incluindo empresas/colaboradores) e **Resumo** (agregado conforme dashboard, incluindo responsável e quantidades de produção). PDF inclui indicadores, filtros de colaboradores e resumos conforme dashboard, com paginação. Tipo de listagem organiza apenas a tabela da interface. Ambos respeitam filtros.
 
-Os dados são salvos no `localStorage`, na chave `campaign-pulse-local-v1`. **Salvar backup** inclui todos os disparos e eventos, independentemente do filtro. **Restaurar backup** valida o JSON e pede confirmação antes de substituir os dados. Em falhas de armazenamento, a interface orienta salvar um backup da sessão.
+Demonstração: **EmpA, EmpB e EmpC** nos 14 disparos, mantendo totais anteriores. Todas têm disparos em **03, 10, 17 e 24/09/2026**, permitindo comparar as seis séries nas mesmas datas. Restaurar demonstração carrega a versão atual mesmo se a versão anterior estiver salva no navegador. Restaurar demonstração e limpar disparos preservam eventos.
 
-## Referências para manutenção
+Responsáveis fictícios: **Colab1 a Colab6** distribuídos entre empresas. Colab1 e Colab2 têm três registros; Colab3 a Colab6 têm dois cada. Valores, datas e 88.480 mensagens enviadas foram preservados.
 
-- `Campanha-Marketing/index.html`: estrutura da seção `dispatch-page`.
-- `Campanha-Marketing/app.js`: `renderDispatch`, `renderTrend`, `importFiles`, `dispatchExcel`, `dispatchPdf` e `writeExcel`.
-- `Campanha-Marketing/core.js`: parsing, validação, filtros, contagens efetivas, totais e agrupamento.
-- `Campanha-Marketing/styles.css`: apresentação e responsividade.
-- `Campanha-Marketing/tests/core.test.cjs`, `browser.test.cjs` e `advanced.test.cjs`: regras e fluxos automatizados (os dois últimos também ficam em `tests/`).
+Backup atual: versão 3, exige `empresa` e `colaborador`. Versões 1/2 são migradas ao carregar dados locais ou restaurar: responsável ausente recebe **Colaborador não informado**; versão 1 sem empresa recebe **Empresa não informada**. Avisos solicitam reimportar a planilha completa para atribuição. Eventos e métricas são preservados. Versão 3 rejeita responsáveis e empresas ausentes/inválidos.
 
-A aplicação abre por `file://`, sem servidor ou conexão de rede. As bibliotecas de `vendor/` e suas licenças fazem parte da distribuição. Resultados gerados em `Campanha-Marketing/tests/results/` são locais e ignorados pelo Git.
+A chave `campaign-pulse-local-v1` foi mantida; o próximo salvamento grava versão 3. Salvar backup inclui todos os dados. Restaurar valida e pede confirmação. Falha de armazenamento orienta salvar backup da sessão. Modo, listagem e filtros não são persistidos. Pós-evento mantém cadastro e filtros próprios.
+
+## Manutenção e testes
+
+- `index.html`: filtros, seletores e tabela.
+- `core.js`: `parseGrid`, `filter`, `campaignKey`, `summarize(rows, mode)`, `totals`, `validateBackup`.
+- `app.js`: seleções, `renderDispatch`, importação e exportações.
+- `demo.js`: empresas fictícias.
+- `styles.css`: controles, grupos e responsividade.
+- `tests/core.test.cjs`, `browser.test.cjs`, `advanced.test.cjs`, `companies.test.cjs`: regras, regressões e novos fluxos; evidências em `tests/results/`.
+- `tests/collaborators-core.test.cjs` e `collaborators.test.cjs`: atribuição, produção, filtros, exportação, migração, demonstração, estados vazios e responsividade.
+
+Consulte `LEIA-ME.md` para uso e `VALIDACAO.md` para resultados e limites.

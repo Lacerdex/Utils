@@ -1,7 +1,29 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const C = require('../core.js');
-const grid = (rows, extra = []) => [['campanha', 'data de envio', 'enviados', 'entregues', 'lidos', 'cliques', 'canal', ...extra], ...rows];
+const grid = (rows, extra = []) => [['empresas', 'campanha', 'data de envio', 'enviados', 'entregues', 'lidos', 'cliques', 'canal', ...extra], ...rows.map(row => ['Aurora', ...row])];
+test('empresa é obrigatória no cabeçalho e em todas as linhas; aliases e espaços', () => {
+  assert.throws(() => C.parseGrid([['campanha', 'enviados'], ['A', 1]], 'x', 'y'), /coluna obrigatória empresas/);
+  for (const empresa of ['', ' ', null, '-', 'x'.repeat(201)]) assert.throws(() => C.parseGrid([['empresas', 'campanha', 'enviados'], ['Aurora', 'A', 1], [empresa, 'B', 2]], 'x', 'y'), /empresa/);
+  for (const header of ['empresas', 'Empresa', 'company', 'companies']) assert.equal(C.parseGrid([[header, 'campanha', 'enviados'], [' Aurora ', 'A', 1]], 'x', 'y').rows[0].empresa, 'Aurora');
+});
+test('campanhas homônimas ficam separadas por empresa; desempenho por empresa é ponderado', () => {
+  const rows = C.parseGrid([['empresas', 'campanha', 'enviados', 'entregues', 'lidos', 'cliques', 'canal'], ['A', 'Igual', 100, 100, 50, 10, 'E-mail'], ['B', 'Igual', 100, 100, 20, 1, 'E-mail'], ['A', 'Igual', 900, 900, 90, 9, 'SMS']], 'x', 'y').rows;
+  assert.equal(C.summarize(rows).length, 3);
+  const companies = C.summarize(rows, 'empresas'); assert.equal(companies.length, 2);
+  assert.equal(companies[0].taxaAbertura, .14); assert.equal(companies[0].taxaCliques, .019);
+  assert.equal(C.filter(rows, { companies: [] }).length, 3);
+  assert.equal(C.filter(rows, { companies: ['A'], channel: 'SMS' }).length, 1);
+  assert.equal(C.filter(rows, { campaignKeys: [C.campaignKey(rows[1])] }).length, 1);
+  assert.equal(C.filter(rows, { companies: ['A'], campaignKeys: [C.campaignKey(rows[1])] }).length, 0);
+});
+test('backup v1 migra sem perder dados; v2 exige empresa', () => {
+  const row = C.parseGrid(grid([['Teste', '', 10, 9, 4, 1, 'E-mail']]), 'x', 'y').rows[0];
+  delete row.empresa;
+  const old = C.validateBackup({ version: 1, source: 'imported', rows: [row], events: [] });
+  assert.equal(old.version, 3); assert.equal(old.rows[0].empresa, 'Empresa não informada'); assert.equal(old.rows[0].enviados, 10);
+  for (const empresa of [undefined, '', ' ', '-', 'x'.repeat(201)]) assert.throws(() => C.validateBackup({ version: 2, rows: [{ ...row, empresa }], events: [] }), /empresa/);
+});
 test('números brasileiros, zeros e ausência de dados', () => {
   assert.equal(C.number('1.234'), 1234); assert.equal(C.number('1.234,56'), 1234.56); assert.equal(C.number(1234.56), 1234.56);
   assert.equal(C.number('0'), 0); assert.equal(C.number(''), null); assert.ok(Number.isNaN(C.number('texto'))); assert.ok(Number.isNaN(C.number('12abc')));
@@ -41,9 +63,9 @@ test('importação rejeita linhas inválidas sem aceitar dados parcialmente', ()
   assert.equal(C.parseGrid([['aleatório'], [1]], 'x', 'y').skipped, true);
 });
 test('opt-out percentual nunca é confundido com contagem', () => {
-  const result = C.parseGrid([['campanha', 'enviados', 'taxa de opt-out'], ['A', 100, '10%']], 'x', 'y');
+  const result = C.parseGrid([['empresas', 'campanha', 'enviados', 'taxa de opt-out'], ['Aurora', 'A', 100, '10%']], 'x', 'y');
   assert.equal(result.rows[0].optOut, null); assert.equal(C.totals(result.rows).hasOptOut, false);
-  assert.equal(C.parseGrid([['campanha', 'enviados', 'opt-out (%)'], ['A', 100, .1]], 'x', 'y').rows[0].optOut, null);
+  assert.equal(C.parseGrid([['empresas', 'campanha', 'enviados', 'opt-out (%)'], ['Aurora', 'A', 100, .1]], 'x', 'y').rows[0].optOut, null);
 });
 test('eventos validam presença e consolidam investimentos com precisão monetária', () => {
   const event = { id: '1', nome: 'Evento', data: '2026-09-27', inscritos: 100, presentes: 50, campanhas: [{ campanha: 'A', investimento: 100 }, { campanha: 'B', investimento: 200 }] };

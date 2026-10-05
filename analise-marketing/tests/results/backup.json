@@ -1,7 +1,9 @@
 {
-  "version": 1,
+  "version": 3,
   "rows": [
     {
+      "empresa": "Aurora",
+      "colaborador": "Colaborador não informado",
       "campanha": "Ação; setembro",
       "date": "2026-09-24",
       "enviados": 1000,
@@ -17,6 +19,8 @@
       "id": "dados.csv-Sheet1-0"
     },
     {
+      "empresa": "Horizonte",
+      "colaborador": "Colaborador não informado",
       "campanha": "Teste",
       "date": "2026-09-25",
       "enviados": 200,
@@ -34,7 +38,7 @@
   ],
   "events": [
     {
-      "id": "a85ec2db-fe20-48df-9d10-0f3732e2b31c",
+      "id": "bf1514fb-55d5-42aa-a13a-786b9ad48c12",
       "nome": "Encontro anual",
       "data": "2026-09-27",
       "inscritos": 100,
@@ -52,5 +56,5 @@
     }
   ],
   "source": "imported",
-  "exportedAt": "2026-09-28T02:29:12.261Z"
+  "exportedAt": "2026-10-05T04:16:51.122Z"
 }

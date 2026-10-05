@@ -49,6 +49,8 @@
     return value ? 'Outros' : 'E-mail';
   }
   const aliases = {
+    empresa: ['empresas', 'empresa', 'nome da empresa', 'company', 'companies', 'company name'],
+    colaborador: ['colaboradores', 'colaborador', 'responsavel', 'responsavel pelo disparo', 'nome do colaborador', 'employee', 'owner'],
     campanha: ['campanha', 'nome da campanha', 'campaign', 'campaign name'],
     date: ['data de envio', 'data envio', 'sent date', 'send date', 'data', 'date'],
     enviados: ['enviados', 'total enviados', 'sent', 'sends'],
@@ -68,11 +70,16 @@
     const countKeys = new Set(['enviados', 'entregues', 'visualizacao', 'lidos', 'cliques', 'optOut']);
     const columns = Object.fromEntries(Object.entries(aliases).map(([key, names]) => [key, headers.findIndex((header, index) => names.includes(header) && !(countKeys.has(key) && String(grid[headerRow][index]).includes('%')))]));
     if (columns.campanha < 0 || columns.enviados < 0) return { rows: [], warnings: [`${sheetname}: aba ignorada, faltam as colunas campanha e/ou enviados.`], skipped: true };
+    if (columns.empresa < 0) throw new Error(`${filename} / ${sheetname}: falta a coluna obrigatória empresas.`);
     const rows = [], errors = [], warnings = [];
     grid.slice(headerRow + 1).forEach((cells, index) => {
       if (!cells.some(cell => !blank(cell))) return;
       const row = {}, line = `${filename} / ${sheetname}, linha ${headerRow + index + 2}`;
       const get = key => columns[key] < 0 ? null : cells[columns[key]];
+      row.empresa = String(get('empresa') ?? '').trim();
+      if (blank(get('empresa')) || row.empresa.length > 200) { errors.push(`${line}: informe uma empresa com até 200 caracteres.`); return; }
+      row.colaborador = columns.colaborador < 0 ? 'Colaborador não informado' : String(get('colaborador') ?? '').trim();
+      if (blank(row.colaborador) || row.colaborador.length > 200) { errors.push(`${line}: informe um colaborador com até 200 caracteres.`); return; }
       row.campanha = String(get('campanha') ?? '').trim();
       if (!row.campanha || row.campanha.length > 500) { errors.push(`${line}: campanha vazia ou com mais de 500 caracteres.`); return; }
       row.date = date(get('date'));
@@ -95,6 +102,7 @@
     });
     if (errors.length) throw new Error(`${errors.length} linha(s) inválida(s). Nada foi importado.\n${errors.slice(0, 5).join('\n')}${errors.length > 5 ? '\nCorrija também as demais linhas inválidas.' : ''}`);
     const undated = rows.filter(row => !row.date).length;
+    if (rows.length && columns.colaborador < 0) warnings.push(`${rows.length} registro(s) sem a coluna colaboradores: classificados como Colaborador não informado.`);
     if (undated) warnings.push(`${undated} registro(s) sem data: excluídos de filtros por período e do gráfico temporal.`);
     return { rows, warnings, skipped: false };
   }
@@ -111,24 +119,26 @@
     const abertura = rows.reduce((total, row) => total + opens(row), 0), cliques = rows.reduce((total, row) => total + clicks(row), 0);
     return { enviados, entregues, abertura, cliques, falhas: Math.max(0, enviados - entregues), optOut: sum(rows, 'optOut'), hasOptOut: rows.some(row => row.optOut != null), partialOptOut: rows.some(row => row.optOut == null), taxaAbertura: ratio(abertura, entregues), taxaCliques: ratio(cliques, entregues), taxaEntrega: ratio(entregues, enviados) };
   }
-  function summarize(rows) {
+  const campaignKey = row => JSON.stringify([row.empresa, row.campanha]);
+  function summarize(rows, mode = 'campanhas') {
     const groups = new Map();
     for (const row of rows) {
-      const key = JSON.stringify([row.campanha, row.canal]);
+      const key = mode === 'empresas' ? row.empresa : mode === 'colaboradores' ? row.colaborador : JSON.stringify([row.empresa, row.campanha, row.canal, row.colaborador]);
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(row);
     }
     return Array.from(groups.values(), items => {
       const dates = items.map(row => row.date).filter(Boolean).sort();
-      return { ...totals(items), campanha: items[0].campanha, canal: items[0].canal, registros: items.length, primeiraData: dates[0] || '', ultimaData: dates.at(-1) || '' };
+      const aggregated = mode === 'empresas' || mode === 'colaboradores';
+      return { ...totals(items), grupo: mode, empresa: mode === 'colaboradores' ? [...new Set(items.map(row => row.empresa))].join(', ') : items[0].empresa, colaborador: mode === 'empresas' ? [...new Set(items.map(row => row.colaborador))].join(', ') : items[0].colaborador, campanha: aggregated ? '' : items[0].campanha, canal: aggregated ? [...new Set(items.map(row => row.canal))].join(', ') : items[0].canal, registros: items.length, empresasAtendidas: new Set(items.map(row => row.empresa)).size, campanhasOperadas: new Set(items.map(campaignKey)).size, primeiraData: dates[0] || '', ultimaData: dates.at(-1) || '' };
     });
   }
   function filter(rows, criteria = {}) {
-    const { query = '', selected = [], from = '', to = '', channel = 'Todos', event = false } = criteria;
+    const { query = '', selected = [], companies = [], collaborators = [], campaignKeys = [], from = '', to = '', channel = 'Todos', event = false } = criteria;
     if (from && to && from > to) return [];
     return rows.filter(row => {
       const name = event ? row.nome : row.campanha, day = event ? row.data : row.date;
-      return normalize(name).includes(normalize(query)) && (!selected.length || selected.includes(name)) && (!from || day && day >= from) && (!to || day && day <= to) && (event || channel === 'Todos' || row.canal === channel);
+      return normalize(name).includes(normalize(query)) && (!selected.length || selected.includes(name)) && (event || !companies.length || companies.includes(row.empresa)) && (event || !collaborators.length || collaborators.includes(row.colaborador)) && (event || !campaignKeys.length || campaignKeys.includes(campaignKey(row))) && (!from || day && day >= from) && (!to || day && day <= to) && (event || channel === 'Todos' || row.canal === channel);
     });
   }
   function validateEvent(event) {
@@ -145,8 +155,15 @@
     return { investimento, presentes, inscritos, custo: presentes ? investimento / presentes : null, comparecimento: ratio(presentes, inscritos) };
   }
   function validateBackup(data) {
-    if (!data || data.version !== 1 || !Array.isArray(data.rows) || !Array.isArray(data.events) || data.rows.length > 100000 || data.events.length > 10000) throw new Error('Backup incompatível ou acima do limite de registros.');
+    if (!data || ![1, 2, 3].includes(data.version) || !Array.isArray(data.rows) || !Array.isArray(data.events) || data.rows.length > 100000 || data.events.length > 10000) throw new Error('Backup incompatível ou acima do limite de registros.');
+    const legacy = data.version === 1;
     data.rows.forEach(row => {
+      if (legacy && row && row.empresa == null) row.empresa = 'Empresa não informada';
+      if (data.version < 3 && row && row.colaborador == null) row.colaborador = 'Colaborador não informado';
+      if (!row || typeof row.colaborador !== 'string' || blank(row.colaborador) || row.colaborador.trim().length > 200) throw new Error('O backup contém colaborador inválido ou ausente.');
+      row.colaborador = row.colaborador.trim();
+      if (!row || typeof row.empresa !== 'string' || blank(row.empresa) || row.empresa.trim().length > 200) throw new Error('O backup contém empresa inválida ou ausente.');
+      row.empresa = row.empresa.trim();
       if (!row || typeof row.campanha !== 'string' || !row.campanha.trim() || row.campanha.length > 500 || typeof row.date !== 'string' || date(row.date) !== row.date || !CHANNELS.includes(row.canal) || !['enviados', 'entregues'].every(key => Number.isSafeInteger(row[key]) && row[key] >= 0 && row[key] <= 1e12) || row.entregues > row.enviados || !['lidos', 'visualizacao', 'cliques', 'optOut'].every(key => row[key] == null || Number.isSafeInteger(row[key]) && row[key] >= 0 && row[key] <= 1e12) || !['taxaAbertura', 'taxaCliques'].every(key => row[key] == null || Number.isFinite(row[key]) && row[key] >= 0 && row[key] <= 1)) throw new Error('O backup contém dados de campanha inválidos.');
     });
     const ids = new Set();
@@ -156,9 +173,10 @@
       ids.add(event.id);
     });
     if (!['demo', 'imported', 'empty'].includes(data.source)) data.source = 'imported';
+    data.version = 3;
     return data;
   }
-  const api = { CHANNELS, normalize, number, rate, date, parseGrid, opens, clicks, ratio, totals, summarize, filter, validateEvent, spend, eventTotals, validateBackup };
+  const api = { CHANNELS, normalize, number, rate, date, parseGrid, opens, clicks, ratio, totals, summarize, campaignKey, filter, validateEvent, spend, eventTotals, validateBackup };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.CampaignCore = api;
 })(globalThis);
