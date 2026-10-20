@@ -11,16 +11,16 @@
   const KEY = 'campaign-pulse-local-v1';
   const uid = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   let state = { version: 3, rows: structuredClone(window.DEMO_ROWS), events: [], source: 'demo' };
-  let selectedCompanies = new Set(), selectedCollaborators = new Set(), performanceMode = 'empresas', listingMode = 'empresas', selectedCampaigns = new Set(), selectedEvents = new Set(), channel = 'Todos', sort = { key: 'enviados', direction: -1 };
+  let selectedCompanies = new Set(), selectedCollaborators = new Set(), selectedDepartments = new Set(), performanceMode = 'empresas', listingMode = 'empresas', selectedCampaigns = new Set(), selectedEvents = new Set(), channel = 'Todos', sort = { key: 'enviados', direction: -1 };
   let editingId = null, dirty = false, importing = false, toastTimer, persistenceWarning = '', sessionOnly = false;
   let tooltipTarget = null;
   let tooltipNeedsMovement = false;
   let tooltipPosition = { x: 0, y: 0 };
   const tooltipAttrs = (title, lines) => `tabindex="0" data-tooltip-title="${escape(title)}" data-tooltip-lines="${escape(JSON.stringify(lines))}"`;
   const summaryTooltip = item => tooltipAttrs(item.grupo === 'colaboradores' ? item.colaborador : item.campanha ? `${item.empresa} · ${item.campanha}` : item.empresa, [
-    `Colaboradores: ${item.colaborador}`, `Empresas: ${item.empresa}`,
+    `Colaboradores: ${item.colaborador}`, `Empresas: ${item.empresa}`, `Departamentos: ${item.departamento}`,
     `Canal: ${item.canal}`, `${item.registros} disparos · ${dateLabel(item.primeiraData)} a ${dateLabel(item.ultimaData)}`,
-    `Enviados: ${fmt(item.enviados)} · Entregues: ${fmt(item.entregues)}`,
+    `Enviados: ${fmt(item.enviados)} · Entregues: ${fmt(item.entregues)}`, `Falhas de entrega: ${fmt(item.falhas)}`,
     `Aberturas: ${fmt(item.abertura)} (${pct(item.taxaAbertura)})`, `Cliques: ${fmt(item.cliques)} (CTR ${pct(item.taxaCliques)})`,
     `Opt-out: ${item.hasOptOut ? fmt(item.optOut) + (item.partialOptOut ? ' · dados parciais' : '') : 'não informado'}`
   ]);
@@ -55,6 +55,15 @@
   try {
     const stored = localStorage.getItem(KEY);
     if (stored) state = C.validateBackup(JSON.parse(stored));
+    // Complementa apenas exemplos reconhecidos; nunca atribui dados fictícios a importações.
+    if (state.source === 'demo') {
+      const samples = new Map(window.DEMO_ROWS.map(row => [row.id, row]));
+      const identity = ['empresa', 'colaborador', 'campanha', 'date', 'canal', 'arquivo', 'enviados', 'entregues', 'lidos', 'visualizacao', 'cliques', 'taxaAbertura', 'taxaCliques'];
+      state.rows = state.rows.map(row => {
+        const sample = samples.get(row.id);
+        return sample && identity.every(key => row[key] === sample[key]) ? { ...row, optOut: row.optOut ?? sample.optOut, departamento: C.departmentName(row) === C.UNASSIGNED_DEPARTMENT ? sample.departamento : row.departamento } : row;
+      });
+    }
     document.body.classList.toggle('dark', localStorage.getItem('campaign-pulse-theme') === 'dark');
   } catch { persistenceWarning = 'Não foi possível carregar os dados salvos. A demonstração está aberta; importe um backup se necessário.'; }
   function persist() {
@@ -71,12 +80,13 @@
   function metric(label, value, foot, icon) {
     return `<article class="metric-card" ${tooltipAttrs(label, [value, foot, 'Valores do recorte atual.'])}><div class="metric-top"><span class="metric-icon" aria-hidden="true">${icon}</span><span>${escape(label)}</span></div><div class="metric-value">${escape(value)}</div><div class="metric-foot">${escape(foot)}</div></article>`;
   }
-  function criteria() { return { query: $('#campaign-search').value, companies: [...selectedCompanies], collaborators: [...selectedCollaborators], campaignKeys: [...selectedCampaigns], from: $('#start-date').value, to: $('#end-date').value, channel }; }
+  function criteria() { return { query: $('#campaign-search').value, companies: [...selectedCompanies], collaborators: [...selectedCollaborators], departments: [...selectedDepartments], campaignKeys: [...selectedCampaigns], from: $('#start-date').value, to: $('#end-date').value, channel }; }
   const filteredRows = () => C.filter(state.rows, criteria());
   const filteredEvents = () => C.filter(state.events, { query: $('#event-search').value, from: $('#event-from').value, to: $('#event-to').value, event: true });
   const campaignNames = () => [...new Set(state.rows.map(row => row.campanha))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
   const companyNames = () => [...new Set(state.rows.map(row => row.empresa))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
   const collaboratorNames = () => [...new Set(state.rows.map(row => row.colaborador))].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+  const departmentNames = () => [...new Set(state.rows.map(C.departmentName))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
   const COMPANY_PALETTE = [
     ['#d93645', '#ef9099'], ['#2563eb', '#85a8f5'], ['#16964f', '#7bce9d'], ['#b58a00', '#dfc15e'],
     ['#8651cc', '#bea0e6'], ['#d66c19', '#ecac79'], ['#168d99', '#78cbd2'], ['#c33b88', '#e595c2']
@@ -103,7 +113,7 @@
       return [name, { opening, clicks }];
     }));
   }
-  const campaignOptions = () => [...new Map(state.rows.filter(row => (!selectedCompanies.size || selectedCompanies.has(row.empresa)) && (!selectedCollaborators.size || selectedCollaborators.has(row.colaborador))).map(row => [C.campaignKey(row), row])).values()].sort((a, b) => a.empresa.localeCompare(b.empresa, 'pt-BR') || a.campanha.localeCompare(b.campanha, 'pt-BR'));
+  const campaignOptions = () => [...new Map(state.rows.filter(row => (!selectedCompanies.size || selectedCompanies.has(row.empresa)) && (!selectedCollaborators.size || selectedCollaborators.has(row.colaborador)) && (!selectedDepartments.size || selectedDepartments.has(C.departmentName(row)))).map(row => [C.campaignKey(row), row])).values()].sort((a, b) => a.empresa.localeCompare(b.empresa, 'pt-BR') || a.campanha.localeCompare(b.campanha, 'pt-BR'));
   function updateOptions() {
     updateCompanyColors();
     const names = campaignNames();
@@ -115,6 +125,7 @@
       return [name, { opening, clicks }];
     }));
     $('#collaborator-options').innerHTML = collaborators.length ? collaborators.map((name, index) => `<label><input type="checkbox" value="${index}" ${selectedCollaborators.has(name) ? 'checked' : ''}>${escape(name)}</label>`).join('') : '<span>Nenhum colaborador disponível.</span>';
+    $('#department-options').innerHTML = departmentNames().map((name, index) => `<label><input type="checkbox" value="${index}" ${selectedDepartments.has(name) ? 'checked' : ''}>${escape(name)}</label>`).join('') || '<span>Nenhum departamento disponível.</span>';
     $('#company-options').innerHTML = companies.length ? companies.map((name, index) => `<label><input type="checkbox" value="${index}" ${selectedCompanies.has(name) ? 'checked' : ''}>${escape(name)}</label>`).join('') : '<span>Nenhuma empresa disponível.</span>';
     $('#campaign-options').innerHTML = campaigns.length ? campaigns.map((row, index) => `<label><input type="checkbox" value="${index}" ${selectedCampaigns.has(C.campaignKey(row)) ? 'checked' : ''}>${escape(row.empresa)} · ${escape(row.campanha)}</label>`).join('') : '<span>Nenhuma campanha disponível.</span>';
     $('#campaign-suggestions').innerHTML = names.map(name => `<option value="${escape(name)}"></option>`).join('');
@@ -133,13 +144,14 @@
     hideTooltip();
     tooltipNeedsMovement = true;
     const rows = filteredRows(), t = C.totals(rows), summaries = C.summarize(rows);
-    const byCompany = performanceMode === 'empresas', byCollaborator = performanceMode === 'colaboradores';
+    const byCompany = performanceMode === 'empresas', byCollaborator = performanceMode === 'colaboradores', byQuality = performanceMode === 'falhas-optout';
     $('#company-selection-count').textContent = selectedCompanies.size ? `(${selectedCompanies.size} selecionadas)` : 'Todas as empresas';
     $('#collaborator-selection-count').textContent = selectedCollaborators.size ? `(${selectedCollaborators.size} selecionados)` : 'Todos os colaboradores';
+    $('#department-selection-count').textContent = selectedDepartments.size ? `(${selectedDepartments.size} selecionados)` : 'Todos os departamentos';
     $('#legacy-company-warning').hidden = !state.rows.some(row => row.empresa === 'Empresa não informada');
     $('#legacy-collaborator-warning').hidden = !state.rows.some(row => row.colaborador === 'Colaborador não informado');
-    $('#engagement-title').textContent = byCollaborator ? 'Produção por colaborador' : byCompany ? 'Engajamento por empresa' : 'Engajamento por campanha';
-    $('#engagement-description').textContent = byCollaborator ? 'Quantidade de disparos realizados por responsável no recorte' : byCompany ? 'Abertura e cliques de todas as empresas do recorte' : 'Todas as campanhas do recorte, identificadas por empresa, canal e responsável';
+    $('#engagement-title').textContent = byQuality ? 'Falhas e opt-out por campanha' : byCollaborator ? 'Produção por colaborador' : byCompany ? 'Engajamento por empresa' : 'Engajamento por campanha';
+    $('#engagement-description').textContent = byQuality ? 'Falhas sobre enviados · opt-out sobre entregues · quantidades à direita' : byCollaborator ? 'Quantidade de disparos realizados por responsável no recorte' : byCompany ? 'Abertura e cliques de todas as empresas do recorte' : 'Todas as campanhas do recorte, identificadas por empresa, canal e responsável';
     $('#summary-title').textContent = listingMode === 'colaboradores' ? 'Colaboradores e seus disparos' : listingMode === 'empresas' ? 'Empresas e suas campanhas' : 'Listagem geral de campanhas';
     $('#summary-description').textContent = listingMode === 'colaboradores' ? 'Produção de cada responsável e suas campanhas, com empresas e canais identificados.' : listingMode === 'empresas' ? 'Totais de cada empresa seguidos de suas campanhas, canais e responsáveis.' : 'Todas as campanhas do recorte, identificadas por empresa, canal e responsável.';
     $('#date-error').hidden = !(criteria().from && criteria().to && criteria().from > criteria().to);
@@ -154,7 +166,7 @@
       metric('Disparos realizados', fmt(rows.length), `${fmt(new Set(rows.filter(row => row.colaborador !== 'Colaborador não informado').map(row => row.colaborador)).size)} colaboradores identificados`, '↗'),
       metric('Campanhas atendidas', fmt(new Set(rows.map(C.campaignKey)).size), 'Campanhas distintas por empresa', '▦'),
       metric('Empresas atendidas', fmt(new Set(rows.map(row => row.empresa)).size), 'Empresas distintas no recorte', '▣'),
-      metric('Mensagens enviadas', fmt(t.enviados), `${fmt(t.entregues)} entregues`, '✉'),
+      metric('Mensagens entregues', fmt(t.entregues), `${pct(t.taxaEntrega)} de ${fmt(t.enviados)} enviadas`, '✉'),
       metric('Aberturas registradas', fmt(t.abertura), `${pct(t.taxaAbertura)} das entregas`, '✓'),
       metric('Cliques registrados', fmt(t.cliques), `CTR ${pct(t.taxaCliques)}`, '↖')
     ] : [
@@ -168,26 +180,45 @@
     summaries.sort((a, b) => sort.direction * (typeof a[sort.key] === 'string' ? a[sort.key].localeCompare(b[sort.key], 'pt-BR') : a[sort.key] - b[sort.key]));
     $$('[data-sort]').forEach(button => button.closest('th').setAttribute('aria-sort', button.dataset.sort === sort.key ? (sort.direction === 1 ? 'ascending' : 'descending') : 'none'));
     const metricCells = item => `<td>${fmt(item.registros)}</td><td>${fmt(item.enviados)}</td><td>${fmt(item.entregues)}<small>${pct(item.taxaEntrega)}</small></td><td>${item.hasOptOut ? fmt(item.optOut) + (item.partialOptOut ? '*' : '') : '—'}</td><td>${fmt(item.abertura)}</td><td>${fmt(item.cliques)}</td><td>${rateBar(item.taxaAbertura, 'blue')}</td><td>${rateBar(item.taxaCliques, 'green')}</td><td>${dateLabel(item.ultimaData)}</td>`;
-    const campaignRow = item => `<tr data-campaign-row ${summaryTooltip(item)}><td><strong>${escape(item.empresa)}</strong></td><td><strong>${escape(item.campanha)}</strong><small>${item.registros} disparo${item.registros === 1 ? '' : 's'} · ${dateLabel(item.primeiraData)}</small></td><td><span class="channel-badge ${C.normalize(item.canal).replace(' ', '')}">${escape(item.canal)}</span></td><td>${escape(item.colaborador)}</td>${metricCells(item)}</tr>`;
+    const campaignRow = item => `<tr data-campaign-row ${summaryTooltip(item)}><td><strong>${escape(item.empresa)}</strong></td><td><strong>${escape(item.campanha)}</strong><small>${item.registros} disparo${item.registros === 1 ? '' : 's'} · ${dateLabel(item.primeiraData)}</small></td><td><span class="channel-badge ${C.normalize(item.canal).replace(' ', '')}">${escape(item.canal)}</span></td><td>${escape(item.colaborador)}</td><td>${escape(item.departamento)}</td>${metricCells(item)}</tr>`;
     const groupKey = listingMode === 'colaboradores' ? 'colaborador' : 'empresa';
     const listingGroups = C.summarize(rows, listingMode === 'colaboradores' ? 'colaboradores' : 'empresas').sort((a, b) => sort.direction * (typeof a[sort.key] === 'string' ? (a[sort.key] || a[groupKey]).localeCompare(b[sort.key] || b[groupKey], 'pt-BR') : a[sort.key] - b[sort.key]));
     const grouped = new Map(listingGroups.map(item => [item[groupKey], []]));
     summaries.forEach(item => grouped.get(item[groupKey]).push(item));
-    $('#campaign-table-body').innerHTML = !summaries.length ? `<tr><td colspan="13">${empty('Nenhum resultado encontrado')}</td></tr>` : listingMode === 'campanhas' ? summaries.map(campaignRow).join('') : listingGroups.map(item => `<tr class="company-group-row" ${listingMode === 'colaboradores' ? 'data-collaborator-group' : 'data-company-group'} ${summaryTooltip(item)}><th scope="row" colspan="4"><strong>${escape(item[groupKey])}</strong><small>${item.registros} disparos · ${item.campanhasOperadas} campanhas · ${item.empresasAtendidas} empresas · ${escape(listingMode === 'colaboradores' ? item.empresa : item.colaborador)}</small></th>${metricCells(item)}</tr>${grouped.get(item[groupKey]).map(campaignRow).join('')}`).join('');
-    $('#summary-count').textContent = `${new Set(rows.map(row => row.empresa)).size} empresas · ${new Set(rows.map(row => row.colaborador)).size} colaboradores · ${summaries.length} combinações de empresa, campanha, canal e responsável${t.hasOptOut && t.partialOptOut ? ' · * Opt-out com dados parciais' : ''}`;
+    $('#campaign-table-body').innerHTML = !summaries.length ? `<tr><td colspan="14">${empty('Nenhum resultado encontrado')}</td></tr>` : listingMode === 'campanhas' ? summaries.map(campaignRow).join('') : listingGroups.map(item => `<tr class="company-group-row" ${listingMode === 'colaboradores' ? 'data-collaborator-group' : 'data-company-group'} ${summaryTooltip(item)}><th scope="row" colspan="5"><strong>${escape(item[groupKey])}</strong><small>${item.registros} disparos · ${item.campanhasOperadas} campanhas · ${item.empresasAtendidas} empresas · ${escape(listingMode === 'colaboradores' ? item.empresa : item.colaborador)} · ${escape(item.departamento)}</small></th>${metricCells(item)}</tr>${grouped.get(item[groupKey]).map(campaignRow).join('')}`).join('');
+    $('#summary-count').textContent = `${new Set(rows.map(row => row.empresa)).size} empresas · ${new Set(rows.map(row => row.colaborador)).size} colaboradores · ${summaries.length} combinações de empresa, campanha, canal, responsável e departamento${t.hasOptOut && t.partialOptOut ? ' · * Opt-out com dados parciais' : ''}`;
     $$('[data-action="excel"], [data-action="pdf"]').forEach(button => { button.disabled = !rows.length; });
     $('#period-label').textContent = period(rows);
     renderTrend(rows);
-    const top = C.summarize(rows, performanceMode).sort((a, b) => byCollaborator ? b.registros - a.registros || b.enviados - a.enviados : b.enviados - a.enviados);
+    if (byQuality) { renderDeliveryQuality(C.summarize(rows, 'falhas-optout').sort((a, b) => b.falhas - a.falhas || b.optOut - a.optOut)); return; }
+    const top = C.summarize(rows, performanceMode).sort((a, b) => byCollaborator ? b.registros - a.registros || b.entregues - a.entregues : b.enviados - a.enviados);
     const maxDispatches = top.reduce((maximum, item) => Math.max(maximum, item.registros), 1);
     $('#engagement-chart').innerHTML = top.length ? top.map(item => {
       const colors = byCollaborator ? collaboratorColors(item.colaborador) : companyColorMap.get(item.empresa);
-      if (byCollaborator) return `<div class="comparison-row" data-collaborator="${escape(item.colaborador)}" ${summaryTooltip(item)}><span class="comparison-label">${escape(item.colaborador)}<small> · ${item.campanhasOperadas} campanhas · ${item.empresasAtendidas} empresas</small></span><div class="comparison-bars"><div class="bar-line"><div class="bar-track"><i style="background:${colors.opening};width:${item.registros / maxDispatches * 100}%"></i></div><span>${fmt(item.registros)} disparos</span></div><small>${fmt(item.enviados)} mensagens enviadas</small></div></div>`;
+      if (byCollaborator) return `<div class="comparison-row" data-collaborator="${escape(item.colaborador)}" ${summaryTooltip(item)}><span class="comparison-label">${escape(item.colaborador)}<small> · ${item.campanhasOperadas} campanhas · ${item.empresasAtendidas} empresas</small></span><div class="comparison-bars"><div class="bar-line"><div class="bar-track"><i style="background:${colors.opening};width:${item.registros / maxDispatches * 100}%"></i></div><span>${fmt(item.registros)} disparos</span></div><small>${fmt(item.entregues)} mensagens entregues</small></div></div>`;
       return `<div class="comparison-row" ${summaryTooltip(item)}><span class="comparison-label">${byCompany ? escape(item.empresa) : `${escape(item.empresa)} · ${escape(item.campanha)}`}<small> · ${escape(item.canal)}</small></span><div class="comparison-bars">${[['taxaAbertura', colors.opening, 'Abertura'], ['taxaCliques', colors.clicks, 'CTR']].map(([key, color, label]) => `<div class="bar-line" aria-label="${label}: ${pct(item[key])}"><div class="bar-track"><i style="background:${color};width:${Math.max(0, Math.min(100, item[key] * 100))}%"></i></div><span>${pct(item[key])}</span></div>`).join('')}</div></div>`;
     }).join('') : empty('Nenhum desempenho no recorte');
     $('#engagement-legend').textContent = byCollaborator ? 'Barras: quantidade de disparos · cada linha importada conta como um disparo' : 'Abertura: cor da empresa · CTR: tom claro da mesma cor';
   }
+  function renderDeliveryQuality(groups) {
+    const maximum = groups.reduce((value, item) => Math.max(value, item.taxaFalhas ?? 0, item.taxaOptOut ?? 0), 0);
+    const scale = Math.max(0.01, Math.ceil(maximum * 100) / 100);
+    $('#engagement-legend').innerHTML = `<span><i class="failures"></i>Falhas</span><span><i class="opt-outs"></i>Opt-out</span><small>Escala: 0 a ${pct(scale)}</small>`;
+    $('#engagement-chart').innerHTML = groups.length ? groups.map(item => {
+      const label = `${item.empresa} · ${item.campanha}`;
+      const context = `${item.canal} · ${item.colaborador} · ${item.departamento}`;
+      const coverage = !item.hasOptOut ? 'Opt-out não informado' : item.partialOptOut ? `Opt-out parcial: ${item.optOutInformados} de ${item.registros} disparos informados` : `Opt-out informado nos ${item.registros} disparos`;
+      const details = [context, `Entregues: ${fmt(item.entregues)} · Enviados: ${fmt(item.enviados)}`, `Falhas: ${fmt(item.falhas)} · ${item.taxaFalhas === null ? 'sem envios para calcular taxa' : pct(item.taxaFalhas) + ' dos envios'}`, `Opt-out: ${item.hasOptOut ? fmt(item.optOut) : 'não informado'} · ${item.taxaOptOut === null ? 'taxa indisponível' : pct(item.taxaOptOut) + ' das entregas'}`, coverage];
+      const bars = [['Falhas', 'failures', item.falhas, item.taxaFalhas, true, 'dos envios'], ['Opt-out', 'opt-outs', item.optOut, item.taxaOptOut, item.hasOptOut, 'das entregas']].map(([name, css, count, rate, known, base]) => {
+        const countLabel = known ? fmt(count) : '—', rateLabel = rate === null ? '—' : pct(rate);
+        return `<div class="quality-bar-line" data-quality-metric="${css}" aria-label="${name}: ${known ? fmt(count) : 'não informado'}; ${rate === null ? 'taxa indisponível' : rateLabel + ' ' + base}"><span class="quality-metric-name">${name}</span><div class="bar-track">${rate === null ? '' : `<i class="${css}" style="width:${Math.min(100, Math.max(0, rate / scale * 100))}%"></i>`}</div><span class="quality-value">${countLabel}<small>${rateLabel}</small></span></div>`;
+      }).join('');
+      return `<div class="comparison-row quality-row" data-quality-group="${escape(label)}" ${tooltipAttrs(label, details)}><span class="comparison-label">${escape(label)}<small>${escape(context)}</small></span><div class="comparison-bars">${bars}<small class="quality-coverage">${coverage}</small></div></div>`;
+    }).join('') : empty('Sem dados de entrega no recorte');
+  }
   function renderTrend(rows) {
+    if (performanceMode === 'falhas-optout') { renderDeliveryTrend(rows); return; }
+    $('#trend-legend').classList.remove('quality-trend-legend');
     const production = performanceMode === 'colaboradores', dimension = production ? 'colaborador' : 'empresa';
     $('#trend-title').textContent = production ? 'Produção ao longo do tempo' : 'Desempenho ao longo do tempo';
     $('#trend-description').textContent = production ? 'Quantidade de disparos por colaborador e data' : 'Aberturas e cliques por empresa e data de disparo';
@@ -231,7 +262,55 @@
     }).join('');
     $('#trend-chart').innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${production ? 'Disparos por colaborador' : 'Aberturas e cliques por empresa'} entre ${dateLabel(days[0])} e ${dateLabel(days.at(-1))}"><title>${production ? 'Produção por colaborador' : 'Aberturas e cliques por empresa'}</title><desc>${escape(names.join(', '))}. ${production ? 'Quantidade de disparos por responsável e dia.' : 'Aberturas em cor principal e linha contínua; cliques no tom claro e linha tracejada.'} Pontos apenas em datas com disparos.</desc>${grid}${paths}${labels}</svg>`;
   }
-  function clearFilters() { ['campaign-search', 'start-date', 'end-date'].forEach(id => { $(`#${id}`).value = ''; }); selectedCompanies.clear(); selectedCollaborators.clear(); selectedCampaigns.clear(); channel = 'Todos'; updateOptions(); renderDispatch(); }
+  function renderDeliveryTrend(rows) {
+    $('#trend-title').textContent = 'Falhas e opt-out ao longo do tempo';
+    $('#trend-description').textContent = 'Quantidades por campanha e data de disparo';
+    $('#trend-note').textContent = 'Falhas: linha contínua · opt-out: tom claro e tracejado. Opt-out ausente interrompe a linha; parcial considera apenas os valores informados. Falhas e opt-out são métricas separadas.';
+    $('#trend-legend').classList.add('quality-trend-legend');
+    const series = C.deliveryTrend(rows).sort((a, b) => a.empresa.localeCompare(b.empresa, 'pt-BR') || a.campanha.localeCompare(b.campanha, 'pt-BR'));
+    const identities = C.summarize(state.rows, 'falhas-optout').sort((a, b) => a.empresa.localeCompare(b.empresa, 'pt-BR') || a.campanha.localeCompare(b.campanha, 'pt-BR'));
+    const colorsByKey = new Map(identities.map((item, index) => {
+      const hue = Math.round((index * 137.508) % 360);
+      const [failure, optOut] = COMPANY_PALETTE[index] || [`hsl(${hue}, 65%, 43%)`, `hsl(${hue}, 65%, 72%)`];
+      return [C.campaignKey(item), { failure, optOut }];
+    }));
+    $('#trend-legend').innerHTML = series.map(item => {
+      const colors = colorsByKey.get(item.key);
+      return `<div class="company-legend"><strong>${escape(item.empresa)} · ${escape(item.campanha)}</strong><span><i style="background:${colors.failure}"></i>Falhas</span><span><i style="background:${colors.optOut}"></i>Opt-out · tracejado</span></div>`;
+    }).join('');
+    if (!series.length) { $('#trend-chart').innerHTML = empty('Sem campanhas com datas neste recorte'); return; }
+    const days = [...new Set(series.flatMap(item => item.values.map(value => value.date)))].sort();
+    const maximum = series.reduce((max, item) => item.values.reduce((current, value) => Math.max(current, value.falhas, value.hasOptOut ? value.optOut : 0), max), 1);
+    const left = 48, right = 580, top = 18, bottom = 209, start = Date.parse(days[0]), duration = Date.parse(days.at(-1)) - start;
+    const x = day => duration ? left + (Date.parse(day) - start) / duration * (right - left) : (left + right) / 2;
+    const y = value => bottom - value / maximum * (bottom - top);
+    const compact = value => new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
+    let grid = '';
+    for (let i = 0; i <= 4; i++) { const value = maximum * i / 4, yy = y(value); grid += `<line x1="${left}" x2="${right}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-dasharray="3 5"/><text x="${left - 9}" y="${yy + 4}" text-anchor="end" fill="var(--muted)" font-size="10">${compact(value)}</text>`; }
+    const labels = [0];
+    for (let i = 1; i < days.length - 1; i++) if (x(days[i]) - x(days[labels.at(-1)]) >= 85 && x(days.at(-1)) - x(days[i]) >= 65) labels.push(i);
+    if (days.length > 1) labels.push(days.length - 1);
+    const axis = labels.map(index => `<text x="${x(days[index])}" y="232" text-anchor="middle" fill="var(--muted)" font-size="10">${dateLabel(days[index]).slice(0, 5)}</text>`).join('');
+    const paths = series.map(item => {
+      const name = `${item.empresa} · ${item.campanha}`, colors = colorsByKey.get(item.key);
+      return [['falhas', 'Falhas', colors.failure], ['optOut', 'Opt-out', colors.optOut]].map(([key, label, color]) => {
+        let drawing = false;
+        const commands = item.values.map(value => {
+          if (key === 'optOut' && !value.hasOptOut) { drawing = false; return ''; }
+          const command = `${drawing ? 'L' : 'M'}${x(value.date).toFixed(2)},${y(value[key]).toFixed(2)}`;
+          drawing = true; return command;
+        }).filter(Boolean).join(' ');
+        if (!commands) return '';
+        const points = item.values.filter(value => key !== 'optOut' || value.hasOptOut).map(value => {
+          const details = [`Campanha: ${item.campanha} · Empresa: ${item.empresa}`, `Departamentos: ${value.departamento}`, `Responsáveis: ${value.colaborador}`, `Enviados: ${fmt(value.enviados)} · Entregues: ${fmt(value.entregues)}`, `Falhas: ${fmt(value.falhas)}${value.taxaFalhas === null ? '' : ' (' + pct(value.taxaFalhas) + ' dos envios)'}`, `Opt-out: ${value.hasOptOut ? fmt(value.optOut) + (value.partialOptOut ? ' · dados parciais' : '') : 'não informado'}`, `Opt-out informado: ${value.optOutInformados} de ${value.registros} disparos`, `Série: ${label}`];
+          return `<circle cx="${x(value.date)}" cy="${y(value[key])}" r="4" fill="${color}" ${tooltipAttrs(`${name} · ${dateLabel(value.date)}`, details)} aria-label="${escape(name)} · ${dateLabel(value.date)} · ${label}: ${fmt(value[key])}"></circle>`;
+        }).join('');
+        return `<g data-quality-campaign="${escape(item.key)}" data-metric="${key}"><path d="${commands}" fill="none" stroke="${color}" stroke-width="2.5" ${key === 'optOut' ? 'stroke-dasharray="6 4"' : ''} ${tooltipAttrs(`${name} · ${label}`, [`${dateLabel(item.values[0].date)} a ${dateLabel(item.values.at(-1).date)}`, `Total conhecido: ${fmt(item.values.reduce((sum, value) => sum + value[key], 0))}`, 'Opt-out ausente não é convertido em zero.'])}></path>${points}</g>`;
+      }).join('');
+    }).join('');
+    $('#trend-chart').innerHTML = `<svg viewBox="0 0 600 245" role="img" aria-label="Falhas de entrega e opt-out por campanha e dia"><title>Falhas de entrega e opt-out por campanha</title><desc>Falhas em linha contínua e opt-out em linha tracejada, por empresa e campanha. Quantidades, sem somar as duas métricas.</desc>${grid}${paths}${axis}</svg>`;
+  }
+  function clearFilters() { ['campaign-search', 'start-date', 'end-date'].forEach(id => { $(`#${id}`).value = ''; }); selectedCompanies.clear(); selectedCollaborators.clear(); selectedDepartments.clear(); selectedCampaigns.clear(); channel = 'Todos'; updateOptions(); renderDispatch(); }
   function replaceRows(rows, source) { state.rows = rows; state.source = source; clearFilters(); return commit(source === 'demo' ? 'Demonstração restaurada. Os eventos foram preservados.' : 'Dados de disparos atualizados.'); }
   async function importFiles(files) {
     if (!files.length || importing) return;
@@ -261,14 +340,14 @@
     } catch (error) { toast(`Importação cancelada. Seus dados anteriores foram preservados.\n${error.message}`, true); }
     finally { importing = false; $$('[data-action="import"]').forEach(button => { button.disabled = false; }); $('#file-input').value = ''; }
   }
-  const HEADERS = ['empresas', 'colaboradores', 'campanha', 'data de envio', 'enviados', 'entregues', 'visualização', 'lidos', 'cliques', 'taxa de abertura', 'taxa de cliques', 'canal', 'opt-out'];
+  const HEADERS = ['empresas', 'colaboradores', 'campanha', 'data de envio', 'enviados', 'entregues', 'visualização', 'lidos', 'cliques', 'taxa de abertura', 'taxa de cliques', 'canal', 'opt-out', 'departamento'];
   function writeExcel(sheets, filename) {
     if (!window.XLSX) throw new Error('Biblioteca Excel indisponível. Verifique a pasta vendor.');
     const book = XLSX.utils.book_new();
     sheets.forEach(({ name, data }) => {
       const sheet = XLSX.utils.aoa_to_sheet(data);
       data[0].forEach((header, column) => {
-        if (!['taxa de abertura', 'taxa de cliques', 'ctr', 'comparecimento'].includes(String(header).toLowerCase())) return;
+        if (!['taxa de abertura', 'taxa de cliques', 'ctr', 'comparecimento', 'taxa de falhas', 'taxa de opt-out'].includes(String(header).toLowerCase())) return;
         for (let row = 1; row < data.length; row++) {
           const cell = sheet[XLSX.utils.encode_cell({ r: row, c: column })];
           if (cell?.t === 'n') cell.z = '0.00%';
@@ -281,12 +360,12 @@
     download(new Blob([XLSX.write(book, { bookType: 'xlsx', type: 'array' })], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
     toast('Arquivo Excel gerado.');
   }
-  function template() { writeExcel([{ name: 'Campanhas', data: [HEADERS, ['EmpA', 'Colab1', 'Boas-vindas setembro', '2026-09-24', 12000, 11720, 0, 4680, 1280, 0.4, 0.109, 'E-mail', 16], ['EmpB', 'Colab2', 'Oferta WhatsApp', '2026-09-25', 3200, 3100, 2650, 0, 570, 0.855, 0.184, 'WhatsApp', 7]] }], 'modelo-campanhas.xlsx'); }
+  function template() { writeExcel([{ name: 'Campanhas', data: [HEADERS, ['EmpA', 'Colab1', 'Boas-vindas setembro', '2026-09-24', 12000, 11720, 0, 4680, 1280, 0.4, 0.109, 'E-mail', 16, 'Marketing'], ['EmpB', 'Colab2', 'Oferta WhatsApp', '2026-09-25', 3200, 3100, 2650, 0, 570, 0.855, 0.184, 'WhatsApp', 7, 'Comercial']] }], 'modelo-campanhas.xlsx'); }
   function dispatchExcel() {
     const rows = filteredRows(); if (!rows.length) return;
-    const raw = rows.map(row => [row.empresa, row.colaborador, row.campanha, row.date, row.enviados, row.entregues, row.visualizacao, row.lidos, row.cliques, row.taxaAbertura, row.taxaCliques, row.canal, row.optOut]);
-    const summary = C.summarize(rows, performanceMode).map(item => [item.empresa, item.colaborador, item.campanha, item.canal, item.empresasAtendidas, item.campanhasOperadas, item.registros, item.enviados, item.entregues, item.abertura, item.cliques, item.taxaAbertura, item.taxaCliques, item.hasOptOut ? item.optOut : '', item.hasOptOut && item.partialOptOut ? 'Parcial' : item.hasOptOut ? 'Completo' : 'Ausente', item.ultimaData]);
-    writeExcel([{ name: 'Disparos', data: [HEADERS, ...raw] }, { name: 'Resumo', data: [['Empresa', 'Colaborador', 'Campanha', 'Canal', 'Empresas atendidas', 'Campanhas atendidas', 'Disparos', 'Enviados', 'Entregues', 'Aberturas efetivas', 'Cliques efetivos', 'Taxa de abertura', 'CTR', 'Opt-out', 'Cobertura opt-out', 'Último envio'], ...summary] }], 'campaign-pulse-disparos.xlsx');
+    const raw = rows.map(row => [row.empresa, row.colaborador, row.campanha, row.date, row.enviados, row.entregues, row.visualizacao, row.lidos, row.cliques, row.taxaAbertura, row.taxaCliques, row.canal, row.optOut, row.departamento]);
+    const summary = C.summarize(rows, performanceMode).map(item => [item.empresa, item.colaborador, item.campanha, item.canal, item.empresasAtendidas, item.campanhasOperadas, item.registros, item.enviados, item.entregues, item.abertura, item.cliques, item.taxaAbertura, item.taxaCliques, item.hasOptOut ? item.optOut : '', item.hasOptOut && item.partialOptOut ? 'Parcial' : item.hasOptOut ? 'Completo' : 'Ausente', item.ultimaData, item.departamento, item.falhas, item.taxaFalhas, item.taxaOptOut]);
+    writeExcel([{ name: 'Disparos', data: [HEADERS, ...raw] }, { name: 'Resumo', data: [['Empresa', 'Colaborador', 'Campanha', 'Canal', 'Empresas atendidas', 'Campanhas atendidas', 'Disparos', 'Enviados', 'Entregues', 'Aberturas efetivas', 'Cliques efetivos', 'Taxa de abertura', 'CTR', 'Opt-out', 'Cobertura opt-out', 'Último envio', 'Departamento', 'Falhas de entrega', 'Taxa de falhas', 'Taxa de opt-out'], ...summary] }], 'campaign-pulse-disparos.xlsx');
   }
   function eventExcel(records) {
     if (!records.length) return toast('Selecione ao menos um evento.', true);
@@ -323,8 +402,8 @@
   function dispatchPdf() {
     const rows = filteredRows(); if (!rows.length) return;
     const t = C.totals(rows), f = criteria();
-    const sections = [{ title: 'Indicadores consolidados', lines: [`Envios: ${fmt(t.enviados)} | Entregues: ${fmt(t.entregues)} (${pct(t.taxaEntrega)})`, `Aberturas / visualizações: ${fmt(t.abertura)} (${pct(t.taxaAbertura)}) | Cliques: ${fmt(t.cliques)} (CTR ${pct(t.taxaCliques)})`, `Falhas: ${fmt(t.falhas)} | Opt-out: ${t.hasOptOut ? fmt(t.optOut) + (t.partialOptOut ? ' (dados parciais)' : '') : 'não informado'}`, 'Taxas calculadas sobre entregues. Falhas = enviados - entregues.'] }, ...C.summarize(rows, performanceMode).sort((a, b) => b.enviados - a.enviados).map(item => ({ title: performanceMode === 'colaboradores' ? item.colaborador : performanceMode === 'empresas' ? item.empresa : `${item.empresa} · ${item.campanha} · ${item.canal} · ${item.colaborador}`, lines: [`Responsáveis: ${item.colaborador} | Empresas: ${item.empresa}`, `${item.campanhasOperadas} campanhas atendidas | ${item.empresasAtendidas} empresas atendidas`, `${item.registros} disparos | ${dateLabel(item.primeiraData)} a ${dateLabel(item.ultimaData)}`, `Enviados: ${fmt(item.enviados)} | Entregues: ${fmt(item.entregues)} | Falhas: ${fmt(item.falhas)}`, `Aberturas: ${fmt(item.abertura)} (${pct(item.taxaAbertura)}) | Cliques: ${fmt(item.cliques)} (CTR ${pct(item.taxaCliques)})`, `Opt-out: ${item.hasOptOut ? fmt(item.optOut) + (item.partialOptOut ? ' (dados parciais)' : '') : 'não informado'}`] }))];
-    report('Análise de disparos', `${state.source === 'demo' ? 'DADOS DE DEMONSTRAÇÃO | ' : ''}${period(rows)} | ${rows.length} registros | Canal: ${channel}\nBusca: ${f.query || 'todas'} | Empresas: ${f.companies.join(', ') || 'todas'} | Colaboradores: ${f.collaborators.join(', ') || 'todos'} | Modo: ${performanceMode}\nCampanhas: ${campaignOptions().filter(row => selectedCampaigns.has(C.campaignKey(row))).map(row => `${row.empresa} / ${row.campanha}`).join(', ') || 'todas'} | Período informado: ${f.from || 'sem início'} a ${f.to || 'sem fim'}`, sections, 'campaign-pulse-relatorio.pdf');
+    const sections = [{ title: 'Indicadores consolidados', lines: [`Envios: ${fmt(t.enviados)} | Entregues: ${fmt(t.entregues)} (${pct(t.taxaEntrega)})`, `Aberturas / visualizações: ${fmt(t.abertura)} (${pct(t.taxaAbertura)}) | Cliques: ${fmt(t.cliques)} (CTR ${pct(t.taxaCliques)})`, `Falhas: ${fmt(t.falhas)} | Opt-out: ${t.hasOptOut ? fmt(t.optOut) + (t.partialOptOut ? ' (dados parciais)' : '') : 'não informado'}`, 'Abertura e CTR sobre entregues. Falhas = enviados - entregues; taxa de falhas sobre enviados. Opt-out contabilizado separadamente.'] }, ...C.summarize(rows, performanceMode).sort((a, b) => b.enviados - a.enviados).map(item => ({ title: performanceMode === 'colaboradores' ? item.colaborador : performanceMode === 'empresas' ? item.empresa : `${item.empresa} · ${item.campanha} · ${item.canal} · ${item.colaborador}`, lines: [`Responsáveis: ${item.colaborador} | Empresas: ${item.empresa}`, `Departamentos: ${item.departamento}`, `${item.campanhasOperadas} campanhas atendidas | ${item.empresasAtendidas} empresas atendidas`, `${item.registros} disparos | ${dateLabel(item.primeiraData)} a ${dateLabel(item.ultimaData)}`, `Enviados: ${fmt(item.enviados)} | Entregues: ${fmt(item.entregues)} | Falhas: ${fmt(item.falhas)}`, `Aberturas: ${fmt(item.abertura)} (${pct(item.taxaAbertura)}) | Cliques: ${fmt(item.cliques)} (CTR ${pct(item.taxaCliques)})`, `Opt-out: ${item.hasOptOut ? fmt(item.optOut) + (item.partialOptOut ? ' (dados parciais)' : '') : 'não informado'}`] }))];
+    report('Análise de disparos', `${state.source === 'demo' ? 'DADOS DE DEMONSTRAÇÃO | ' : ''}${period(rows)} | ${rows.length} registros | Canal: ${channel}\nBusca: ${f.query || 'todas'} | Empresas: ${f.companies.join(', ') || 'todas'} | Colaboradores: ${f.collaborators.join(', ') || 'todos'} | Departamentos: ${f.departments.join(', ') || 'todos'} | Modo: ${performanceMode}\nCampanhas: ${campaignOptions().filter(row => selectedCampaigns.has(C.campaignKey(row))).map(row => `${row.empresa} / ${row.campanha}`).join(', ') || 'todas'} | Período informado: ${f.from || 'sem início'} a ${f.to || 'sem fim'}`, sections, 'campaign-pulse-relatorio.pdf');
   }
   function eventPdf(records) {
     if (!records.length) return toast('Selecione ao menos um evento.', true);
@@ -417,6 +496,13 @@
   $('#collaborator-options').addEventListener('change', event => {
     const name = collaboratorNames()[Number(event.target.value)];
     if (event.target.checked) selectedCollaborators.add(name); else selectedCollaborators.delete(name);
+    const available = new Set(campaignOptions().map(C.campaignKey));
+    selectedCampaigns = new Set([...selectedCampaigns].filter(key => available.has(key)));
+    updateOptions(); renderDispatch();
+  });
+  $('#department-options').addEventListener('change', event => {
+    const name = departmentNames()[Number(event.target.value)];
+    if (event.target.checked) selectedDepartments.add(name); else selectedDepartments.delete(name);
     const available = new Set(campaignOptions().map(C.campaignKey));
     selectedCampaigns = new Set([...selectedCampaigns].filter(key => available.has(key)));
     updateOptions(); renderDispatch();

@@ -8,7 +8,7 @@ Não precisa instalar Node.js, Python, pacotes, iniciar servidor ou ter conexão
 
 ## O que está disponível
 
-- Análise de disparos: filtros de empresas e colaboradores, indicadores, gráficos, busca, campanhas, período, canais e tabela ordenável. Três modos de dashboard e três tipos de listagem independentes.
+- Análise de disparos: filtros de empresas, colaboradores e departamentos, indicadores, gráficos, busca, campanhas, período, canais e tabela ordenável. Quatro modos de dashboard e três tipos de listagem independentes.
 - Importação de um ou vários arquivos `.xlsx`, `.xls` ou `.csv`, por seleção ou arrastar e soltar. Todas as abas compatíveis são lidas. A nova importação substitui os disparos atuais; não altera os eventos.
 - Modelo Excel, exportação dos disparos filtrados e do resumo em Excel, relatório PDF offline.
 - Pós-evento: cadastro, edição, exclusão, múltiplos investimentos, custo por presente, busca, período e seleção de eventos. Exportações do filtro ou da seleção, inclusive quando parte da seleção estiver fora do filtro.
@@ -24,6 +24,7 @@ Use **Modelo Excel** na interface. As colunas `empresas`, `campanha` e `enviados
 | Coluna | Conteúdo |
 | --- | --- |
 | colaboradores | Responsável pelo disparo, até 200 caracteres. Um responsável por linha |
+| departamento | Opcional, até 200 caracteres. Pode remover a coluna ou deixar células vazias; serão classificadas como Departamento não informado |
 | data de envio | Data do Excel, `dd/mm/aaaa` ou `aaaa-mm-dd` |
 | entregues | Quantidade inteira não negativa; ausente = 0 |
 | visualização | Quantidade inteira; usada quando lidos não é maior que zero |
@@ -42,13 +43,16 @@ Limites: 30 arquivos por vez, 20 MB por arquivo, 50 MB no total e 100.000 regist
 
 ## Empresas, desempenho e listagens
 
-Selecione uma ou várias empresas e colaboradores. **Nenhuma seleção significa todos daquela categoria**. Empresa, colaborador, busca, campanhas, datas e canal se combinam e afetam indicadores, gráficos, listagens e exportações. Um responsável pode trabalhar em várias empresas; escolher empresa + responsável exibe a interseção.
+Selecione uma ou várias empresas, colaboradores e departamentos. **Nenhuma seleção significa todos daquela categoria**. Empresa, colaborador, departamento, busca, campanhas, datas e canal se combinam e afetam indicadores, gráficos, listagens e exportações. Um responsável pode trabalhar em várias empresas; escolher empresa + responsável + departamento exibe a interseção.
+
+`departamento` aceita também os cabeçalhos departamentos, setor, department e departments. Espaços nas extremidades são removidos; use a mesma grafia para o mesmo departamento. A coluna e seus valores são opcionais: ausência, célula vazia ou traço recebem **Departamento não informado**, inclusive em backups antigos. Esse grupo também pode ser filtrado. O modelo traz exemplos preenchidos, mas não exige preenchimento. Valores acima de 200 caracteres são rejeitados.
 
 Em **Visualização do dashboard**, escolha:
 
 - **Desempenho por empresas** (inicial): consolida os disparos por empresa, somando seus canais e comparando abertura e CTR com taxas ponderadas pelas entregas.
-- **Desempenho por campanhas**: compara todas as combinações de empresa, campanha, canal e responsável do recorte. Campanhas homônimas de empresas ou responsáveis diferentes permanecem separadas. Todos os resultados aparecem, com rolagem quando necessário.
-- **Produção por colaboradores**: indicadores de disparos realizados, campanhas atendidas, empresas atendidas, mensagens enviadas, aberturas e cliques. O gráfico temporal conta disparos por responsável/dia; o comparativo ordena responsáveis por quantidade de disparos, com volume de mensagens exibido à parte. As cores dos colaboradores permanecem estáveis sob filtros.
+- **Desempenho por campanhas**: compara todas as combinações de empresa, campanha, canal, responsável e departamento do recorte. Campanhas homônimas de empresas, responsáveis ou departamentos diferentes permanecem separadas. Todos os resultados aparecem, com rolagem quando necessário.
+- **Produção por colaboradores**: indicadores de disparos realizados, campanhas atendidas, empresas atendidas, mensagens entregues, aberturas e cliques. O gráfico temporal conta disparos por responsável/dia; o comparativo ordena responsáveis por quantidade de disparos, com volume de mensagens exibido à parte. As cores dos colaboradores permanecem estáveis sob filtros.
+- **Falhas de entrega e opt-out por campanha**: usa os dois gráficos existentes para mostrar quantidades em linhas por campanha/data e taxas no comparativo por campanha. A identidade é empresa + campanha, consolidando canais, responsáveis e departamentos após os filtros.
 
 O gráfico temporal mostra **duas séries por empresa**: quantidade de aberturas em linha contínua na cor principal e quantidade de cliques em linha tracejada no tom claro. EmpA usa vermelho, EmpB azul, EmpC verde, EmpD amarelo; as próximas usam roxo, laranja, turquesa, rosa e cores adicionais geradas automaticamente. Empresas com outros nomes recebem as cores disponíveis na ordem dos nomes do conjunto completo de dados. As cores permanecem estáveis ao alterar filtros e modos dentro desse conjunto.
 
@@ -60,11 +64,11 @@ Na tabela, **Tipo de listagem** oferece uma seleção independente:
 - **Listagem geral de campanhas**: tabela única de campanhas do recorte, identificando empresa, canal e responsável.
 - **Colaboradores e seus disparos**: totais de cada responsável seguidos de suas campanhas, empresas e canais.
 
-As três listagens mostram responsável, quantidade de disparos, aberturas e cliques, além de abertura percentual e CTR. Na listagem agrupada, a ordenação ordena empresas ou colaboradores pelos totais e campanhas dentro de cada grupo; na geral, ordena todas as campanhas. Trocar dashboard ou listagem preserva filtros e a outra seleção.
+As três listagens mostram responsável, departamento, quantidade de disparos, aberturas e cliques, além de abertura percentual e CTR. Departamento também permite ordenação. Na listagem agrupada, a ordenação ordena empresas ou colaboradores pelos totais e campanhas dentro de cada grupo; na geral, ordena todas as campanhas. Trocar dashboard ou listagem preserva filtros e a outra seleção.
 
-A seleção específica identifica empresa + nome de campanha e mostra apenas campanhas compatíveis com empresas e colaboradores escolhidos. Ao mudar esses filtros, seleções de campanhas incompatíveis são removidas. **Limpar filtros** remove empresas, colaboradores, busca, campanhas, datas e canal, mantendo dashboard e listagem.
+A seleção específica identifica empresa + nome de campanha e mostra apenas campanhas compatíveis com empresas, colaboradores e departamentos escolhidos. Ao mudar esses filtros, seleções de campanhas incompatíveis são removidas. **Limpar filtros** remove empresas, colaboradores, departamentos, busca, campanhas, datas e canal, mantendo dashboard e listagem.
 
-Excel inclui `empresas` na aba **Disparos** e empresa em **Resumo**. O resumo e o PDF acompanham o modo de desempenho; o tipo de listagem organiza apenas a tabela na tela. O PDF informa os filtros. A demonstração contém **EmpA, EmpB e EmpC**, mantendo os 14 disparos e os totais anteriores.
+Excel inclui `empresas` e `departamento` na aba **Disparos** e empresa/departamento em **Resumo**, além das contagens e taxas de falhas e opt-out. O resumo e o PDF acompanham o modo do dashboard; o tipo de listagem organiza apenas a tabela na tela. O PDF informa todos os filtros, incluindo departamentos. A demonstração contém **EmpA, EmpB e EmpC**, em 17 disparos fictícios.
 
 Excel também inclui `colaboradores` em **Disparos** e responsável, empresas/campanhas atendidas e disparos em **Resumo**. No modo produção, o resumo e o PDF consolidam por responsável. Os filtros de colaboradores entram no PDF e limitam ambas as exportações.
 
@@ -76,9 +80,27 @@ Preencha `colaboradores` com **um responsável por linha**, por exemplo Colab1. 
 
 Para compatibilidade, planilhas sem a coluna colaboradores são aceitas com aviso e recebem **Colaborador não informado**. Se a coluna existir, valores vazios, traços ou nomes acima de 200 caracteres cancelam toda a importação. Reimporte a planilha completa para associar as pessoas. Esse grupo preserva o volume histórico, mas não representa um colaborador identificado.
 
-A demonstração inclui **Colab1, Colab2, Colab3, Colab4, Colab5 e Colab6**, distribuídos entre EmpA, EmpB e EmpC. Colab1 e Colab2 têm três disparos cada; os demais têm dois. Use Restaurar demonstração para carregar os novos exemplos.
+A demonstração inclui **Colab1, Colab2, Colab3, Colab4, Colab5 e Colab6**, distribuídos entre EmpA, EmpB e EmpC. Colab1 tem cinco disparos; Colab2 tem quatro; os demais têm dois. Departamentos: **Marketing** (Colab1/2, nove registros), **Comercial** (Colab3/4, quatro) e **Relacionamento** (Colab5/6, quatro). Use Restaurar demonstração para carregar os novos exemplos.
 
 As três empresas têm disparos nas mesmas quatro datas: **03, 10, 17 e 24/09/2026**. Assim, suas linhas de abertura e cliques podem ser comparadas nas mesmas datas. Use **Restaurar demonstração** para carregar essa versão quando já houver dados salvos no navegador; os eventos são preservados.
+
+### Falhas de entrega e opt-out por campanha
+
+Selecione **Falhas de entrega e opt-out por campanha** em **Visualização do dashboard**. O gráfico da esquerda mostra quantidades por empresa + campanha + data: falhas em linha contínua e opt-out em tom claro e tracejado. As cores permanecem estáveis sob filtros. Uma campanha com uma única data aparece como pontos; campanhas com várias datas formam linhas. Datas sem disparos não recebem pontos artificiais. Registros sem data participam dos totais/comparativo, mas não da tendência. Opt-out ausente em um dia interrompe sua linha; zero informado mantém o ponto em zero. A legenda pode ser rolada para consultar todas as campanhas.
+
+O comparativo da direita mostra duas barras por empresa + campanha, incluindo todos os grupos do recorte. Os filtros se aplicam a ambos os gráficos. As quantidades aparecem à direita, junto das taxas:
+
+- **Falhas de entrega** = enviados − entregues; taxa = falhas ÷ enviados.
+- **Opt-out** = soma das contagens informadas; taxa = opt-out ÷ entregues. Opt-out não é somado às falhas.
+- Zero informado aparece como **0**; opt-out ausente aparece como **—**, sem barra. Se apenas parte dos disparos tiver esse campo, o painel indica quantos foram informados. A taxa parcial usa todas as entregas do grupo.
+- Sem envios, a taxa de falha é **—**; sem entregas, a taxa de opt-out é **—**. A quantidade conhecida continua visível.
+- As barras compartilham a mesma escala percentual dentro do recorte, indicada acima do gráfico. A escala se ajusta ao maior valor para facilitar a leitura de taxas pequenas. Os percentuais exibidos não são alterados.
+
+Na visão **Produção por colaboradores**, o card antes chamado Mensagens enviadas passou a **Mensagens entregues**, usando a soma de entregues. As barras de produção também mostram esse volume efetivo nos detalhes. A quantidade de disparos continua sendo o número de linhas; o desempate da produção usa entregues. Nas visões de empresas e campanhas, os cards de total enviado e entregues continuam separados para permitir conferir a taxa de entrega.
+
+A demonstração tem **17 disparos de 6 colaboradores fictícios**, incluindo zero explícito de opt-out. Totais: **92.080 enviados, 89.728 entregues, 2.352 falhas e 330 opt-outs**. Três novos registros repetem Boas-vindas em outra data nas três empresas para testar linhas por campanha. Exemplos antigos reconhecidos como demonstração recebem somente opt-out/departamento faltantes na abertura; para carregar também os novos registros, use **Restaurar demonstração**. Dados importados nunca recebem valores fictícios. Restaurar demonstração substitui os disparos e mantém os eventos.
+
+Excel/PDF acompanham o novo agrupamento por empresa + campanha quando esse modo está selecionado. As exportações incluem dados e resumos; não incluem imagem dos gráficos.
 
 ### Caixa de detalhes
 
@@ -107,7 +129,7 @@ Faça backups regularmente. Trocar de navegador, mudar o caminho da pasta, limpa
 
 **Restaurar backup** valida o arquivo e solicita confirmação antes de substituir disparos e eventos. O backup contém todos os registros salvos, independentemente dos filtros. Alterações ainda não salvas no formulário não entram no backup.
 
-Os novos backups usam versão 3 e exigem `empresa` e `colaborador` em cada disparo. Backups e dados locais antigos (versões 1 e 2) são convertidos ao carregar, preservando disparos e eventos. Versão 1 sem empresa recebe **Empresa não informada**; versões 1/2 sem responsável recebem **Colaborador não informado**, com avisos. Reimporte a planilha completa para associá-los corretamente. A chave `campaign-pulse-local-v1` foi mantida para recuperar dados existentes; o próximo salvamento grava versão 3. Filtros, dashboard e listagem são escolhas da sessão e não entram no backup. Pós-evento mantém seus filtros próprios.
+Os novos backups usam versão 3 e exigem `empresa` e `colaborador` em cada disparo; `departamento` permanece opcional, inclusive na versão 3. Backups e dados locais antigos (versões 1 e 2) são convertidos ao carregar, preservando disparos e eventos. Versão 1 sem empresa recebe **Empresa não informada**; versões 1/2 sem responsável recebem **Colaborador não informado**, com avisos. Departamento ausente recebe **Departamento não informado** em todas as versões. Reimporte a planilha completa para associar os dados reais. A chave `campaign-pulse-local-v1` foi mantida para recuperar dados existentes; o próximo salvamento grava versão 3. Filtros, dashboard e listagem são escolhas da sessão e não entram no backup. Pós-evento mantém seus filtros próprios.
 
 ## Arquivos
 
@@ -136,6 +158,8 @@ node tests/company-charts.test.cjs
 node tests/tooltips.test.cjs
 node --test tests/collaborators-core.test.cjs
 node tests/collaborators.test.cjs
+node --test tests/departments-core.test.cjs
+node tests/delivery-quality.test.cjs
 ```
 
 Os testes de navegador usam o Playwright disponível no ambiente de desenvolvimento deste computador. Em outro computador, defina `PLAYWRIGHT_PATH` com o caminho para o pacote instalado. As verificações abrem diretamente o arquivo HTML; não iniciam servidor.
@@ -143,3 +167,5 @@ Os testes de navegador usam o Playwright disponível no ambiente de desenvolvime
 As evidências em `tests/results/` são geradas pelos testes. Os scripts de teste, as bibliotecas em `vendor/` e suas licenças devem permanecer no repositório.
 
 Consulte **VALIDACAO.md** para os resultados e limitações da verificação.
+
+Teste adicional desta atualização: `node tests/delivery-quality.test.cjs`.

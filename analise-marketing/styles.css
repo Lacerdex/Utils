@@ -1868,3 +1868,20 @@ dialog ol {
 #dashboard-tooltip strong { display: block; margin-bottom: 5px; }
 #dashboard-tooltip div { color: var(--muted); }
 [data-tooltip-title]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.failures { background: #d93645; }
+.opt-outs { background: #8651cc; }
+body.dark .failures { background: #ff8391; }
+body.dark .opt-outs { background: #bc9bef; }
+.quality-row { padding: 12px 0; margin: 0; border-bottom: 1px solid var(--line); gap: 20px; }
+.quality-row:last-child { border-bottom: 0; }
+.quality-row .comparison-label small { display: block; margin-top: 3px; }
+.quality-bar-line { display: flex; align-items: center; gap: 10px; }
+.quality-metric-name { width: 44px; flex: 0 0 auto; font-size: 10px; color: var(--muted); }
+.quality-value { width: 86px; flex: 0 0 auto; text-align: right; font-size: 12px; font-variant-numeric: tabular-nums; }
+.quality-value small { display: block; font-size: 10px; }
+.quality-coverage { font-size: 9px; }
+.quality-trend-legend { max-height: 160px; overflow-y: auto; align-items: flex-start; }
+.quality-trend-legend .company-legend { flex: 1 1 190px; }
+@media (max-width: 650px) {
+  .quality-row { grid-template-columns: 1fr; gap: 10px; }
+}

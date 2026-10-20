@@ -6,6 +6,8 @@
   const sum = (rows, key) => rows.reduce((total, row) => total + (row[key] ?? 0), 0);
   const ratio = (a, b) => b > 0 ? a / b : 0;
   const blank = value => value === undefined || value === null || String(value).trim() === '' || value === '-';
+  const UNASSIGNED_DEPARTMENT = 'Departamento não informado';
+  const departmentName = row => blank(row.departamento) || String(row.departamento).trim() === '-' ? UNASSIGNED_DEPARTMENT : String(row.departamento).trim();
   function number(value) {
     if (blank(value)) return null;
     if (typeof value === 'number') return Number.isFinite(value) ? value : NaN;
@@ -51,6 +53,7 @@
   const aliases = {
     empresa: ['empresas', 'empresa', 'nome da empresa', 'company', 'companies', 'company name'],
     colaborador: ['colaboradores', 'colaborador', 'responsavel', 'responsavel pelo disparo', 'nome do colaborador', 'employee', 'owner'],
+    departamento: ['departamento', 'departamentos', 'setor', 'department', 'departments'],
     campanha: ['campanha', 'nome da campanha', 'campaign', 'campaign name'],
     date: ['data de envio', 'data envio', 'sent date', 'send date', 'data', 'date'],
     enviados: ['enviados', 'total enviados', 'sent', 'sends'],
@@ -80,6 +83,8 @@
       if (blank(get('empresa')) || row.empresa.length > 200) { errors.push(`${line}: informe uma empresa com até 200 caracteres.`); return; }
       row.colaborador = columns.colaborador < 0 ? 'Colaborador não informado' : String(get('colaborador') ?? '').trim();
       if (blank(row.colaborador) || row.colaborador.length > 200) { errors.push(`${line}: informe um colaborador com até 200 caracteres.`); return; }
+      row.departamento = departmentName({ departamento: get('departamento') });
+      if (row.departamento.length > 200) { errors.push(`${line}: departamento deve ter até 200 caracteres.`); return; }
       row.campanha = String(get('campanha') ?? '').trim();
       if (!row.campanha || row.campanha.length > 500) { errors.push(`${line}: campanha vazia ou com mais de 500 caracteres.`); return; }
       row.date = date(get('date'));
@@ -117,29 +122,43 @@
   function totals(rows) {
     const enviados = sum(rows, 'enviados'), entregues = sum(rows, 'entregues');
     const abertura = rows.reduce((total, row) => total + opens(row), 0), cliques = rows.reduce((total, row) => total + clicks(row), 0);
-    return { enviados, entregues, abertura, cliques, falhas: Math.max(0, enviados - entregues), optOut: sum(rows, 'optOut'), hasOptOut: rows.some(row => row.optOut != null), partialOptOut: rows.some(row => row.optOut == null), taxaAbertura: ratio(abertura, entregues), taxaCliques: ratio(cliques, entregues), taxaEntrega: ratio(entregues, enviados) };
+    const falhas = Math.max(0, enviados - entregues), optOut = sum(rows, 'optOut');
+    const optOutInformados = rows.filter(row => row.optOut != null).length;
+    return { enviados, entregues, abertura, cliques, falhas, optOut, optOutInformados, hasOptOut: optOutInformados > 0, partialOptOut: optOutInformados < rows.length, taxaFalhas: enviados > 0 ? falhas / enviados : null, taxaOptOut: optOutInformados > 0 && entregues > 0 ? optOut / entregues : null, taxaAbertura: ratio(abertura, entregues), taxaCliques: ratio(cliques, entregues), taxaEntrega: ratio(entregues, enviados) };
   }
   const campaignKey = row => JSON.stringify([row.empresa, row.campanha]);
   function summarize(rows, mode = 'campanhas') {
     const groups = new Map();
     for (const row of rows) {
-      const key = mode === 'empresas' ? row.empresa : mode === 'colaboradores' ? row.colaborador : JSON.stringify([row.empresa, row.campanha, row.canal, row.colaborador]);
+      const key = mode === 'empresas' ? row.empresa : mode === 'colaboradores' ? row.colaborador : mode === 'falhas-optout' ? campaignKey(row) : JSON.stringify([row.empresa, row.campanha, row.canal, row.colaborador, departmentName(row)]);
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(row);
     }
     return Array.from(groups.values(), items => {
       const dates = items.map(row => row.date).filter(Boolean).sort();
       const aggregated = mode === 'empresas' || mode === 'colaboradores';
-      return { ...totals(items), grupo: mode, empresa: mode === 'colaboradores' ? [...new Set(items.map(row => row.empresa))].join(', ') : items[0].empresa, colaborador: mode === 'empresas' ? [...new Set(items.map(row => row.colaborador))].join(', ') : items[0].colaborador, campanha: aggregated ? '' : items[0].campanha, canal: aggregated ? [...new Set(items.map(row => row.canal))].join(', ') : items[0].canal, registros: items.length, empresasAtendidas: new Set(items.map(row => row.empresa)).size, campanhasOperadas: new Set(items.map(campaignKey)).size, primeiraData: dates[0] || '', ultimaData: dates.at(-1) || '' };
+      return { ...totals(items), grupo: mode, departamento: [...new Set(items.map(departmentName))].join(', '), empresa: mode === 'colaboradores' ? [...new Set(items.map(row => row.empresa))].join(', ') : items[0].empresa, colaborador: aggregated || mode === 'falhas-optout' ? [...new Set(items.map(row => row.colaborador))].join(', ') : items[0].colaborador, campanha: aggregated ? '' : items[0].campanha, canal: aggregated || mode === 'falhas-optout' ? [...new Set(items.map(row => row.canal))].join(', ') : items[0].canal, registros: items.length, empresasAtendidas: new Set(items.map(row => row.empresa)).size, campanhasOperadas: new Set(items.map(campaignKey)).size, primeiraData: dates[0] || '', ultimaData: dates.at(-1) || '' };
     });
   }
   function filter(rows, criteria = {}) {
-    const { query = '', selected = [], companies = [], collaborators = [], campaignKeys = [], from = '', to = '', channel = 'Todos', event = false } = criteria;
+    const { query = '', selected = [], companies = [], collaborators = [], departments = [], campaignKeys = [], from = '', to = '', channel = 'Todos', event = false } = criteria;
     if (from && to && from > to) return [];
     return rows.filter(row => {
       const name = event ? row.nome : row.campanha, day = event ? row.data : row.date;
-      return normalize(name).includes(normalize(query)) && (!selected.length || selected.includes(name)) && (event || !companies.length || companies.includes(row.empresa)) && (event || !collaborators.length || collaborators.includes(row.colaborador)) && (event || !campaignKeys.length || campaignKeys.includes(campaignKey(row))) && (!from || day && day >= from) && (!to || day && day <= to) && (event || channel === 'Todos' || row.canal === channel);
+      return normalize(name).includes(normalize(query)) && (!selected.length || selected.includes(name)) && (event || !companies.length || companies.includes(row.empresa)) && (event || !collaborators.length || collaborators.includes(row.colaborador)) && (event || !departments.length || departments.includes(departmentName(row))) && (event || !campaignKeys.length || campaignKeys.includes(campaignKey(row))) && (!from || day && day >= from) && (!to || day && day <= to) && (event || channel === 'Todos' || row.canal === channel);
     });
+  }
+  function deliveryTrend(rows) {
+    const groups = new Map();
+    rows.forEach(row => {
+      if (!row.date) return;
+      const key = campaignKey(row);
+      if (!groups.has(key)) groups.set(key, { key, empresa: row.empresa, campanha: row.campanha, days: new Map() });
+      const group = groups.get(key);
+      if (!group.days.has(row.date)) group.days.set(row.date, []);
+      group.days.get(row.date).push(row);
+    });
+    return [...groups.values()].map(group => ({ key: group.key, empresa: group.empresa, campanha: group.campanha, values: [...group.days].sort(([a], [b]) => a.localeCompare(b)).map(([date, items]) => ({ ...summarize(items, 'falhas-optout')[0], date })) }));
   }
   function validateEvent(event) {
     if (!event || typeof event.nome !== 'string' || !event.nome.trim() || event.nome.trim().length > 100) throw new Error('Informe um nome de evento com até 100 caracteres.');
@@ -164,6 +183,9 @@
       row.colaborador = row.colaborador.trim();
       if (!row || typeof row.empresa !== 'string' || blank(row.empresa) || row.empresa.trim().length > 200) throw new Error('O backup contém empresa inválida ou ausente.');
       row.empresa = row.empresa.trim();
+      if (row.departamento == null || typeof row.departamento === 'string' && blank(row.departamento)) row.departamento = UNASSIGNED_DEPARTMENT;
+      if (typeof row.departamento !== 'string' || row.departamento.trim().length > 200) throw new Error('O backup contém departamento inválido.');
+      row.departamento = departmentName(row);
       if (!row || typeof row.campanha !== 'string' || !row.campanha.trim() || row.campanha.length > 500 || typeof row.date !== 'string' || date(row.date) !== row.date || !CHANNELS.includes(row.canal) || !['enviados', 'entregues'].every(key => Number.isSafeInteger(row[key]) && row[key] >= 0 && row[key] <= 1e12) || row.entregues > row.enviados || !['lidos', 'visualizacao', 'cliques', 'optOut'].every(key => row[key] == null || Number.isSafeInteger(row[key]) && row[key] >= 0 && row[key] <= 1e12) || !['taxaAbertura', 'taxaCliques'].every(key => row[key] == null || Number.isFinite(row[key]) && row[key] >= 0 && row[key] <= 1)) throw new Error('O backup contém dados de campanha inválidos.');
     });
     const ids = new Set();
@@ -176,7 +198,7 @@
     data.version = 3;
     return data;
   }
-  const api = { CHANNELS, normalize, number, rate, date, parseGrid, opens, clicks, ratio, totals, summarize, campaignKey, filter, validateEvent, spend, eventTotals, validateBackup };
+  const api = { CHANNELS, UNASSIGNED_DEPARTMENT, departmentName, normalize, number, rate, date, parseGrid, opens, clicks, ratio, totals, summarize, campaignKey, deliveryTrend, filter, validateEvent, spend, eventTotals, validateBackup };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.CampaignCore = api;
 })(globalThis);
